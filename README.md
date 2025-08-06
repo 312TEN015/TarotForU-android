@@ -3,9 +3,9 @@
 
 > 해커톤 기간: 2023.12.08 ~ 2023.12.17
 > 
->  해커톤 이후 디벨롭하여 2024.03.05 [구글 플레이스토어 출시](https://play.google.com/store/apps/details?id=com.fourleafclover.tarot&pcampaignid=web_share)
+>  2024.03.05 [구글 플레이스토어 출시](https://play.google.com/store/apps/details?id=com.fourleafclover.tarot&pcampaignid=web_share)
 > 
-> ~ 2024.05 현재 디벨롭 진행중
+> 2024.05 ~ 2024.10 추가 디벨롭 진행
 
 ![그래픽 이미지](https://github.com/312TEN015/TarotForU-android/assets/69448918/afc99fc3-948d-4254-b304-a1b341cbf84b)
 
