@@ -4,8 +4,13 @@ import android.app.Application
 import android.util.Log
 import com.fourleafclover.tarot.network.PrettyJsonLogger
 import com.fourleafclover.tarot.network.TarotService
+import com.fourleafclover.tarot.utils.LogTags
 import com.fourleafclover.tarot.utils.PreferenceUtil
 import com.fourleafclover.tarot.utils.ToastUtil
+import com.google.firebase.Firebase
+import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.Source
+import com.google.firebase.firestore.firestore
 import dagger.hilt.android.HiltAndroidApp
 import io.socket.client.IO
 import io.socket.client.Socket
@@ -20,11 +25,14 @@ import java.util.concurrent.TimeUnit
 class MyApplication: Application() {
 
 
+
+
     companion object {
         lateinit var prefs: PreferenceUtil
         lateinit var tarotService: TarotService
         lateinit var socket: Socket
         lateinit var toastUtil: ToastUtil
+        lateinit var firestore: FirebaseFirestore
 
         fun closeSocket() {
             if (socket != null) socket.close()
@@ -84,6 +92,27 @@ class MyApplication: Application() {
 
 //        prefs.deleteIsPickCardIndicateComplete()
 
+        firestore = Firebase.firestore.apply {
+            this.collection("properties").document("W0rGvGYUQCFL3N82bVg1")
+            .get()
+            .addOnSuccessListener { document ->
+                if (document != null) {
+                    Log.d(LogTags.firestore, "DocumentSnapshot data: ${document.data}")
+                    isDemo = document.data?.get("isDemo").toString().toBoolean()
+                    if (!isDemo) initServerSettings()
+                } else {
+                    Log.d(LogTags.firestore, "No such document")
+                }
+            }
+            .addOnFailureListener { exception ->
+                Log.w(LogTags.firestore, "Error getting documents.", exception)
+            }
+        }
+
+
+    }
+
+    private fun initServerSettings() {
         val logging = HttpLoggingInterceptor(PrettyJsonLogger()).apply {
             // 요청과 응답의 본문 내용까지 로그에 포함
             level = HttpLoggingInterceptor.Level.BODY
@@ -104,8 +133,5 @@ class MyApplication: Application() {
             .build()
 
         tarotService = retrofit.create(TarotService::class.java)
-
-//        Log.d("buildConfig", BuildConfig.BUILD_TYPE)
-
     }
 }

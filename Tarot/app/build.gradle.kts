@@ -8,12 +8,12 @@ plugins {
 
 android {
     namespace = "com.fourleafclover.tarot"
-    compileSdk = 34
+    compileSdk = 35
 
     defaultConfig {
         applicationId = "com.fourleafclover.tarot"
         minSdk = 24
-        targetSdk = 34
+        targetSdk = 35
         versionCode = 18
         versionName = "2.0"
 
@@ -76,11 +76,11 @@ android {
     }
 
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_1_8
-        targetCompatibility = JavaVersion.VERSION_1_8
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
     }
     kotlinOptions {
-        jvmTarget = "1.8"
+        jvmTarget = JavaVersion.VERSION_17.toString()
         freeCompilerArgs += "-opt-in=androidx.compose.material3.ExperimentalMaterial3Api"
     }
     buildFeatures {
@@ -98,7 +98,7 @@ android {
 }
 
 kotlin {
-    jvmToolchain(8)
+    jvmToolchain(17)
 }
 
 dependencies {
@@ -138,6 +138,7 @@ dependencies {
     implementation(platform("com.google.firebase:firebase-bom:32.7.1"))
     implementation("com.google.firebase:firebase-dynamic-links-ktx")
     implementation("com.google.firebase:firebase-analytics-ktx")
+    implementation("com.google.firebase:firebase-firestore")
 
     // socket.io
     implementation ("io.socket:socket.io-client:2.1.0") {
@@ -159,8 +160,4 @@ dependencies {
 
     // Hilt navigation for Compose
     implementation("androidx.hilt:hilt-navigation-compose:1.2.0")
-}
-
-kapt {
-    correctErrorTypes = true
 }
