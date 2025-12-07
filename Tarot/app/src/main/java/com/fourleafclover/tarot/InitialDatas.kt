@@ -43,8 +43,6 @@ import com.fourleafclover.tarot.ui.theme.primaryJob
 import com.fourleafclover.tarot.ui.theme.primaryLove
 import com.fourleafclover.tarot.ui.theme.primaryStudy
 
-var isDemo = false
-
 val SubjectLove = TarotSubjectData(
         loveFortune,
         loveMajorQuestion,

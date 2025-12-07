@@ -22,7 +22,9 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.fourleafclover.tarot.R
+import com.fourleafclover.tarot.demo.viewmodel.DemoViewModel
 import com.fourleafclover.tarot.ui.theme.TextB02M16
 import com.fourleafclover.tarot.ui.theme.TextB03M14
 import com.fourleafclover.tarot.ui.theme.TextButtonM16
@@ -317,6 +319,66 @@ fun RoomDeletedDialog(onClickOk: () -> Unit = {}, onClickClose: () -> Unit = {})
             TextButtonM16(text = "1시간 안에 입장하지 않아서\n초대방이 사라졌어요.\uD83D\uDE22",
                 color = gray_8,
                 textAlign = TextAlign.Center,
+                modifier = Modifier
+                    .align(Alignment.CenterHorizontally)
+                    .padding(bottom = 24.dp))
+
+            Button(onClick = onClickOk,
+                shape = RoundedCornerShape(6.dp),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .wrapContentHeight()
+                    .padding(end = 4.dp),
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = gray_8,
+                    contentColor = white
+                ),
+                contentPadding = PaddingValues(0.dp)
+            ) {
+                TextButtonM16(
+                    text = "확인",
+                    modifier = Modifier.padding(vertical = 9.dp),
+                    color = white
+                )
+            }
+
+        }
+
+    }
+
+}
+
+@Preview
+@Composable
+fun DemoAppNoticeDialog(demoViewModel: DemoViewModel = hiltViewModel(), onClickOk: () -> Unit = {}) {
+
+    Surface(modifier = Modifier,
+        shape = RoundedCornerShape(size = 10.dp),
+        color = white){
+
+        Column(modifier = Modifier
+            .wrapContentHeight()
+            .width(288.dp)
+            .padding(start = 16.dp, top = 24.dp, end = 16.dp, bottom = 16.dp),
+            horizontalAlignment = Alignment.CenterHorizontally) {
+
+            Image(painter = painterResource(id = R.drawable.alert_red),
+                contentDescription = "",
+                modifier = Modifier
+                    .size(48.dp)
+                    .padding(bottom = 8.dp)
+            )
+
+            TextButtonM16(text = demoViewModel.demoDialogData.title,
+                color = gray_8,
+                textAlign = TextAlign.Center,
+                modifier = Modifier
+                    .align(Alignment.CenterHorizontally)
+                    .padding(vertical = 8.dp))
+
+            TextB03M14(text = demoViewModel.demoDialogData.content,
+                color = gray_6,
+                textAlign = TextAlign.Start,
                 modifier = Modifier
                     .align(Alignment.CenterHorizontally)
                     .padding(bottom = 24.dp))

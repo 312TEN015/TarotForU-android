@@ -16,11 +16,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.window.Dialog
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.fourleafclover.tarot.R
+import com.fourleafclover.tarot.demo.viewmodel.DemoViewModel
+import com.fourleafclover.tarot.ui.component.DemoAppNoticeDialog
 import com.fourleafclover.tarot.ui.component.getBackgroundModifier
 import com.fourleafclover.tarot.ui.component.setStatusbarColor
 import com.fourleafclover.tarot.ui.navigation.FinishOnBackPressed
@@ -59,7 +62,8 @@ fun HomeScreen(
     shareViewModel: ShareViewModel,
     dialogViewModel: DialogViewModel,
     loadingViewModel: LoadingViewModel,
-    fortuneViewModel: FortuneViewModel
+    fortuneViewModel: FortuneViewModel,
+    demoViewModel: DemoViewModel
 ) {
 
 
@@ -69,6 +73,13 @@ fun HomeScreen(
 
     // 뒤로가기 시 행동
     FinishOnBackPressed()
+
+    // 데모앱 안내문
+    if (demoViewModel.isDemo && demoViewModel.demoDialogData.visibility) {
+        Dialog(onDismissRequest = { demoViewModel.setDemoDialogVisibility(false) }) {
+            DemoAppNoticeDialog(demoViewModel) { demoViewModel.setDemoDialogVisibility(false) }
+        }
+    }
 
     Column(modifier = getBackgroundModifier(backgroundColor_2)
         .padding(horizontal = 20.dp)

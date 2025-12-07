@@ -1,5 +1,6 @@
 package com.fourleafclover.tarot.ui.navigation
 
+import android.util.Log
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -12,6 +13,7 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.fourleafclover.tarot.MainActivity
 import com.fourleafclover.tarot.MyApplication
+import com.fourleafclover.tarot.demo.viewmodel.DemoViewModel
 import com.fourleafclover.tarot.ui.component.BottomNavigationBar
 import com.fourleafclover.tarot.ui.screen.fortune.InputScreen
 import com.fourleafclover.tarot.ui.screen.fortune.PickTarotScreen
@@ -46,6 +48,7 @@ import com.fourleafclover.tarot.ui.screen.my.ShareDetailScreen
 import com.fourleafclover.tarot.ui.screen.my.ShareHarmonyDetailScreen
 import com.fourleafclover.tarot.ui.screen.my.viewmodel.MyTarotViewModel
 import com.fourleafclover.tarot.ui.screen.my.viewmodel.ShareViewModel
+import com.fourleafclover.tarot.utils.LogTags
 import com.fourleafclover.tarot.utils.receiveShareRequest
 
 @Composable
@@ -71,6 +74,7 @@ fun NavigationHost() {
     val chatViewModel: ChatViewModel = viewModel(activity)
 
     val myTarotViewModel: MyTarotViewModel = viewModel(activity)
+    val demoViewModel: DemoViewModel = viewModel(activity)
 
     Scaffold(bottomBar = {
         if (currentRoute == ScreenEnum.HomeScreen.name || currentRoute == ScreenEnum.MyTarotScreen.name)
@@ -108,7 +112,8 @@ fun NavigationHost() {
                     shareViewModel,
                     dialogViewModel,
                     loadingViewModel,
-                    fortuneViewModel
+                    fortuneViewModel,
+                    demoViewModel
                     )
             }
             composable(ScreenEnum.MyTarotScreen.name) {

@@ -36,14 +36,14 @@ data class TarotOutputDto(
 
 // 뽑은 카드 세장에 대한 키워드, 설명
 data class CardResultData(
-    val keywords: ArrayList<String> = arrayListOf("", "", ""),
-    val description: String = "",
+    var keywords: ArrayList<String> = arrayListOf("", "", ""),
+    var description: String = "",
 )
 
 // 뽑은 타로 결과에 대한 요약문, 전문
 data class OverallResultData(
-    val summary: String,
-    val full: String,
+    var summary: String = "",
+    var full: String = "",
 
     val firstUser: String = "", // 방 생성자
     val secondUser: String = "", // 초대자
