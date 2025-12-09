@@ -115,6 +115,7 @@ fun PickTarotScreen(
                         CardBlank(
                             context = localContext,
                             sequence = 1,
+                            pickTarotViewModel.pickedCardNumberState.value.firstCardNumber,
                             fortuneViewModel,
                             pickTarotViewModel
                         )
@@ -123,6 +124,7 @@ fun PickTarotScreen(
                         CardBlank(
                             context = localContext,
                             sequence = 2,
+                            pickTarotViewModel.pickedCardNumberState.value.secondCardNumber,
                             fortuneViewModel,
                             pickTarotViewModel
                         )
@@ -131,6 +133,7 @@ fun PickTarotScreen(
                         CardBlank(
                             context = localContext,
                             sequence = 3,
+                            pickTarotViewModel.pickedCardNumberState.value.thirdCardNumber,
                             fortuneViewModel,
                             pickTarotViewModel
                         )
@@ -205,12 +208,15 @@ fun PickTarotScreen(
 fun CardBlank(
     context: Context,
     sequence: Int,
+    finalCardNumber: Int?,
     fortuneViewModel: FortuneViewModel,
     pickTarotViewModel: PickTarotViewModel
 ){
 
     val dash = Stroke(width = 3f, pathEffect = PathEffect.dashPathEffect(floatArrayOf(10f, 10f)))
-    val isCardPicked = pickTarotViewModel.getIsCardPicked(sequence)
+    val isCardConfirmed = finalCardNumber != -1
+
+    fun getAlpha(isCardConfirmed: Boolean) = if (isCardConfirmed) 1f else 0f
 
     Box(modifier = Modifier
         .width(54.dp)
@@ -218,25 +224,27 @@ fun CardBlank(
             drawRoundRect(
                 color = gray_4,
                 style = dash,
-                alpha = pickTarotViewModel.getAlpha(!isCardPicked)
+                alpha = getAlpha(!isCardConfirmed)
             )
-        }) {
+        }
+    ) {
 
         Image(painter = painterResource(
-            id = if (isCardPicked) {
+            id = if ((isCardConfirmed)) {
                 fortuneViewModel.getCardImageId(context, pickTarotViewModel.getCardNumber(sequence).toString())
             } else {
                 R.drawable.tarot_front
             }),
             contentDescription = null,
             modifier = Modifier,
-            alpha = pickTarotViewModel.getAlpha(isCardPicked))
+            alpha = getAlpha((isCardConfirmed)))
+
         TextCaptionM12(text = pickTarotViewModel.getCardBlankText(sequence),
             color = gray_4,
             modifier = Modifier
                 .wrapContentSize()
                 .align(Alignment.Center)
-                .alpha(pickTarotViewModel.getAlpha(!isCardPicked)),
+                .alpha(getAlpha(!isCardConfirmed)),
             textAlign = TextAlign.Center)
 
     }

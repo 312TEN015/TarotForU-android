@@ -1,9 +1,10 @@
+import java.lang.reflect.Array.set
+
 // Top-level build file where you can add configuration options common to all sub-projects/modules.
 buildscript {
-    extra.apply {
-        set("lifecycle_version", "2.6.1")
-    }
+    extra.set("lifecycle_version", "2.6.1")
 }
+
 plugins {
     id("com.android.application") version "8.8.0" apply false
     id("com.android.library") version "8.8.0" apply false

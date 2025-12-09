@@ -66,10 +66,6 @@ class PickTarotViewModel @Inject constructor(): ViewModel() {
         _cards.remove(pickedCard)
     }
 
-    fun getAlpha(isCardPicked: Boolean): Float {
-        return if (isCardPicked) 1f else 0f
-    }
-
     fun getDirectionText(sequence: Int): String {
         return when(sequence){
             1 -> "첫 번째 카드를 골라주세요."
@@ -95,15 +91,6 @@ class PickTarotViewModel @Inject constructor(): ViewModel() {
             2 -> _pickedCardNumberState.value.secondCardNumber
             3 -> _pickedCardNumberState.value.thirdCardNumber
             else -> 0
-        }
-    }
-
-    fun getIsCardPicked(sequence: Int): Boolean {
-        return when(sequence){
-            1 -> _pickedCardNumberState.value.firstCardNumber != -1
-            2 -> _pickedCardNumberState.value.secondCardNumber != -1
-            3 -> _pickedCardNumberState.value.thirdCardNumber != -1
-            else -> false
         }
     }
     
