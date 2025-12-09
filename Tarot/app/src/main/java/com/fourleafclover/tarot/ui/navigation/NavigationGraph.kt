@@ -162,7 +162,8 @@ fun NavigationHost() {
                     resultViewModel,
                     fortuneViewModel,
                     pickTarotViewModel,
-                    questionInputViewModel
+                    questionInputViewModel,
+                    demoViewModel
                     )
             }
             composable(ScreenEnum.MyTarotDetailScreen.name) {

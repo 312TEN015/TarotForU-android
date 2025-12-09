@@ -2,11 +2,16 @@ package com.fourleafclover.tarot.utils
 
 import android.content.Context
 import android.util.Log
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import com.fourleafclover.tarot.MyApplication
 import com.fourleafclover.tarot.data.MatchTarotInputDto
 import com.fourleafclover.tarot.data.TarotIdsInputDto
 import com.fourleafclover.tarot.data.TarotOutputDto
+import com.fourleafclover.tarot.demo.viewmodel.DemoViewModel
+import androidx.activity.viewModels
+import androidx.hilt.navigation.compose.hiltViewModel
+import com.fourleafclover.tarot.demo.data.demoTarotResult
 import com.fourleafclover.tarot.ui.navigation.ScreenEnum
 import com.fourleafclover.tarot.ui.navigation.navigateInclusive
 import com.fourleafclover.tarot.ui.screen.fortune.viewModel.PickTarotViewModel
@@ -127,8 +132,18 @@ fun getTarotResult(
     pickTarotViewModel: PickTarotViewModel,
     loadingViewModel: LoadingViewModel,
     questionInputViewModel: QuestionInputViewModel,
+    isDemo: Boolean,
     topicNumber: Int
 ) {
+
+    if (isDemo) {
+        resultViewModel.setTarotResult(demoTarotResult)
+        pickTarotViewModel.initCardDeck()
+        questionInputViewModel.initAnswers()
+        loadingViewModel.updateLoadingState(false)
+        return
+    }
+
     MyApplication.tarotService.postTarotResult(
         resultViewModel.getTarotInputDto(
             pickTarotViewModel,
@@ -170,6 +185,7 @@ fun getTarotResult(
                         pickTarotViewModel,
                         loadingViewModel,
                         questionInputViewModel,
+                        isDemo,
                         topicNumber
                     )
                 }

@@ -15,6 +15,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
+import com.fourleafclover.tarot.demo.viewmodel.DemoViewModel
 import com.fourleafclover.tarot.ui.component.LoadingCircle
 import com.fourleafclover.tarot.ui.navigation.PreventBackPressed
 import com.fourleafclover.tarot.ui.navigation.ScreenEnum
@@ -25,6 +26,7 @@ import com.fourleafclover.tarot.ui.screen.harmony.viewmodel.LoadingViewModel
 import com.fourleafclover.tarot.ui.screen.harmony.viewmodel.ResultViewModel
 import com.fourleafclover.tarot.ui.theme.gray_8
 import com.fourleafclover.tarot.utils.getTarotResult
+import kotlinx.coroutines.delay
 
 
 @Composable
@@ -35,7 +37,8 @@ fun LoadingScreen(
     resultViewModel: ResultViewModel = hiltViewModel(),
     fortuneViewModel: FortuneViewModel = hiltViewModel(),
     pickTarotViewModel: PickTarotViewModel = hiltViewModel(),
-    questionInputViewModel: QuestionInputViewModel = hiltViewModel()
+    questionInputViewModel: QuestionInputViewModel = hiltViewModel(),
+    demoViewModel: DemoViewModel = hiltViewModel()
 ){
     val localContext = LocalContext.current
 
@@ -47,12 +50,18 @@ fun LoadingScreen(
 
     LaunchedEffect(Unit){
         if (loadingViewModel.destination == ScreenEnum.ResultScreen){
+
+            if (demoViewModel.isDemo) {
+                delay(2500)
+            }
+
             getTarotResult(
                 localContext,
                 resultViewModel = resultViewModel,
                 pickTarotViewModel = pickTarotViewModel,
                 loadingViewModel = loadingViewModel,
                 questionInputViewModel = questionInputViewModel,
+                demoViewModel.isDemo,
                 fortuneViewModel.pickedTopicState.value.topicNumber
             )
         }
