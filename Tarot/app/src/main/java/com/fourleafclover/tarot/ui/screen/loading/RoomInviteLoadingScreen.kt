@@ -3,6 +3,7 @@ package com.fourleafclover.tarot.ui.screen.loading
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
@@ -14,6 +15,8 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.fourleafclover.tarot.SubjectHarmony
+import com.fourleafclover.tarot.demo.ui.theme.backgroundColorScheme
+import com.fourleafclover.tarot.demo.ui.theme.color.gray_5
 import com.fourleafclover.tarot.ui.component.AppBarCloseOnRoomInviteWithDialog
 import com.fourleafclover.tarot.ui.component.LoadingCircle
 import com.fourleafclover.tarot.ui.component.ShareLinkOrCopy
@@ -26,8 +29,6 @@ import com.fourleafclover.tarot.ui.screen.harmony.viewmodel.HarmonyViewModel
 import com.fourleafclover.tarot.ui.screen.harmony.viewmodel.LoadingViewModel
 import com.fourleafclover.tarot.ui.screen.main.DialogViewModel
 import com.fourleafclover.tarot.ui.theme.TextB03M14
-import com.fourleafclover.tarot.ui.theme.backgroundColor_2
-import com.fourleafclover.tarot.ui.theme.gray_5
 
 // 추후 로딩 화면 컴포넌트화 하기
 @Composable
@@ -52,18 +53,18 @@ fun RoomInviteLoadingScreen(
     }
 
 
-    Column(modifier = getBackgroundModifier(backgroundColor_2)) {
+    Column(modifier = getBackgroundModifier(MaterialTheme.backgroundColorScheme.mainBackgroundColor)) {
         AppBarCloseOnRoomInviteWithDialog(
             navController = navController,
             pickedTopicTemplate = SubjectHarmony,
-            backgroundColor = backgroundColor_2,
+            backgroundColor = MaterialTheme.backgroundColorScheme.mainBackgroundColor,
             isTitleVisible = false,
             harmonyViewModel = harmonyViewModel,
             dialogViewModel = dialogViewModel
         )
 
         Column(
-            modifier = getBackgroundModifier(backgroundColor_2)
+            modifier = getBackgroundModifier(MaterialTheme.backgroundColorScheme.mainBackgroundColor)
                 .padding(horizontal = 20.dp)
                 .padding(bottom = 24.dp),
             horizontalAlignment = Alignment.CenterHorizontally,

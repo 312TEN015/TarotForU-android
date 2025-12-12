@@ -27,6 +27,7 @@ import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -50,8 +51,10 @@ import androidx.navigation.compose.rememberNavController
 import com.fourleafclover.tarot.MyApplication
 import com.fourleafclover.tarot.R
 import com.fourleafclover.tarot.SubjectHarmony
+import com.fourleafclover.tarot.demo.ui.theme.backgroundColorScheme
+import com.fourleafclover.tarot.demo.ui.theme.colorScheme
+import com.fourleafclover.tarot.demo.ui.theme.textColorScheme
 import com.fourleafclover.tarot.ui.component.AppBarCloseOnChatWithDialog
-import com.fourleafclover.tarot.ui.component.AppBarCloseOnRoomInviteWithDialog
 import com.fourleafclover.tarot.ui.component.ButtonNext
 import com.fourleafclover.tarot.ui.component.ButtonText
 import com.fourleafclover.tarot.ui.component.getBackgroundModifier
@@ -73,14 +76,6 @@ import com.fourleafclover.tarot.ui.screen.harmony.viewmodel.Scenario
 import com.fourleafclover.tarot.ui.screen.main.DialogViewModel
 import com.fourleafclover.tarot.ui.theme.TextB03M14
 import com.fourleafclover.tarot.ui.theme.TextB04M12
-import com.fourleafclover.tarot.ui.theme.backgroundColor_2
-import com.fourleafclover.tarot.ui.theme.gray_1
-import com.fourleafclover.tarot.ui.theme.gray_5
-import com.fourleafclover.tarot.ui.theme.gray_6
-import com.fourleafclover.tarot.ui.theme.gray_7
-import com.fourleafclover.tarot.ui.theme.gray_8
-import com.fourleafclover.tarot.ui.theme.highlightPurple
-import com.fourleafclover.tarot.ui.theme.purple50
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
@@ -115,11 +110,11 @@ fun RoomChatScreen(
         }
     }
 
-    Column(modifier = getBackgroundModifier(backgroundColor_2)) {
+    Column(modifier = getBackgroundModifier(MaterialTheme.backgroundColorScheme.mainBackgroundColor)) {
         AppBarCloseOnChatWithDialog(
             navController = navController,
             pickedTopicTemplate = SubjectHarmony,
-            backgroundColor = backgroundColor_2,
+            backgroundColor = MaterialTheme.backgroundColorScheme.mainBackgroundColor,
             isTitleVisible = false,
             harmonyViewModel = harmonyViewModel,
             dialogViewModel = dialogViewModel
@@ -481,7 +476,7 @@ fun PartnerChattingBox(
             Column(
                 Modifier
                     .background(
-                        color = gray_7,
+                        color = MaterialTheme.backgroundColorScheme.partnerChatItemBackgroundColor,
                         shape = RoundedCornerShape(0.dp, 10.dp, 10.dp, 10.dp)
                     )
                     .padding(8.dp)
@@ -497,7 +492,7 @@ fun PartnerChattingBox(
                 } else {
                     TextB03M14(
                         text = text,
-                        color = gray_1
+                        color = MaterialTheme.textColorScheme.onPartnerChatItemColor
                     )
                 }
 
@@ -542,7 +537,7 @@ fun MyChattingBox(text: String = "", drawable: Int = 0) {
             Box(
                 Modifier
                     .background(
-                        color = purple50,
+                        color = MaterialTheme.backgroundColorScheme.myChatItemBackgroundColor,
                         shape = RoundedCornerShape(10.dp, 0.dp, 10.dp, 10.dp)
                     )
                     .padding(8.dp)
@@ -558,7 +553,7 @@ fun MyChattingBox(text: String = "", drawable: Int = 0) {
                 } else {
                     TextB03M14(
                         text = text,
-                        color = gray_8
+                        color = MaterialTheme.textColorScheme.onMyChatItemColor
                     )
                 }
 
@@ -585,10 +580,10 @@ fun GuidBox(text: String = "상대방의 답변을 기다리는 중입니다...�
     ) {
         TextB04M12(
             modifier = Modifier
-                .background(color = gray_8, shape = RoundedCornerShape(6.dp))
+                .background(color = MaterialTheme.backgroundColorScheme.chatGuidBoxColor, shape = RoundedCornerShape(6.dp))
                 .padding(vertical = 8.dp, horizontal = 16.dp),
             text = text,
-            color = gray_5,
+            color = MaterialTheme.textColorScheme.onChatGuidBoxColor,
             textAlign = TextAlign.Center
         )
 
@@ -616,7 +611,8 @@ fun ButtonSelect(
                 modifier = Modifier
                     .background(
                         shape = RoundedCornerShape(10.dp),
-                        color = if (isEnable) highlightPurple else gray_6
+                        color = if (isEnable) MaterialTheme.backgroundColorScheme.activeSecondaryButtonBackgroundColor
+                        else MaterialTheme.backgroundColorScheme.disabledButtonBackgroundColor
                     )
                     .clickable(enabled = isEnable) {
                         onClick()
@@ -645,7 +641,7 @@ fun ButtonSelectInChat(
             .fillMaxWidth()
             .background(
                 shape = RoundedCornerShape(10.dp),
-                color = highlightPurple
+                color = MaterialTheme.backgroundColorScheme.activeSecondaryButtonBackgroundColor
             )
             .clickable {
                 onClick()

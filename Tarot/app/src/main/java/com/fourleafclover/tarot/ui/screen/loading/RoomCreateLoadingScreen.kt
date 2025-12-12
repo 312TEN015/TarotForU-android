@@ -9,6 +9,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
+import com.fourleafclover.tarot.demo.ui.theme.color.gray_9
 import com.fourleafclover.tarot.ui.component.LoadingCircle
 import com.fourleafclover.tarot.ui.component.getBackgroundModifier
 import com.fourleafclover.tarot.ui.navigation.PreventBackPressed
@@ -16,7 +17,6 @@ import com.fourleafclover.tarot.ui.screen.harmony.emitCreate
 import com.fourleafclover.tarot.ui.screen.harmony.setOnCreateComplete
 import com.fourleafclover.tarot.ui.screen.harmony.viewmodel.HarmonyViewModel
 import com.fourleafclover.tarot.ui.screen.harmony.viewmodel.LoadingViewModel
-import com.fourleafclover.tarot.ui.theme.gray_9
 
 // 추후 로딩 화면 컴포넌트화 하기
 @Composable

@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
@@ -22,6 +23,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.fourleafclover.tarot.R
+import com.fourleafclover.tarot.demo.ui.theme.backgroundColorScheme
 import com.fourleafclover.tarot.demo.viewmodel.DemoViewModel
 import com.fourleafclover.tarot.ui.component.DemoAppNoticeDialog
 import com.fourleafclover.tarot.ui.component.getBackgroundModifier
@@ -69,7 +71,7 @@ fun HomeScreen(
 
 
     // 상태바 초기화
-    setStatusbarColor(LocalView.current, backgroundColor_2)
+    setStatusbarColor(LocalView.current, MaterialTheme.backgroundColorScheme.mainBackgroundColor)
 
     // 뒤로가기 시 행동
     FinishOnBackPressed()
@@ -81,7 +83,7 @@ fun HomeScreen(
         }
     }
 
-    Column(modifier = getBackgroundModifier(backgroundColor_2)
+    Column(modifier = getBackgroundModifier(MaterialTheme.backgroundColorScheme.mainBackgroundColor)
         .padding(horizontal = 20.dp)
         .padding(bottom = 60.dp)
         .verticalScroll(rememberScrollState())) {

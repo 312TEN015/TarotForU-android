@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
@@ -19,6 +20,9 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.fourleafclover.tarot.SubjectHarmony
+import com.fourleafclover.tarot.demo.ui.theme.backgroundColorScheme
+import com.fourleafclover.tarot.demo.ui.theme.colorScheme
+import com.fourleafclover.tarot.demo.ui.theme.textColorScheme
 import com.fourleafclover.tarot.ui.component.AppBarCloseOnRoomCreateWithDialog
 import com.fourleafclover.tarot.ui.component.ButtonNext
 import com.fourleafclover.tarot.ui.component.ButtonText
@@ -33,16 +37,9 @@ import com.fourleafclover.tarot.ui.theme.TextB02M16
 import com.fourleafclover.tarot.ui.theme.TextB03M14
 import com.fourleafclover.tarot.ui.theme.TextCaptionM12
 import com.fourleafclover.tarot.ui.theme.TextH02M22
-import com.fourleafclover.tarot.ui.theme.backgroundColor_2
-import com.fourleafclover.tarot.ui.theme.errorRed
 import com.fourleafclover.tarot.ui.theme.getTextStyle
-import com.fourleafclover.tarot.ui.theme.gray_3
-import com.fourleafclover.tarot.ui.theme.gray_5
-import com.fourleafclover.tarot.ui.theme.gray_6
-import com.fourleafclover.tarot.ui.theme.gray_7
-import com.fourleafclover.tarot.ui.theme.highlightPurple
-import com.fourleafclover.tarot.ui.theme.transparent
-import com.fourleafclover.tarot.ui.theme.white
+import androidx.compose.ui.graphics.Color
+import com.fourleafclover.tarot.demo.ui.theme.color.gray_7
 
 @Preview
 @Composable
@@ -56,25 +53,25 @@ fun RoomNicknameScreen(
 
     PreventBackPressed()
 
-    Column(modifier = getBackgroundModifier(backgroundColor_2)) {
+    Column(modifier = getBackgroundModifier(MaterialTheme.backgroundColorScheme.mainBackgroundColor)) {
         AppBarCloseOnRoomCreateWithDialog(
             navController = navController,
             pickedTopicTemplate = SubjectHarmony,
-            backgroundColor = backgroundColor_2,
+            backgroundColor = MaterialTheme.backgroundColorScheme.mainBackgroundColor,
             isTitleVisible = false,
             harmonyViewModel = harmonyViewModel,
             dialogViewModel = dialogViewModel
         )
 
         Column(
-            modifier = getBackgroundModifier(backgroundColor_2)
+            modifier = getBackgroundModifier(MaterialTheme.backgroundColorScheme.mainBackgroundColor)
                 .padding(horizontal = 20.dp)
                 .padding(top = 24.dp)
         ) {
 
             Column(modifier = Modifier.weight(1f)) {
-                TextB02M16(text = "그 사람과의 운명을 확인해봐요.", color = gray_3)
-                TextH02M22(text = "궁합을 보러 갈 준비가 되셨나요?", color = white)
+                TextB02M16(text = "그 사람과의 운명을 확인해봐요.", color = MaterialTheme.textColorScheme.subTitleTextColor)
+                TextH02M22(text = "궁합을 보러 갈 준비가 되셨나요?", color = MaterialTheme.textColorScheme.titleTextColor)
 
                 Row(
                     modifier = Modifier
@@ -89,26 +86,26 @@ fun RoomNicknameScreen(
                         textStyle = getTextStyle(
                             fontSize = 16,
                             fontWeight = FontWeight.Bold,
-                            color = white
+                            color = MaterialTheme.textColorScheme.titleTextColor
                         ),
                         onValueChange = { newText -> nicknameViewModel.updateNickname(newText) },
                         value = nicknameViewModel.nickname.value,
                         placeholder = {
                             TextB03M14(
                                 text = "별명을 입력해주세요.",
-                                color = gray_5
+                                color = MaterialTheme.textColorScheme.onDisabledButtonColor
                             )
                         },
                         singleLine = true,
                         colors = TextFieldDefaults.colors(
-                            cursorColor = white,
-                            focusedTextColor = gray_3,
-                            focusedContainerColor = transparent,
-                            unfocusedContainerColor = transparent,
-                            disabledContainerColor = transparent,
-                            focusedIndicatorColor = transparent,
-                            disabledIndicatorColor = transparent,
-                            unfocusedIndicatorColor = transparent
+                            cursorColor = MaterialTheme.textColorScheme.titleTextColor,
+                            focusedTextColor = MaterialTheme.textColorScheme.answerHintColor,
+                            focusedContainerColor = Color.Transparent,
+                            unfocusedContainerColor = Color.Transparent,
+                            disabledContainerColor = Color.Transparent,
+                            focusedIndicatorColor = Color.Transparent,
+                            disabledIndicatorColor = Color.Transparent,
+                            unfocusedIndicatorColor = Color.Transparent
                         )
                     )
 
@@ -118,7 +115,7 @@ fun RoomNicknameScreen(
                             text = "${nicknameViewModel.getNicknameLength()}", style = getTextStyle(
                                 fontSize = 14,
                                 fontWeight = FontWeight.Medium,
-                                color = highlightPurple,
+                                color = MaterialTheme.colorScheme.secondary,
                             )
                         )
 
@@ -126,7 +123,7 @@ fun RoomNicknameScreen(
                             text = "/10", style = getTextStyle(
                                 fontSize = 14,
                                 fontWeight = FontWeight.Medium,
-                                color = gray_6,
+                                color = MaterialTheme.textColorScheme.onDialogContentColor,
                             )
                         )
 
@@ -139,7 +136,7 @@ fun RoomNicknameScreen(
                         .padding(top = 8.dp, start = 16.dp, end = 16.dp)
                         .alpha(if (nicknameViewModel.isCaptionVisible.value) 1f else 0f),
                     text = "최대 10글자를 입력할 수 있어요.",
-                    color = errorRed
+                    color = MaterialTheme.colorScheme.onError
                 )
             }
 

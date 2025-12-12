@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -21,6 +22,9 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.fourleafclover.tarot.R
 import com.fourleafclover.tarot.SubjectHarmony
+import com.fourleafclover.tarot.demo.ui.theme.backgroundColorScheme
+import com.fourleafclover.tarot.demo.ui.theme.colorScheme
+import com.fourleafclover.tarot.demo.ui.theme.textColorScheme
 import com.fourleafclover.tarot.ui.component.AppBarCloseOnRoomCreateWithDialog
 import com.fourleafclover.tarot.ui.component.ButtonNext
 import com.fourleafclover.tarot.ui.component.ButtonText
@@ -35,14 +39,6 @@ import com.fourleafclover.tarot.ui.screen.main.DialogViewModel
 import com.fourleafclover.tarot.ui.theme.TextB02M16
 import com.fourleafclover.tarot.ui.theme.TextH02M22
 import com.fourleafclover.tarot.ui.theme.TextH03SB18
-import com.fourleafclover.tarot.ui.theme.backgroundColor_2
-import com.fourleafclover.tarot.ui.theme.gray_2
-import com.fourleafclover.tarot.ui.theme.gray_3
-import com.fourleafclover.tarot.ui.theme.gray_7
-import com.fourleafclover.tarot.ui.theme.gray_9
-import com.fourleafclover.tarot.ui.theme.highlightPurple
-import com.fourleafclover.tarot.ui.theme.purple400
-import com.fourleafclover.tarot.ui.theme.white
 
 const val WOMAN = 0
 const val MAN = 1
@@ -57,25 +53,25 @@ fun RoomGenderScreen(
 ) {
     PreventBackPressed()
 
-    Column(modifier = getBackgroundModifier(backgroundColor_2)) {
+    Column(modifier = getBackgroundModifier(MaterialTheme.backgroundColorScheme.mainBackgroundColor)) {
         AppBarCloseOnRoomCreateWithDialog(
             navController = navController,
             pickedTopicTemplate = SubjectHarmony,
-            backgroundColor = backgroundColor_2,
+            backgroundColor = MaterialTheme.backgroundColorScheme.mainBackgroundColor,
             isTitleVisible = false,
             harmonyViewModel = harmonyViewModel,
             dialogViewModel = dialogViewModel
         )
 
         Column(
-            modifier = getBackgroundModifier(backgroundColor_2)
+            modifier = getBackgroundModifier(MaterialTheme.backgroundColorScheme.mainBackgroundColor)
                 .padding(horizontal = 20.dp)
                 .padding(top = 24.dp)
                 .verticalScroll(rememberScrollState())
         ) {
 
-            TextB02M16(text = "그 사람과의 운명을 확인해봐요.", color = gray_3)
-            TextH02M22(text = "자신의 성별을 선택해주세요.", color = white)
+            TextB02M16(text = "그 사람과의 운명을 확인해봐요.", color = MaterialTheme.textColorScheme.subTitleTextColor)
+            TextH02M22(text = "자신의 성별을 선택해주세요.", color = MaterialTheme.textColorScheme.titleTextColor)
 
             Row(
                 modifier = Modifier
@@ -116,11 +112,11 @@ fun GenderButton(modifier: Modifier, genderViewModel: GenderViewModel, gender: I
     Box(
         modifier = getOutlinedRectangleModifier(
             borderColor = if (genderViewModel.isSelected(gender)) {
-                purple400
+                MaterialTheme.backgroundColorScheme.genderActiveButtonBackgroundColor
             } else {
-                gray_7
+                MaterialTheme.backgroundColorScheme.genderInactiveButtonBackgroundColor
             },
-            fillColor = gray_9,
+            fillColor = MaterialTheme.backgroundColorScheme.mainBackgroundColor,
             cornerRadius = 10.dp
         )
             .padding(vertical = 16.dp)
@@ -150,7 +146,8 @@ fun GenderButton(modifier: Modifier, genderViewModel: GenderViewModel, gender: I
 
             TextH03SB18(
                 text = if (gender == WOMAN) "여자" else "남자",
-                color = if (genderViewModel.isSelected(gender)) highlightPurple else gray_2,
+                color = if (genderViewModel.isSelected(gender)) MaterialTheme.colorScheme.secondary
+                else MaterialTheme.textColorScheme.onActiveSecondaryButtonColor,
                 modifier = Modifier.padding(top = 33.dp)
             )
         }

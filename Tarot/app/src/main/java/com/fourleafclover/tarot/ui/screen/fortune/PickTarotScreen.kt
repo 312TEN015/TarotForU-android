@@ -21,8 +21,8 @@ import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.MaterialTheme
 import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -36,7 +36,6 @@ import androidx.compose.ui.graphics.PathEffect
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
-import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
@@ -47,9 +46,11 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.fourleafclover.tarot.MyApplication
 import com.fourleafclover.tarot.R
+import com.fourleafclover.tarot.demo.ui.component.secondaryButtonColors
+import com.fourleafclover.tarot.demo.ui.theme.backgroundColorScheme
+import com.fourleafclover.tarot.demo.ui.theme.textColorScheme
 import com.fourleafclover.tarot.ui.component.AppBarCloseWithDialog
 import com.fourleafclover.tarot.ui.component.backgroundModifier
-import com.fourleafclover.tarot.ui.component.setStatusbarColor
 import com.fourleafclover.tarot.ui.navigation.ScreenEnum
 import com.fourleafclover.tarot.ui.screen.fortune.viewModel.FortuneViewModel
 import com.fourleafclover.tarot.ui.screen.fortune.viewModel.PickTarotViewModel
@@ -58,13 +59,6 @@ import com.fourleafclover.tarot.ui.screen.main.DialogViewModel
 import com.fourleafclover.tarot.ui.theme.TextButtonM16
 import com.fourleafclover.tarot.ui.theme.TextCaptionM12
 import com.fourleafclover.tarot.ui.theme.TextH02M22
-import com.fourleafclover.tarot.ui.theme.backgroundColor_1
-import com.fourleafclover.tarot.ui.theme.gray_1
-import com.fourleafclover.tarot.ui.theme.gray_4
-import com.fourleafclover.tarot.ui.theme.gray_5
-import com.fourleafclover.tarot.ui.theme.gray_6
-import com.fourleafclover.tarot.ui.theme.highlightPurple
-import com.fourleafclover.tarot.ui.theme.white
 import kotlin.math.roundToInt
 
 
@@ -80,8 +74,6 @@ fun PickTarotScreen(
     val localContext = LocalContext.current
     var showIndicator by remember { mutableStateOf(MyApplication.prefs.isPickCardIndicateComplete()) }
 
-    setStatusbarColor(LocalView.current, backgroundColor_1)
-
     Box(modifier = backgroundModifier) {
 
         Column {
@@ -89,14 +81,14 @@ fun PickTarotScreen(
             AppBarCloseWithDialog(
                 navController = navController,
                 pickedTopicTemplate = fortuneViewModel.pickedTopicState.value.topicSubjectData,
-                backgroundColor = backgroundColor_1,
+                backgroundColor = MaterialTheme.backgroundColorScheme.inputScreenBackgroundColor,
                 dialogViewModel = dialogViewModel
             )
 
             // "n번째 카드를 골라주세요."
             TextH02M22(
                 text = pickTarotViewModel.getDirectionText(pickTarotViewModel.pickSequence.value),
-                color = white,
+                color = MaterialTheme.textColorScheme.titleTextColor,
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(horizontal = 20.dp)
@@ -178,18 +170,14 @@ fun PickTarotScreen(
                         .fillMaxWidth()
                         .padding(bottom = 34.dp)
                         .padding(horizontal = 20.dp),
-                    colors = ButtonDefaults.buttonColors(
-                        containerColor = highlightPurple,
-                        contentColor = gray_1,
-                        disabledContainerColor = gray_6,
-                        disabledContentColor = gray_5
-                    ),
+                    colors = secondaryButtonColors(),
                     enabled = pickTarotViewModel.isCompleteButtonEnabled()
                 ) {
                     TextButtonM16(
                         text = "선택완료",
                         modifier = Modifier.padding(vertical = 8.dp),
-                        color = if (pickTarotViewModel.isCompleteButtonEnabled()) gray_1 else gray_5)
+                        color = if (pickTarotViewModel.isCompleteButtonEnabled()) MaterialTheme.textColorScheme.onActivePrimaryButtonColor
+                        else MaterialTheme.textColorScheme.onDisabledButtonColor)
                 }
             }
         }
@@ -214,6 +202,7 @@ fun CardBlank(
 ){
 
     val dash = Stroke(width = 3f, pathEffect = PathEffect.dashPathEffect(floatArrayOf(10f, 10f)))
+    val dashColor = MaterialTheme.textColorScheme.onCardBlankGuidBoxColor
     val isCardConfirmed = finalCardNumber != -1
 
     fun getAlpha(isCardConfirmed: Boolean) = if (isCardConfirmed) 1f else 0f
@@ -222,7 +211,7 @@ fun CardBlank(
         .width(54.dp)
         .drawBehind {
             drawRoundRect(
-                color = gray_4,
+                color = dashColor,
                 style = dash,
                 alpha = getAlpha(!isCardConfirmed)
             )
@@ -240,7 +229,7 @@ fun CardBlank(
             alpha = getAlpha((isCardConfirmed)))
 
         TextCaptionM12(text = pickTarotViewModel.getCardBlankText(sequence),
-            color = gray_4,
+            color = dashColor,
             modifier = Modifier
                 .wrapContentSize()
                 .align(Alignment.Center)

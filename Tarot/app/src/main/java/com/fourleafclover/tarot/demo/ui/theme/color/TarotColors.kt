@@ -2,16 +2,15 @@ package com.fourleafclover.tarot.demo.ui.theme.color
 
 import androidx.compose.material.Colors
 import androidx.compose.ui.graphics.Color
-import com.fourleafclover.tarot.ui.theme.white
 
 data class TarotColors(
     val material: Colors,
     val backgroundColor: BackgroundColor,
     val textColor: TextColor,
-    val love: Color = white,
-    val study: Color = white,
-    val dream: Color = white,
-    val job: Color = white
+    val love: Color = Color.White,
+    val study: Color = Color.White,
+    val dream: Color = Color.White,
+    val job: Color = Color.White
 ) {
     val primary: Color get() = material.primary
     val primaryVariant: Color get() = material.primaryVariant
@@ -38,15 +37,26 @@ data class BackgroundColor(
     val dialogButtonYesBackgroundColor: Color,
     val dialogButtonNoBackgroundColor: Color,
     val dialogBackgroundColor: Color,
+    val partnerChatItemBackgroundColor: Color,
+    val myChatItemBackgroundColor: Color,
     val myTarotItemBackgroundColor: Color,
     val questionTextFieldBackgroundColor: Color,
-    val questionScreenBackgroundColor: Color
+    val inputScreenBackgroundColor: Color,
+    val chatGuidBoxColor: Color,
+    val cardBlankGuidBoxColor: Color,
+    val cardSliderBackgroundColor: Color,
+    val activeTabColor: Color,
+    val inactiveTabColor: Color,
+    val genderActiveButtonBackgroundColor: Color,
+    val genderInactiveButtonBackgroundColor: Color
+
 )
 
 data class TextColor (
     val titleTextColor: Color,
     val subTitleTextColor: Color,
-    val onActiveButtonColor: Color,
+    val onActivePrimaryButtonColor: Color,
+    val onActiveSecondaryButtonColor: Color,
     val onDisabledButtonColor: Color,
     val onDialogYesButtonColor: Color,
     val onDialogNoButtonColor: Color,
@@ -55,4 +65,10 @@ data class TextColor (
     val questionNumberColor: Color,
     val questionTitleColor: Color,
     val answerHintColor: Color,
+    val onPartnerChatItemColor: Color,
+    val onMyChatItemColor: Color,
+    val onChatGuidBoxColor: Color,
+    val onCardBlankGuidBoxColor: Color,
+    val onActiveTabColor : Color,
+    val onInactiveTabColor: Color
 )

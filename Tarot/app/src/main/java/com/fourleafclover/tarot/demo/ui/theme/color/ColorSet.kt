@@ -31,22 +31,50 @@ sealed class ColorSet {
                 dialogButtonYesBackgroundColor = gray_9,
                 dialogButtonNoBackgroundColor = gray_2,
                 dialogBackgroundColor = gray_0,
+
                 myTarotItemBackgroundColor = gray_7,
+
                 questionTextFieldBackgroundColor = gray_9,
-                questionScreenBackgroundColor = gray_9
+                inputScreenBackgroundColor = gray_8,
+
+                myChatItemBackgroundColor = secondaryVariant,
+                partnerChatItemBackgroundColor = gray_7,
+                chatGuidBoxColor = gray_8,
+
+                cardBlankGuidBoxColor = gray_4,
+
+                cardSliderBackgroundColor = gray_8,
+
+                activeTabColor = gray_0,
+                inactiveTabColor = gray_7,
+
+                genderActiveButtonBackgroundColor = primaryVariant,
+                genderInactiveButtonBackgroundColor = gray_7
             ),
             textColor = TextColor(
                 titleTextColor = gray_0,
                 subTitleTextColor = gray_3,
-                onActiveButtonColor = gray_0,
+
+                onActivePrimaryButtonColor = gray_0,
+                onActiveSecondaryButtonColor = gray_1,
                 onDisabledButtonColor = gray_5,
                 onDialogYesButtonColor = gray_0,
                 onDialogNoButtonColor = gray_8,
                 onDialogTitleColor = gray_8,
                 onDialogContentColor = gray_6,
+
                 questionNumberColor = secondary,
                 questionTitleColor = gray_3,
                 answerHintColor = gray_3,
+
+                onPartnerChatItemColor = gray_1,
+                onMyChatItemColor = gray_8,
+                onChatGuidBoxColor = gray_5,
+
+                onCardBlankGuidBoxColor = gray_4,
+
+                onActiveTabColor = gray_7,
+                onInactiveTabColor = gray_5
             ),
             love = primaryLove,
             study = primaryStudy,

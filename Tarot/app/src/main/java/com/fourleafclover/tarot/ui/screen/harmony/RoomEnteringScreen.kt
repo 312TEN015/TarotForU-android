@@ -6,6 +6,7 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -20,13 +21,13 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.fourleafclover.tarot.R
+import com.fourleafclover.tarot.demo.ui.theme.backgroundColorScheme
+import com.fourleafclover.tarot.demo.ui.theme.textColorScheme
 import com.fourleafclover.tarot.ui.component.getBackgroundModifier
 import com.fourleafclover.tarot.ui.navigation.PreventBackPressed
 import com.fourleafclover.tarot.ui.navigation.ScreenEnum
 import com.fourleafclover.tarot.ui.navigation.navigateInclusive
 import com.fourleafclover.tarot.ui.theme.TextH02M22
-import com.fourleafclover.tarot.ui.theme.gray_9
-import com.fourleafclover.tarot.ui.theme.white
 
 @Composable
 @Preview
@@ -48,7 +49,7 @@ fun RoomEnteringScreen(navController: NavHostController = rememberNavController(
     }
 
     Column(
-        modifier = getBackgroundModifier(color = gray_9).padding(horizontal = 38.dp),
+        modifier = getBackgroundModifier(color = MaterialTheme.backgroundColorScheme.mainBackgroundColor).padding(horizontal = 38.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
@@ -61,7 +62,7 @@ fun RoomEnteringScreen(navController: NavHostController = rememberNavController(
 
         TextH02M22(
             text = "상대방이 초대방에 입장했어요!\n이제 궁합 운세 보기가 시작됩니다.",
-            color = white,
+            color = MaterialTheme.textColorScheme.titleTextColor,
             textAlign = TextAlign.Center
         )
 

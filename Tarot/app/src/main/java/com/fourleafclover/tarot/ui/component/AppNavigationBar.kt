@@ -40,6 +40,7 @@ import androidx.navigation.compose.rememberNavController
 import com.fourleafclover.tarot.MyApplication
 import com.fourleafclover.tarot.R
 import com.fourleafclover.tarot.data.TarotSubjectData
+import com.fourleafclover.tarot.demo.ui.theme.color.gray_8
 import com.fourleafclover.tarot.ui.navigation.ScreenEnum
 import com.fourleafclover.tarot.ui.navigation.navigateInclusive
 import com.fourleafclover.tarot.ui.screen.harmony.emitExit
@@ -60,10 +61,10 @@ import com.fourleafclover.tarot.utils.getMyTarotList
 
 
 val backgroundModifier = Modifier
-    .background(color = backgroundColor_1)
+    .background(color = gray_8)
     .fillMaxSize()
 
-fun getBackgroundModifier(color: Color): Modifier = Modifier
+fun getBackgroundModifier(color: Color = gray_8): Modifier = Modifier
     .background(color = color)
     .fillMaxSize()
 

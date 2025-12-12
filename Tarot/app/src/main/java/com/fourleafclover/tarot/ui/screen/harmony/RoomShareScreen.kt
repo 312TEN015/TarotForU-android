@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -20,6 +21,10 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.fourleafclover.tarot.R
 import com.fourleafclover.tarot.SubjectHarmony
+import com.fourleafclover.tarot.demo.ui.theme.backgroundColorScheme
+import com.fourleafclover.tarot.demo.ui.theme.color.gray_5
+import com.fourleafclover.tarot.demo.ui.theme.color.gray_6
+import com.fourleafclover.tarot.demo.ui.theme.textColorScheme
 import com.fourleafclover.tarot.ui.component.AppBarCloseOnRoomInviteWithDialog
 import com.fourleafclover.tarot.ui.component.ButtonNext
 import com.fourleafclover.tarot.ui.component.ButtonText
@@ -33,10 +38,6 @@ import com.fourleafclover.tarot.ui.screen.main.DialogViewModel
 import com.fourleafclover.tarot.ui.theme.TextB02M16
 import com.fourleafclover.tarot.ui.theme.TextB04M12
 import com.fourleafclover.tarot.ui.theme.TextH02M22
-import com.fourleafclover.tarot.ui.theme.backgroundColor_2
-import com.fourleafclover.tarot.ui.theme.gray_5
-import com.fourleafclover.tarot.ui.theme.gray_6
-import com.fourleafclover.tarot.ui.theme.white
 
 @Preview
 @Composable
@@ -50,18 +51,18 @@ fun RoomShareScreen(
     PreventBackPressed()
 
 
-    Column(modifier = getBackgroundModifier(backgroundColor_2)) {
+    Column(modifier = getBackgroundModifier(MaterialTheme.backgroundColorScheme.mainBackgroundColor)) {
         AppBarCloseOnRoomInviteWithDialog(
             navController = navController,
             pickedTopicTemplate = SubjectHarmony,
-            backgroundColor = backgroundColor_2,
+            backgroundColor = MaterialTheme.backgroundColorScheme.mainBackgroundColor,
             isTitleVisible = false,
             harmonyViewModel = harmonyViewModel,
             dialogViewModel = dialogViewModel
         )
 
         Column(
-            modifier = getBackgroundModifier(backgroundColor_2)
+            modifier = getBackgroundModifier(MaterialTheme.backgroundColorScheme.mainBackgroundColor)
                 .padding(horizontal = 20.dp)
                 .verticalScroll(rememberScrollState())
         ) {
@@ -80,7 +81,7 @@ fun RoomShareScreen(
 
                 TextH02M22(
                     text = "궁합 초대 방이 생성되었어요!",
-                    color = white,
+                    color = MaterialTheme.textColorScheme.titleTextColor,
                     modifier = Modifier.padding(bottom = 8.dp),
                     textAlign = TextAlign.Center
                 )

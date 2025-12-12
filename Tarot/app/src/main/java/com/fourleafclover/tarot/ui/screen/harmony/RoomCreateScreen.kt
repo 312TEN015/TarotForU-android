@@ -15,6 +15,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -29,6 +30,8 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.fourleafclover.tarot.MyApplication
 import com.fourleafclover.tarot.R
+import com.fourleafclover.tarot.demo.ui.theme.backgroundColorScheme
+import com.fourleafclover.tarot.demo.ui.theme.textColorScheme
 import com.fourleafclover.tarot.ui.component.AppBarPlain
 import com.fourleafclover.tarot.ui.component.RoomDeletedDialog
 import com.fourleafclover.tarot.ui.component.VerticalYesNoDialog
@@ -41,12 +44,6 @@ import com.fourleafclover.tarot.ui.screen.harmony.viewmodel.RoomCreateViewModel
 import com.fourleafclover.tarot.ui.theme.TextB03M14
 import com.fourleafclover.tarot.ui.theme.TextH02M22
 import com.fourleafclover.tarot.ui.theme.TextH03SB18
-import com.fourleafclover.tarot.ui.theme.backgroundColor_2
-import com.fourleafclover.tarot.ui.theme.gray_6
-import com.fourleafclover.tarot.ui.theme.gray_7
-import com.fourleafclover.tarot.ui.theme.gray_8
-import com.fourleafclover.tarot.ui.theme.transparent
-import com.fourleafclover.tarot.ui.theme.white
 
 @Preview
 @Composable
@@ -63,16 +60,16 @@ fun RoomCreateScreen(
         harmonyViewModel = harmonyViewModel
     )
 
-    Column(modifier = getBackgroundModifier(backgroundColor_2)) {
+    Column(modifier = getBackgroundModifier(MaterialTheme.backgroundColorScheme.mainBackgroundColor )) {
         AppBarPlain(
             navController,
             "",
-            backgroundColor = backgroundColor_2,
+            backgroundColor = MaterialTheme.backgroundColorScheme.mainBackgroundColor ,
             backButtonResource = R.drawable.arrow_left_white
         )
 
         Column(
-            modifier = getBackgroundModifier(backgroundColor_2)
+            modifier = getBackgroundModifier(MaterialTheme.backgroundColorScheme.mainBackgroundColor )
                 .padding(horizontal = 20.dp)
                 .verticalScroll(rememberScrollState())
         ) {
@@ -80,13 +77,13 @@ fun RoomCreateScreen(
             TextH02M22(
                 text = "초대방을 만들고, 궁합을 함께 볼 상대방을 초대해보세요.",
                 modifier = Modifier.padding(vertical = 24.dp),
-                color = white
+                color = MaterialTheme.textColorScheme.titleTextColor
             )
 
             Box(
                 modifier = Modifier
                     .padding(bottom = 34.dp)
-                    .background(color = white, shape = RoundedCornerShape(10.dp))
+                    .background(color = MaterialTheme.textColorScheme.titleTextColor , shape = RoundedCornerShape(10.dp))
                     .wrapContentHeight()
                     .fillMaxWidth()
                     .clickable {
@@ -116,8 +113,8 @@ fun RoomCreateScreen(
 
             Column(
                 modifier = getOutlinedRectangleModifier(
-                    borderColor = gray_7,
-                    fillColor = transparent,
+                    borderColor = MaterialTheme.backgroundColorScheme.partnerChatItemBackgroundColor,
+                    fillColor = Color.Transparent,
                     cornerRadius = 10.dp
                 )
                     .fillMaxWidth()
@@ -135,7 +132,7 @@ fun RoomCreateScreen(
                             shape = RoundedCornerShape(8.dp)
                         )
                         .padding(horizontal = 10.dp, vertical = 6.dp),
-                    color = white
+                    color = MaterialTheme.textColorScheme.titleTextColor
                 )
 
                 DescriptionStep(
@@ -185,23 +182,23 @@ fun DescriptionStep(
                 modifier = Modifier
                     .size(22.dp)
                     .background(
-                        color = gray_6,
+                        color = MaterialTheme.textColorScheme.onDialogContentColor,
                         shape = CircleShape
                     ),
-                color = white,
+                color = MaterialTheme.textColorScheme.titleTextColor,
                 textAlign = TextAlign.Center,
             )
 
             TextB03M14(
                 text = title,
                 modifier = Modifier.padding(start = 8.dp),
-                color = white
+                color = MaterialTheme.textColorScheme.titleTextColor
             )
         }
 
         Image(
             modifier = Modifier
-                .background(shape = CircleShape, color = gray_8)
+                .background(shape = CircleShape, color = MaterialTheme.backgroundColorScheme.inputScreenBackgroundColor)
                 .padding(14.dp),
             painter = painterResource(id = imageResourceId),
             contentDescription = null,

@@ -15,6 +15,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
+import com.fourleafclover.tarot.demo.ui.theme.color.gray_8
 import com.fourleafclover.tarot.demo.viewmodel.DemoViewModel
 import com.fourleafclover.tarot.ui.component.LoadingCircle
 import com.fourleafclover.tarot.ui.navigation.PreventBackPressed
@@ -24,7 +25,6 @@ import com.fourleafclover.tarot.ui.screen.fortune.viewModel.PickTarotViewModel
 import com.fourleafclover.tarot.ui.screen.fortune.viewModel.QuestionInputViewModel
 import com.fourleafclover.tarot.ui.screen.harmony.viewmodel.LoadingViewModel
 import com.fourleafclover.tarot.ui.screen.harmony.viewmodel.ResultViewModel
-import com.fourleafclover.tarot.ui.theme.gray_8
 import com.fourleafclover.tarot.utils.getTarotResult
 import kotlinx.coroutines.delay
 

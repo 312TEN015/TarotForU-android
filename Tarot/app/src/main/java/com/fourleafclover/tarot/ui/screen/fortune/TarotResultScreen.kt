@@ -14,8 +14,8 @@ import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.MaterialTheme
 import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -31,6 +31,10 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.fourleafclover.tarot.MyApplication
 import com.fourleafclover.tarot.R
+import com.fourleafclover.tarot.demo.ui.component.primaryButtonColors
+import com.fourleafclover.tarot.demo.ui.component.secondaryButtonColors
+import com.fourleafclover.tarot.demo.ui.theme.backgroundColorScheme
+import com.fourleafclover.tarot.demo.ui.theme.textColorScheme
 import com.fourleafclover.tarot.ui.component.CardSlider
 import com.fourleafclover.tarot.ui.component.ControlDialog
 import com.fourleafclover.tarot.ui.component.appBarModifier
@@ -43,17 +47,7 @@ import com.fourleafclover.tarot.ui.theme.TextB02M16
 import com.fourleafclover.tarot.ui.theme.TextButtonM16
 import com.fourleafclover.tarot.ui.theme.TextH01M26
 import com.fourleafclover.tarot.ui.theme.TextH02M22
-import com.fourleafclover.tarot.ui.theme.backgroundColor_1
-import com.fourleafclover.tarot.ui.theme.backgroundColor_2
 import com.fourleafclover.tarot.ui.theme.getTextStyle
-import com.fourleafclover.tarot.ui.theme.gray_1
-import com.fourleafclover.tarot.ui.theme.gray_3
-import com.fourleafclover.tarot.ui.theme.gray_5
-import com.fourleafclover.tarot.ui.theme.gray_6
-import com.fourleafclover.tarot.ui.theme.gray_8
-import com.fourleafclover.tarot.ui.theme.gray_9
-import com.fourleafclover.tarot.ui.theme.highlightPurple
-import com.fourleafclover.tarot.ui.theme.white
 import com.fourleafclover.tarot.utils.ShareActionType
 import com.fourleafclover.tarot.utils.ShareLinkType
 import com.fourleafclover.tarot.utils.setDynamicLink
@@ -74,13 +68,13 @@ fun TarotResultScreen(
 
 
         Box(modifier = appBarModifier
-            .background(color = backgroundColor_1)
+            .background(color = MaterialTheme.backgroundColorScheme.inputScreenBackgroundColor)
             .padding(top = 10.dp, bottom = 10.dp),
             contentAlignment = Alignment.Center
         ) {
             Text(
                 text = fortuneViewModel.pickedTopicState.value.topicSubjectData.majorTopic,
-                style = getTextStyle(16, FontWeight.Medium, white),
+                style = getTextStyle(16, FontWeight.Medium, MaterialTheme.textColorScheme.titleTextColor),
                 modifier = Modifier
                     .fillMaxWidth()
                     .align(Alignment.Center),
@@ -99,20 +93,18 @@ fun TarotResultScreen(
             )
         }
 
-        Column(modifier = Modifier
-
-        ) {
+        Column(modifier = Modifier) {
 
             TextH02M22(
                 text = "선택하신 카드는\n이런 의미를 담고 있어요.",
-                color = white,
+                color = MaterialTheme.textColorScheme.titleTextColor,
                 modifier = Modifier
-                    .background(color = gray_8)
+                    .background(color = MaterialTheme.backgroundColorScheme.cardSliderBackgroundColor)
                     .padding(horizontal = 20.dp, vertical = 32.dp)
                     .fillMaxWidth()
             )
 
-            Box(modifier = Modifier.background(color = backgroundColor_2)){
+            Box(modifier = Modifier.background(color = MaterialTheme.backgroundColorScheme.cardSliderBackgroundColor)){
                 CardSlider(tarotResult = resultViewModel.tarotResult.value, fortuneViewModel = fortuneViewModel)
             }
 
@@ -130,7 +122,7 @@ private fun OverallResult(resultViewModel: ResultViewModel, harmonyViewModel: Ha
 
     Column(
         modifier = Modifier
-            .background(color = gray_8)
+            .background(color = MaterialTheme.backgroundColorScheme.cardSliderBackgroundColor)
             .fillMaxWidth()
             .padding(horizontal = 20.dp),
         horizontalAlignment = Alignment.CenterHorizontally
@@ -139,7 +131,7 @@ private fun OverallResult(resultViewModel: ResultViewModel, harmonyViewModel: Ha
 
         TextH01M26(
             text = "타로 카드 종합 리딩",
-            color = highlightPurple,
+            color = MaterialTheme.textColorScheme.questionNumberColor,
             modifier = Modifier
                 .padding(top = 48.dp)
                 .fillMaxWidth()
@@ -147,7 +139,7 @@ private fun OverallResult(resultViewModel: ResultViewModel, harmonyViewModel: Ha
 
         TextB01M18(
             text = resultViewModel.tarotResult.value.overallResult?.summary.toString(),
-            color = white,
+            color = MaterialTheme.textColorScheme.titleTextColor,
             modifier = Modifier
                 .padding(top = 24.dp)
                 .fillMaxWidth()
@@ -155,7 +147,7 @@ private fun OverallResult(resultViewModel: ResultViewModel, harmonyViewModel: Ha
 
         TextB02M16(
             text = resultViewModel.tarotResult.value.overallResult?.full.toString(),
-            color = gray_3,
+            color = MaterialTheme.textColorScheme.subTitleTextColor,
             modifier = Modifier
                 .padding(top = 12.dp, bottom = 64.dp)
                 .wrapContentHeight()
@@ -174,12 +166,7 @@ private fun OverallResult(resultViewModel: ResultViewModel, harmonyViewModel: Ha
                 .wrapContentHeight()
                 .fillMaxWidth()
                 .padding(bottom = 8.dp),
-            colors = ButtonDefaults.buttonColors(
-                containerColor = highlightPurple,
-                contentColor = gray_1,
-                disabledContainerColor = gray_6,
-                disabledContentColor = gray_5
-            )
+            colors = secondaryButtonColors()
         ) {
 
             if (resultViewModel.saveState.value){
@@ -195,7 +182,8 @@ private fun OverallResult(resultViewModel: ResultViewModel, harmonyViewModel: Ha
             TextButtonM16(
                 text = if (resultViewModel.saveState.value) "저장 완료!" else "타로 저장하기",
                 modifier = Modifier.padding(vertical = 8.dp),
-                color = if (!resultViewModel.saveState.value) white else gray_5,
+                color = if (!resultViewModel.saveState.value) MaterialTheme.textColorScheme.onActivePrimaryButtonColor
+                else MaterialTheme.textColorScheme.onDisabledButtonColor,
             )
         }
 
@@ -205,17 +193,12 @@ private fun OverallResult(resultViewModel: ResultViewModel, harmonyViewModel: Ha
             modifier = Modifier
                 .wrapContentHeight()
                 .fillMaxWidth(),
-            colors = ButtonDefaults.buttonColors(
-                containerColor = gray_9,
-                contentColor = gray_1,
-                disabledContainerColor = gray_5,
-                disabledContentColor = gray_6
-            )
+            colors = primaryButtonColors()
         ) {
             TextButtonM16(
                 text = "홈으로 돌아가기",
                 modifier = Modifier.padding(vertical = 8.dp),
-                color = gray_1
+                color = MaterialTheme.textColorScheme.onActiveSecondaryButtonColor
                 )
         }
 
@@ -238,7 +221,7 @@ private fun OverallResult(resultViewModel: ResultViewModel, harmonyViewModel: Ha
                 modifier = Modifier.padding(end = 3.dp))
             TextButtonM16(
                 text = "공유하기",
-                color = gray_3
+                color = MaterialTheme.textColorScheme.subTitleTextColor
             )
         }
     }
