@@ -1,10 +1,15 @@
 package com.fourleafclover.tarot.ui.navigation
 
 import android.util.Log
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.systemBarsPadding
+import androidx.compose.material.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.Modifier
 import androidx.lifecycle.viewmodel.compose.LocalViewModelStoreOwner
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.NavHost
@@ -13,6 +18,9 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.fourleafclover.tarot.MainActivity
 import com.fourleafclover.tarot.MyApplication
+import com.fourleafclover.tarot.demo.ui.theme.backgroundColorScheme
+import com.fourleafclover.tarot.demo.ui.theme.color.TarotColors
+import com.fourleafclover.tarot.demo.ui.theme.colorScheme
 import com.fourleafclover.tarot.demo.viewmodel.DemoViewModel
 import com.fourleafclover.tarot.ui.component.BottomNavigationBar
 import com.fourleafclover.tarot.ui.screen.fortune.InputScreen
@@ -76,10 +84,15 @@ fun NavigationHost() {
     val myTarotViewModel: MyTarotViewModel = viewModel(activity)
     val demoViewModel: DemoViewModel = viewModel(activity)
 
-    Scaffold(bottomBar = {
-        if (currentRoute == ScreenEnum.HomeScreen.name || currentRoute == ScreenEnum.MyTarotScreen.name)
-            BottomNavigationBar(navController = navController, myTarotViewModel)
-    }
+    Scaffold(
+        bottomBar = {
+            if (currentRoute == ScreenEnum.HomeScreen.name || currentRoute == ScreenEnum.MyTarotScreen.name) {
+                BottomNavigationBar(navController = navController, myTarotViewModel)
+            }
+        },
+        modifier = Modifier
+            .background(color = MaterialTheme.backgroundColorScheme.mainBackgroundColor)
+            .systemBarsPadding()
     ) { innerPadding -> innerPadding
 
         NavHost(navController = navController, startDestination = ScreenEnum.OnBoardingScreen.name) {

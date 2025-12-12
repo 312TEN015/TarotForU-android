@@ -4,35 +4,49 @@ import android.app.Activity
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.CompositionLocal
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.ReadOnlyComposable
 import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.staticCompositionLocalOf
-import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalView
 import androidx.core.view.WindowCompat
+import com.fourleafclover.tarot.demo.ui.theme.color.BackgroundColor
 import com.fourleafclover.tarot.demo.ui.theme.color.ColorSet
 import com.fourleafclover.tarot.demo.ui.theme.color.TarotColors
-import com.fourleafclover.tarot.ui.theme.gray_9
+import com.fourleafclover.tarot.demo.ui.theme.color.TextColor
 
-private val LocalColors = staticCompositionLocalOf { ColorSet.Default.lightColors }
+private val LocalColors = staticCompositionLocalOf { ColorSet.Default.tarotLightColors }
+
+val MaterialTheme.colorScheme: TarotColors
+    @Composable
+    @ReadOnlyComposable
+    get() = LocalColors.current
+
+val MaterialTheme.backgroundColorScheme: BackgroundColor
+    @Composable
+    @ReadOnlyComposable
+    get() = LocalColors.current.backgroundColor
+
+val MaterialTheme.textColorScheme: TextColor
+    @Composable
+    @ReadOnlyComposable
+    get() = LocalColors.current.textColor
 
 @Composable
 fun TarotTheme(
-    tarotColors: ColorSet,
+    tarotColors: ColorSet = ColorSet.Default,
     darkTheme: Boolean = isSystemInDarkTheme(),
     content: @Composable () -> Unit
 ) {
-    val colors = tarotColors.lightColors
+    val colors = tarotColors.tarotLightColors
 
     val view = LocalView.current
-    if (!view.isInEditMode) {
-        SideEffect {
-            val window = (view.context as Activity).window
-            window.statusBarColor = gray_9.toArgb()
-            window.navigationBarColor = gray_9.toArgb()
-            WindowCompat.getInsetsController(window, view).isAppearanceLightStatusBars = darkTheme
+    val window = (view.context as Activity).window
+
+    SideEffect {
+        WindowCompat.getInsetsController(window, view).apply {
+            isAppearanceLightStatusBars = true
+            isAppearanceLightNavigationBars = true
         }
     }
 
@@ -45,8 +59,3 @@ fun TarotTheme(
     }
 
 }
-
-val MaterialTheme.colorScheme: TarotColors
-    @Composable
-    @ReadOnlyComposable
-    get() = LocalColors.current

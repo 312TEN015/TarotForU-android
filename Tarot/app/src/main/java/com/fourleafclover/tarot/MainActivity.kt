@@ -13,12 +13,13 @@ import androidx.core.splashscreen.SplashScreen
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import com.fourleafclover.tarot.MyApplication.Companion.firestore
 import com.fourleafclover.tarot.MyApplication.Companion.tarotService
+import com.fourleafclover.tarot.demo.ui.theme.TarotTheme
 import com.fourleafclover.tarot.demo.viewmodel.DemoViewModel
 import com.fourleafclover.tarot.network.PrettyJsonLogger
 import com.fourleafclover.tarot.network.TarotService
 import com.fourleafclover.tarot.ui.navigation.NavigationHost
 import com.fourleafclover.tarot.ui.screen.main.DialogViewModel
-import com.fourleafclover.tarot.ui.theme.TarotTheme
+
 import com.fourleafclover.tarot.utils.LogTags
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope

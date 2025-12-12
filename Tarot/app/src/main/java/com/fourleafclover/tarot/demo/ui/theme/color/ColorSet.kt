@@ -3,11 +3,11 @@ package com.fourleafclover.tarot.demo.ui.theme.color
 import androidx.compose.material.lightColors
 
 sealed class ColorSet {
-    open lateinit var lightColors: TarotColors
+    open lateinit var tarotLightColors: TarotColors
     open lateinit var darkColors: TarotColors
 
     object Default : ColorSet() {
-        override var lightColors = TarotColors(
+        override var tarotLightColors = TarotColors(
             material = lightColors(
                 primary = primary,
                 primaryVariant = gray_3,
