@@ -14,6 +14,7 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
@@ -24,6 +25,8 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.fourleafclover.tarot.R
 import com.fourleafclover.tarot.demo.ui.theme.backgroundColorScheme
+import com.fourleafclover.tarot.demo.ui.theme.color.ColorSet
+import com.fourleafclover.tarot.demo.ui.theme.textColorScheme
 import com.fourleafclover.tarot.demo.viewmodel.DemoViewModel
 import com.fourleafclover.tarot.ui.component.DemoAppNoticeDialog
 import com.fourleafclover.tarot.ui.component.getBackgroundModifier
@@ -45,9 +48,6 @@ import com.fourleafclover.tarot.ui.screen.my.viewmodel.MyTarotViewModel
 import com.fourleafclover.tarot.ui.screen.my.viewmodel.ShareViewModel
 import com.fourleafclover.tarot.ui.theme.TextB02M16
 import com.fourleafclover.tarot.ui.theme.TextH01M26
-import com.fourleafclover.tarot.ui.theme.backgroundColor_2
-import com.fourleafclover.tarot.ui.theme.gray_3
-import com.fourleafclover.tarot.ui.theme.white
 import com.fourleafclover.tarot.utils.receiveShareRequest
 
 fun Context.findActivity(): Activity? = when (this) {
@@ -91,13 +91,13 @@ fun HomeScreen(
         TextH01M26(
             text = "타로 카드를 뽑고\n운세를 확인해보세요!",
             modifier = Modifier.padding(top = 26.dp, bottom = 24.dp),
-            color = white
+            color = MaterialTheme.textColorScheme.titleTextColor
         )
 
         Column {
             TextB02M16(
                 text = "주제별 운세",
-                color = gray_3,
+                color = MaterialTheme.textColorScheme.subTitleTextColor,
                 modifier = Modifier.padding(bottom = 6.dp)
             )
 
@@ -144,7 +144,7 @@ fun HomeScreen(
             Column(modifier = Modifier.padding(bottom = 42.dp)) {
                 TextB02M16(
                     text = "오늘의 운세",
-                    color = gray_3,
+                    color = MaterialTheme.textColorScheme.subTitleTextColor,
                     modifier = Modifier.padding(bottom = 6.dp)
                 )
 
@@ -160,7 +160,7 @@ fun HomeScreen(
             Column(modifier = Modifier.padding(bottom = 42.dp)) {
                 TextB02M16(
                     text = "궁합 운세",
-                    color = gray_3,
+                    color = MaterialTheme.textColorScheme.subTitleTextColor,
                     modifier = Modifier.padding(bottom = 6.dp)
                 )
 

@@ -10,7 +10,8 @@ data class TarotColors(
     val love: Color = Color.White,
     val study: Color = Color.White,
     val dream: Color = Color.White,
-    val job: Color = Color.White
+    val job: Color = Color.White,
+    val today: Color = Color.White
 ) {
     val primary: Color get() = material.primary
     val primaryVariant: Color get() = material.primaryVariant
@@ -29,6 +30,7 @@ data class TarotColors(
 
 data class BackgroundColor(
     val mainBackgroundColor: Color,
+    val secondaryBackgroundColor: Color,
     val splashBackgroundColor: Color,
     val onBoardingBackgroundColor: Color,
     val activePrimaryButtonBackgroundColor: Color,
@@ -41,20 +43,21 @@ data class BackgroundColor(
     val myChatItemBackgroundColor: Color,
     val myTarotItemBackgroundColor: Color,
     val questionTextFieldBackgroundColor: Color,
-    val inputScreenBackgroundColor: Color,
     val chatGuidBoxColor: Color,
     val cardBlankGuidBoxColor: Color,
     val cardSliderBackgroundColor: Color,
     val activeTabColor: Color,
     val inactiveTabColor: Color,
     val genderActiveButtonBackgroundColor: Color,
-    val genderInactiveButtonBackgroundColor: Color
+    val genderInactiveButtonBackgroundColor: Color,
+    val dotIndicatorColor: Color
 
 )
 
 data class TextColor (
     val titleTextColor: Color,
     val subTitleTextColor: Color,
+    val highlightTextColor: Color,
     val onActivePrimaryButtonColor: Color,
     val onActiveSecondaryButtonColor: Color,
     val onDisabledButtonColor: Color,
@@ -62,13 +65,16 @@ data class TextColor (
     val onDialogNoButtonColor: Color,
     val onDialogTitleColor: Color,
     val onDialogContentColor: Color,
-    val questionNumberColor: Color,
     val questionTitleColor: Color,
-    val answerHintColor: Color,
+    val textFieldPlaceHolderColor: Color,
+    val textFieldTextColor: Color,
     val onPartnerChatItemColor: Color,
     val onMyChatItemColor: Color,
     val onChatGuidBoxColor: Color,
     val onCardBlankGuidBoxColor: Color,
     val onActiveTabColor : Color,
-    val onInactiveTabColor: Color
+    val onInactiveTabColor: Color,
+    val resultScreenSubTitleColor: Color,
+    val resultScreenCreatedAtColor: Color,
+    val captionTextColor: Color
 )

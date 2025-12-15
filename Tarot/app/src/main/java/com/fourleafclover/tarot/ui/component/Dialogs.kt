@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.MaterialTheme
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Surface
@@ -24,14 +25,13 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.fourleafclover.tarot.R
+import com.fourleafclover.tarot.demo.ui.theme.backgroundColorScheme
+import com.fourleafclover.tarot.demo.ui.theme.color.ColorSet
+import com.fourleafclover.tarot.demo.ui.theme.textColorScheme
 import com.fourleafclover.tarot.demo.viewmodel.DemoViewModel
 import com.fourleafclover.tarot.ui.theme.TextB02M16
 import com.fourleafclover.tarot.ui.theme.TextB03M14
 import com.fourleafclover.tarot.ui.theme.TextButtonM16
-import com.fourleafclover.tarot.ui.theme.gray_2
-import com.fourleafclover.tarot.ui.theme.gray_6
-import com.fourleafclover.tarot.ui.theme.gray_8
-import com.fourleafclover.tarot.ui.theme.white
 
 @Composable
 @Preview
@@ -78,7 +78,7 @@ fun SaveCompletedDialog(onClickOk: () -> Unit = {}) {
 
     Surface(modifier = Modifier,
         shape = RoundedCornerShape(size = 10.dp),
-        color = white){
+        color = MaterialTheme.backgroundColorScheme.dialogBackgroundColor){
 
         Column(modifier = Modifier
             .wrapContentHeight()
@@ -91,14 +91,14 @@ fun SaveCompletedDialog(onClickOk: () -> Unit = {}) {
                 modifier = Modifier.size(32.dp))
 
             TextButtonM16(text = "타로 결과가 저장되었습니다!",
-                color = gray_8,
+                color = MaterialTheme.textColorScheme.onDialogTitleColor,
                 textAlign = TextAlign.Center,
                 modifier = Modifier
                     .align(Alignment.CenterHorizontally)
                     .padding(vertical = 8.dp))
 
             TextB03M14(text = "저장된 타로는 마이페이지에서\n다시 볼 수 있어요.",
-                color = gray_6,
+                color = MaterialTheme.textColorScheme.onDialogContentColor,
                 textAlign = TextAlign.Center,
                 modifier = Modifier
                     .align(Alignment.CenterHorizontally)
@@ -111,15 +111,15 @@ fun SaveCompletedDialog(onClickOk: () -> Unit = {}) {
                     .wrapContentHeight()
                     .padding(end = 4.dp),
                 colors = ButtonDefaults.buttonColors(
-                    containerColor = gray_8,
-                    contentColor = white
+                    containerColor = MaterialTheme.backgroundColorScheme.dialogButtonYesBackgroundColor,
+                    contentColor = MaterialTheme.textColorScheme.onDialogYesButtonColor
                 ),
                 contentPadding = PaddingValues(0.dp)
             ) {
                 TextButtonM16(
                     text = "확인",
                     modifier = Modifier.padding(vertical = 9.dp),
-                    color = white
+                    color = MaterialTheme.textColorScheme.onDialogYesButtonColor
                 )
             }
 
@@ -136,7 +136,7 @@ fun YesNoDialog(content: String = "운세 보기를 중단하고\n나가시겠�
 
     Surface(modifier = Modifier,
         shape = RoundedCornerShape(size = 10.dp),
-        color = white){
+        color = MaterialTheme.backgroundColorScheme.dialogBackgroundColor){
 
         Column(modifier = Modifier
             .width(288.dp)
@@ -144,7 +144,7 @@ fun YesNoDialog(content: String = "운세 보기를 중단하고\n나가시겠�
             .padding(start = 16.dp, top = 40.dp, end = 16.dp, bottom = 16.dp)) {
 
             TextB02M16(text = content,
-                color = gray_8,
+                color = MaterialTheme.textColorScheme.onDialogTitleColor,
                 textAlign = TextAlign.Center,
                 modifier = Modifier
                     .align(Alignment.CenterHorizontally)
@@ -157,15 +157,15 @@ fun YesNoDialog(content: String = "운세 보기를 중단하고\n나가시겠�
                         .weight(1f)
                         .padding(end = 4.dp),
                     colors = ButtonDefaults.buttonColors(
-                        containerColor = gray_2,
-                        contentColor = gray_8
+                        containerColor = MaterialTheme.backgroundColorScheme.dialogButtonNoBackgroundColor,
+                        contentColor = MaterialTheme.textColorScheme.onDialogNoButtonColor
                     ),
                     contentPadding = PaddingValues(0.dp)
                 ) {
                     TextButtonM16(
                         text = "아니요",
                         modifier = Modifier.padding(vertical = 9.dp),
-                        color = gray_8
+                        color = MaterialTheme.textColorScheme.onDialogNoButtonColor
                     )
                 }
 
@@ -175,15 +175,15 @@ fun YesNoDialog(content: String = "운세 보기를 중단하고\n나가시겠�
                         .weight(1f)
                         .padding(start = 4.dp),
                     colors = ButtonDefaults.buttonColors(
-                        containerColor = gray_8,
-                        contentColor = gray_2
+                        containerColor = MaterialTheme.backgroundColorScheme.dialogButtonYesBackgroundColor,
+                        contentColor = MaterialTheme.textColorScheme.onDialogYesButtonColor
                     ),
                     contentPadding = PaddingValues(0.dp)
                 ) {
                     TextButtonM16(
                         text = "네",
                         modifier = Modifier.padding(vertical = 9.dp),
-                        color = gray_2
+                        color = MaterialTheme.textColorScheme.onDialogYesButtonColor
                     )
                 }
             }
@@ -201,7 +201,7 @@ fun VerticalYesNoDialog(onClickNo: () -> Unit = {}, onClickOk: () -> Unit = {}, 
 
     Surface(modifier = Modifier,
         shape = RoundedCornerShape(size = 10.dp),
-        color = white){
+        color = MaterialTheme.backgroundColorScheme.dialogBackgroundColor){
 
         Box(modifier = Modifier.width(288.dp), contentAlignment = Alignment.TopEnd){
             Image(
@@ -225,12 +225,12 @@ fun VerticalYesNoDialog(onClickNo: () -> Unit = {}, onClickOk: () -> Unit = {}, 
             ) {
 
                 TextButtonM16(text = "이미 생성하신 초대방이 있어요!",
-                    color = gray_8,
+                    color = MaterialTheme.textColorScheme.onDialogTitleColor,
                     textAlign = TextAlign.Center,
                     modifier = Modifier.padding(vertical = 8.dp))
 
                 TextB03M14(text = "초대방을 새로 만들 경우, 기존 초대방은 사라져요.",
-                    color = gray_6,
+                    color = MaterialTheme.textColorScheme.onDialogContentColor,
                     textAlign = TextAlign.Center,
                     modifier = Modifier.padding(bottom = 24.dp))
             }
@@ -244,15 +244,15 @@ fun VerticalYesNoDialog(onClickNo: () -> Unit = {}, onClickOk: () -> Unit = {}, 
                         .wrapContentHeight()
                         .padding(end = 4.dp),
                     colors = ButtonDefaults.buttonColors(
-                        containerColor = gray_8,
-                        contentColor = white
+                        containerColor = MaterialTheme.backgroundColorScheme.dialogButtonYesBackgroundColor,
+                        contentColor = MaterialTheme.textColorScheme.onDialogYesButtonColor
                     ),
                     contentPadding = PaddingValues(0.dp)
                 ) {
                     TextButtonM16(
                         text = "새로 만들기",
                         modifier = Modifier.padding(vertical = 9.dp),
-                        color = white
+                        color = MaterialTheme.textColorScheme.onDialogYesButtonColor
                     )
                 }
 
@@ -263,15 +263,15 @@ fun VerticalYesNoDialog(onClickNo: () -> Unit = {}, onClickOk: () -> Unit = {}, 
                         .wrapContentHeight()
                         .padding(end = 4.dp),
                     colors = ButtonDefaults.buttonColors(
-                        containerColor = gray_2,
-                        contentColor = gray_8
+                        containerColor = MaterialTheme.backgroundColorScheme.dialogButtonNoBackgroundColor,
+                        contentColor = MaterialTheme.textColorScheme.onDialogNoButtonColor
                     ),
                     contentPadding = PaddingValues(0.dp)
                 ) {
                     TextButtonM16(
                         text = "기존 초대방 입장하기",
                         modifier = Modifier.padding(vertical = 9.dp),
-                        color = gray_8
+                        color = MaterialTheme.textColorScheme.onDialogNoButtonColor
                     )
                 }
             }
@@ -291,7 +291,7 @@ fun RoomDeletedDialog(onClickOk: () -> Unit = {}, onClickClose: () -> Unit = {})
 
     Surface(modifier = Modifier,
         shape = RoundedCornerShape(size = 10.dp),
-        color = white){
+        color = MaterialTheme.backgroundColorScheme.dialogBackgroundColor){
 
         Box(modifier = Modifier.width(288.dp), contentAlignment = Alignment.TopEnd){
             Image(
@@ -317,7 +317,7 @@ fun RoomDeletedDialog(onClickOk: () -> Unit = {}, onClickClose: () -> Unit = {})
             )
 
             TextButtonM16(text = "1시간 안에 입장하지 않아서\n초대방이 사라졌어요.\uD83D\uDE22",
-                color = gray_8,
+                color = MaterialTheme.textColorScheme.onDialogTitleColor,
                 textAlign = TextAlign.Center,
                 modifier = Modifier
                     .align(Alignment.CenterHorizontally)
@@ -330,15 +330,15 @@ fun RoomDeletedDialog(onClickOk: () -> Unit = {}, onClickClose: () -> Unit = {})
                     .wrapContentHeight()
                     .padding(end = 4.dp),
                 colors = ButtonDefaults.buttonColors(
-                    containerColor = gray_8,
-                    contentColor = white
+                    containerColor = MaterialTheme.backgroundColorScheme.dialogButtonYesBackgroundColor,
+                    contentColor = MaterialTheme.textColorScheme.onDialogYesButtonColor
                 ),
                 contentPadding = PaddingValues(0.dp)
             ) {
                 TextButtonM16(
                     text = "확인",
                     modifier = Modifier.padding(vertical = 9.dp),
-                    color = white
+                    color = MaterialTheme.textColorScheme.onDialogYesButtonColor
                 )
             }
 
@@ -354,7 +354,7 @@ fun DemoAppNoticeDialog(demoViewModel: DemoViewModel = hiltViewModel(), onClickO
 
     Surface(modifier = Modifier,
         shape = RoundedCornerShape(size = 10.dp),
-        color = white){
+        color = MaterialTheme.backgroundColorScheme.dialogBackgroundColor){
 
         Column(modifier = Modifier
             .wrapContentHeight()
@@ -370,14 +370,14 @@ fun DemoAppNoticeDialog(demoViewModel: DemoViewModel = hiltViewModel(), onClickO
             )
 
             TextButtonM16(text = demoViewModel.demoDialogData.title,
-                color = gray_8,
+                color = MaterialTheme.textColorScheme.onDialogTitleColor,
                 textAlign = TextAlign.Center,
                 modifier = Modifier
                     .align(Alignment.CenterHorizontally)
                     .padding(vertical = 8.dp))
 
             TextB03M14(text = demoViewModel.demoDialogData.content,
-                color = gray_6,
+                color = MaterialTheme.textColorScheme.onDialogContentColor,
                 textAlign = TextAlign.Start,
                 modifier = Modifier
                     .align(Alignment.CenterHorizontally)
@@ -390,15 +390,15 @@ fun DemoAppNoticeDialog(demoViewModel: DemoViewModel = hiltViewModel(), onClickO
                     .wrapContentHeight()
                     .padding(end = 4.dp),
                 colors = ButtonDefaults.buttonColors(
-                    containerColor = gray_8,
-                    contentColor = white
+                    containerColor = MaterialTheme.backgroundColorScheme.dialogButtonYesBackgroundColor,
+                    contentColor = MaterialTheme.textColorScheme.onDialogYesButtonColor
                 ),
                 contentPadding = PaddingValues(0.dp)
             ) {
                 TextButtonM16(
                     text = "확인",
                     modifier = Modifier.padding(vertical = 9.dp),
-                    color = white
+                    color = MaterialTheme.textColorScheme.onDialogYesButtonColor
                 )
             }
 

@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentSize
+import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
@@ -21,10 +22,10 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.fourleafclover.tarot.R
+import com.fourleafclover.tarot.demo.ui.theme.color.ColorSet
+import com.fourleafclover.tarot.demo.ui.theme.textColorScheme
 import com.fourleafclover.tarot.ui.theme.TextB03M14
 import com.fourleafclover.tarot.ui.theme.TextH02M22
-import com.fourleafclover.tarot.ui.theme.gray_6
-import com.fourleafclover.tarot.ui.theme.white
 
 @Composable
 @Preview
@@ -60,13 +61,13 @@ fun LoadingCircle(
         )
         TextH02M22(
             text = loadingTitle,
-            color = white,
+            color = MaterialTheme.textColorScheme.titleTextColor,
             modifier = Modifier.padding(bottom = 8.dp, top = 40.dp),
             textAlign = TextAlign.Center
         )
         TextB03M14(
             text = loadingSubTitle,
-            color = gray_6,
+            color = MaterialTheme.textColorScheme.onDialogContentColor,
             textAlign = TextAlign.Center
         )
     }

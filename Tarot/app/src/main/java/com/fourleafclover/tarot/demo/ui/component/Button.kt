@@ -9,7 +9,7 @@ import com.fourleafclover.tarot.demo.ui.theme.textColorScheme
 
 
 @Composable
-fun secondaryButtonColors(): ButtonColors {
+fun SecondaryButtonColors(): ButtonColors {
     return ButtonDefaults.buttonColors(
         containerColor = MaterialTheme.backgroundColorScheme.activeSecondaryButtonBackgroundColor,
         contentColor = MaterialTheme.textColorScheme.onActiveSecondaryButtonColor,
@@ -19,7 +19,7 @@ fun secondaryButtonColors(): ButtonColors {
 }
 
 @Composable
-fun primaryButtonColors(): ButtonColors {
+fun PrimaryButtonColors(): ButtonColors {
     return ButtonDefaults.buttonColors(
         containerColor = MaterialTheme.backgroundColorScheme.activePrimaryButtonBackgroundColor,
         contentColor = MaterialTheme.textColorScheme.onActivePrimaryButtonColor,

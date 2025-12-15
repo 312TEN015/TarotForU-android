@@ -31,8 +31,8 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.fourleafclover.tarot.MyApplication
 import com.fourleafclover.tarot.R
-import com.fourleafclover.tarot.demo.ui.component.primaryButtonColors
-import com.fourleafclover.tarot.demo.ui.component.secondaryButtonColors
+import com.fourleafclover.tarot.demo.ui.component.PrimaryButtonColors
+import com.fourleafclover.tarot.demo.ui.component.SecondaryButtonColors
 import com.fourleafclover.tarot.demo.ui.theme.backgroundColorScheme
 import com.fourleafclover.tarot.demo.ui.theme.textColorScheme
 import com.fourleafclover.tarot.ui.component.CardSlider
@@ -68,7 +68,7 @@ fun TarotResultScreen(
 
 
         Box(modifier = appBarModifier
-            .background(color = MaterialTheme.backgroundColorScheme.inputScreenBackgroundColor)
+            .background(color = MaterialTheme.backgroundColorScheme.secondaryBackgroundColor)
             .padding(top = 10.dp, bottom = 10.dp),
             contentAlignment = Alignment.Center
         ) {
@@ -99,7 +99,7 @@ fun TarotResultScreen(
                 text = "선택하신 카드는\n이런 의미를 담고 있어요.",
                 color = MaterialTheme.textColorScheme.titleTextColor,
                 modifier = Modifier
-                    .background(color = MaterialTheme.backgroundColorScheme.cardSliderBackgroundColor)
+                    .background(color = MaterialTheme.backgroundColorScheme.secondaryBackgroundColor)
                     .padding(horizontal = 20.dp, vertical = 32.dp)
                     .fillMaxWidth()
             )
@@ -122,7 +122,7 @@ private fun OverallResult(resultViewModel: ResultViewModel, harmonyViewModel: Ha
 
     Column(
         modifier = Modifier
-            .background(color = MaterialTheme.backgroundColorScheme.cardSliderBackgroundColor)
+            .background(color = MaterialTheme.backgroundColorScheme.secondaryBackgroundColor)
             .fillMaxWidth()
             .padding(horizontal = 20.dp),
         horizontalAlignment = Alignment.CenterHorizontally
@@ -131,7 +131,7 @@ private fun OverallResult(resultViewModel: ResultViewModel, harmonyViewModel: Ha
 
         TextH01M26(
             text = "타로 카드 종합 리딩",
-            color = MaterialTheme.textColorScheme.questionNumberColor,
+            color = MaterialTheme.textColorScheme.highlightTextColor,
             modifier = Modifier
                 .padding(top = 48.dp)
                 .fillMaxWidth()
@@ -166,7 +166,7 @@ private fun OverallResult(resultViewModel: ResultViewModel, harmonyViewModel: Ha
                 .wrapContentHeight()
                 .fillMaxWidth()
                 .padding(bottom = 8.dp),
-            colors = secondaryButtonColors()
+            colors = SecondaryButtonColors()
         ) {
 
             if (resultViewModel.saveState.value){
@@ -193,7 +193,7 @@ private fun OverallResult(resultViewModel: ResultViewModel, harmonyViewModel: Ha
             modifier = Modifier
                 .wrapContentHeight()
                 .fillMaxWidth(),
-            colors = primaryButtonColors()
+            colors = PrimaryButtonColors()
         ) {
             TextButtonM16(
                 text = "홈으로 돌아가기",

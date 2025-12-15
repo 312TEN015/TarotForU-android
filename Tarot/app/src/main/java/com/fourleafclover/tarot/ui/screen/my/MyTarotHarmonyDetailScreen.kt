@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -27,6 +28,9 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.fourleafclover.tarot.R
+import com.fourleafclover.tarot.demo.ui.theme.backgroundColorScheme
+import com.fourleafclover.tarot.demo.ui.theme.color.ColorSet
+import com.fourleafclover.tarot.demo.ui.theme.textColorScheme
 import com.fourleafclover.tarot.ui.component.AppBarPlain
 import com.fourleafclover.tarot.ui.component.HarmonyCardSlider
 import com.fourleafclover.tarot.ui.component.getBackgroundModifier
@@ -40,15 +44,6 @@ import com.fourleafclover.tarot.ui.theme.TextB03M14
 import com.fourleafclover.tarot.ui.theme.TextButtonM16
 import com.fourleafclover.tarot.ui.theme.TextH01M26
 import com.fourleafclover.tarot.ui.theme.TextH02M22
-import com.fourleafclover.tarot.ui.theme.backgroundColor_2
-import com.fourleafclover.tarot.ui.theme.gray_2
-import com.fourleafclover.tarot.ui.theme.gray_3
-import com.fourleafclover.tarot.ui.theme.gray_4
-import com.fourleafclover.tarot.ui.theme.gray_5
-import com.fourleafclover.tarot.ui.theme.gray_7
-import com.fourleafclover.tarot.ui.theme.gray_8
-import com.fourleafclover.tarot.ui.theme.highlightPurple
-import com.fourleafclover.tarot.ui.theme.white
 import com.fourleafclover.tarot.utils.ShareActionType
 import com.fourleafclover.tarot.utils.ShareLinkType
 import com.fourleafclover.tarot.utils.setDynamicLink
@@ -72,12 +67,12 @@ fun MyTarotHarmonyDetailPreview(
 ) {
     val localContext = LocalContext.current
     val tarotSubjectData = fortuneViewModel.getPickedTopic(5)
-    setStatusbarColor(LocalView.current, backgroundColor_2)
+    setStatusbarColor(LocalView.current, MaterialTheme.backgroundColorScheme.mainBackgroundColor)
 
-    Column(modifier = getBackgroundModifier(backgroundColor_2).verticalScroll(rememberScrollState()))
+    Column(modifier = getBackgroundModifier(MaterialTheme.backgroundColorScheme.mainBackgroundColor).verticalScroll(rememberScrollState()))
     {
 
-        AppBarPlain(navController = navController, title = "MY 타로", backgroundColor = backgroundColor_2, backButtonVisible = true)
+        AppBarPlain(navController = navController, title = "MY 타로", backgroundColor = MaterialTheme.backgroundColorScheme.mainBackgroundColor, backButtonVisible = true)
 
         Column(
             modifier = Modifier
@@ -91,7 +86,7 @@ fun MyTarotHarmonyDetailPreview(
             ) {
                 TextB02M16(
                     text = tarotSubjectData.majorTopic,
-                    color = gray_2,
+                    color = MaterialTheme.textColorScheme.resultScreenSubTitleColor,
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(bottom = 16.dp),
@@ -101,7 +96,7 @@ fun MyTarotHarmonyDetailPreview(
                 val imoji = fortuneViewModel.getSubjectImoji(localContext, myTarotViewModel.selectedTarotResult.tarotType)
                 TextH02M22(
                     text = "$imoji ${tarotSubjectData.majorQuestion} $imoji",
-                    color = gray_2,
+                    color = MaterialTheme.textColorScheme.resultScreenSubTitleColor,
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(bottom = 16.dp),
@@ -110,7 +105,7 @@ fun MyTarotHarmonyDetailPreview(
 
                 TextB03M14(
                     text = myTarotViewModel.selectedTarotResult.createdAt,
-                    color = gray_4,
+                    color = MaterialTheme.textColorScheme.resultScreenCreatedAtColor,
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(bottom = 32.dp),
@@ -122,7 +117,7 @@ fun MyTarotHarmonyDetailPreview(
             Column(
                 modifier = Modifier
                     .padding(horizontal = 20.dp)
-                    .background(color = gray_8, shape = RoundedCornerShape(10.dp))
+                    .background(color = MaterialTheme.backgroundColorScheme.secondaryBackgroundColor, shape = RoundedCornerShape(10.dp))
                     .padding(vertical = 24.dp, horizontal = 20.dp)
             ) {
                 Row(
@@ -138,14 +133,16 @@ fun MyTarotHarmonyDetailPreview(
                         .padding(end = 4.dp)
                         .background(
                             shape = RoundedCornerShape(6.dp),
-                            color = if (myTarotViewModel.isRoomOwnerTab()) white else gray_7
+                            color = if (myTarotViewModel.isRoomOwnerTab()) MaterialTheme.backgroundColorScheme.activeTabColor
+                            else MaterialTheme.backgroundColorScheme.inactiveTabColor
                         )
                         .padding(vertical = 8.dp, horizontal = 16.dp)
                         .weight(1f),
                         contentAlignment = Alignment.Center) {
 
                         TextB03M14(
-                            color = if (myTarotViewModel.isRoomOwnerTab()) gray_7 else gray_5,
+                            color = if (myTarotViewModel.isRoomOwnerTab()) MaterialTheme.textColorScheme.onActiveTabColor
+                            else MaterialTheme.textColorScheme.onInactiveTabColor,
                             text = "${myTarotViewModel.selectedTarotResult.overallResult?.firstUser}님의 카드",
                             textAlign = TextAlign.Center
                         )
@@ -158,14 +155,16 @@ fun MyTarotHarmonyDetailPreview(
                         .padding(start = 4.dp)
                         .background(
                             shape = RoundedCornerShape(6.dp),
-                            color = if (myTarotViewModel.isRoomOwnerTab()) gray_7 else white
+                            color = if (myTarotViewModel.isRoomOwnerTab()) MaterialTheme.backgroundColorScheme.inactiveTabColor
+                            else MaterialTheme.backgroundColorScheme.activeTabColor
                         )
                         .padding(vertical = 8.dp, horizontal = 16.dp)
                         .weight(1f),
                         contentAlignment = Alignment.Center) {
 
                         TextB03M14(
-                            color = if (myTarotViewModel.isRoomOwnerTab()) gray_5 else gray_7,
+                            color = if (myTarotViewModel.isRoomOwnerTab()) MaterialTheme.textColorScheme.onInactiveTabColor
+                            else MaterialTheme.textColorScheme.onActiveTabColor,
                             text = "${myTarotViewModel.selectedTarotResult.overallResult?.secondUser}님의 카드",
                             textAlign = TextAlign.Center
                         )
@@ -220,7 +219,7 @@ private fun OverallResult(myTarotViewModel: MyTarotViewModel, harmonyViewModel: 
 
         TextH01M26(
             text = "타로 카드 종합 리딩",
-            color = highlightPurple,
+            color = MaterialTheme.textColorScheme.highlightTextColor,
             modifier = Modifier
                 .padding(top = 48.dp)
                 .fillMaxWidth()
@@ -228,7 +227,7 @@ private fun OverallResult(myTarotViewModel: MyTarotViewModel, harmonyViewModel: 
 
         TextB01M18(
             text = myTarotViewModel.selectedTarotResult.overallResult?.summary.toString(),
-            color = white,
+            color = MaterialTheme.textColorScheme.titleTextColor,
             modifier = Modifier
                 .padding(top = 24.dp)
                 .fillMaxWidth()
@@ -236,7 +235,7 @@ private fun OverallResult(myTarotViewModel: MyTarotViewModel, harmonyViewModel: 
 
         TextB02M16(
             text = myTarotViewModel.selectedTarotResult.overallResult?.full.toString(),
-            color = gray_3,
+            color = MaterialTheme.textColorScheme.subTitleTextColor,
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(top = 12.dp, bottom = 64.dp)
@@ -266,7 +265,7 @@ private fun OverallResult(myTarotViewModel: MyTarotViewModel, harmonyViewModel: 
             )
             TextButtonM16(
                 text = "공유하기",
-                color = gray_3
+                color = MaterialTheme.textColorScheme.subTitleTextColor
             )
         }
     }

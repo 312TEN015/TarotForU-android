@@ -99,7 +99,7 @@ fun RoomNicknameScreen(
                         singleLine = true,
                         colors = TextFieldDefaults.colors(
                             cursorColor = MaterialTheme.textColorScheme.titleTextColor,
-                            focusedTextColor = MaterialTheme.textColorScheme.answerHintColor,
+                            focusedTextColor = MaterialTheme.textColorScheme.textFieldPlaceHolderColor,
                             focusedContainerColor = Color.Transparent,
                             unfocusedContainerColor = Color.Transparent,
                             disabledContainerColor = Color.Transparent,

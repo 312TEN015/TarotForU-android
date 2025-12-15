@@ -2,6 +2,7 @@ package com.fourleafclover.tarot.ui.screen.loading
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
@@ -9,7 +10,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
-import com.fourleafclover.tarot.demo.ui.theme.color.gray_9
+import com.fourleafclover.tarot.demo.ui.theme.backgroundColorScheme
+import com.fourleafclover.tarot.demo.ui.theme.color.ColorSet
 import com.fourleafclover.tarot.ui.component.LoadingCircle
 import com.fourleafclover.tarot.ui.component.getBackgroundModifier
 import com.fourleafclover.tarot.ui.navigation.PreventBackPressed
@@ -39,7 +41,7 @@ fun RoomCreateLoadingScreen(
         emitCreate()
     }
 
-    Column(modifier = getBackgroundModifier(color = gray_9),
+    Column(modifier = getBackgroundModifier(color = MaterialTheme.backgroundColorScheme.mainBackgroundColor),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {

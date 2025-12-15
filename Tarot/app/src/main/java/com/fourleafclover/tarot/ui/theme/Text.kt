@@ -19,6 +19,7 @@ import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.fourleafclover.tarot.R
+import com.fourleafclover.tarot.demo.ui.theme.color.gray_9
 
 val Pretendard = FontFamily(
     Font(R.font.pretendard_semibold, FontWeight.Bold, FontStyle.Normal),
@@ -30,7 +31,7 @@ val Pretendard = FontFamily(
 fun toSp(dp: Dp) = with(LocalDensity.current) { dp.toSp() }
 
 @Composable
-fun getTextStyle(fontSize: Int, fontWeight: FontWeight, color: Color = white): TextStyle {
+fun getTextStyle(fontSize: Int, fontWeight: FontWeight, color: Color = Color.White): TextStyle {
     return TextStyle(
         fontFamily = Pretendard,
         fontSize = toSp(fontSize.dp),

@@ -18,6 +18,7 @@ import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.material.BottomNavigation
 import androidx.compose.material.BottomNavigationItem
 import androidx.compose.material.Icon
+import androidx.compose.material.MaterialTheme
 import androidx.compose.material3.Divider
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -40,7 +41,12 @@ import androidx.navigation.compose.rememberNavController
 import com.fourleafclover.tarot.MyApplication
 import com.fourleafclover.tarot.R
 import com.fourleafclover.tarot.data.TarotSubjectData
+import com.fourleafclover.tarot.demo.ui.theme.backgroundColorScheme
+import com.fourleafclover.tarot.demo.ui.theme.color.ColorSet
+import com.fourleafclover.tarot.demo.ui.theme.color.gray_1
 import com.fourleafclover.tarot.demo.ui.theme.color.gray_8
+import com.fourleafclover.tarot.demo.ui.theme.color.gray_9
+import com.fourleafclover.tarot.demo.ui.theme.textColorScheme
 import com.fourleafclover.tarot.ui.navigation.ScreenEnum
 import com.fourleafclover.tarot.ui.navigation.navigateInclusive
 import com.fourleafclover.tarot.ui.screen.harmony.emitExit
@@ -49,14 +55,7 @@ import com.fourleafclover.tarot.ui.screen.harmony.viewmodel.HarmonyViewModel
 import com.fourleafclover.tarot.ui.screen.harmony.viewmodel.ResultViewModel
 import com.fourleafclover.tarot.ui.screen.main.DialogViewModel
 import com.fourleafclover.tarot.ui.screen.my.viewmodel.MyTarotViewModel
-import com.fourleafclover.tarot.ui.theme.backgroundColor_1
-import com.fourleafclover.tarot.ui.theme.backgroundColor_2
 import com.fourleafclover.tarot.ui.theme.getTextStyle
-import com.fourleafclover.tarot.ui.theme.gray_6
-import com.fourleafclover.tarot.ui.theme.gray_8
-import com.fourleafclover.tarot.ui.theme.gray_9
-import com.fourleafclover.tarot.ui.theme.highlightPurple
-import com.fourleafclover.tarot.ui.theme.white
 import com.fourleafclover.tarot.utils.getMyTarotList
 
 
@@ -71,8 +70,8 @@ fun getBackgroundModifier(color: Color = gray_8): Modifier = Modifier
 fun setStatusbarColor(view: View, color: Color) {
     val window = (view.context as Activity).window
     window.statusBarColor = color.toArgb()
-    WindowCompat.getInsetsController(window, view).isAppearanceLightStatusBars = (color != backgroundColor_1 && color != backgroundColor_2)
-    if (color == backgroundColor_1 || color == backgroundColor_2) {
+    WindowCompat.getInsetsController(window, view).isAppearanceLightStatusBars = (color != gray_8 && color != gray_9)
+    if (color == gray_8 || color == gray_9) {
         window.navigationBarColor = color.toArgb()
     }
 }
@@ -88,7 +87,7 @@ val appBarModifier = Modifier
 fun AppBarPlain(
     navController: NavHostController = rememberNavController(),
     title: String = "MY 타로",
-    backgroundColor: Color = backgroundColor_1,
+    backgroundColor: Color = MaterialTheme.backgroundColorScheme.secondaryBackgroundColor,
     backButtonVisible: Boolean = true,
     backButtonResource: Int = R.drawable.arrow_left
 ) {
@@ -103,7 +102,11 @@ fun AppBarPlain(
             style = getTextStyle(
                 16,
                 FontWeight.Medium,
-                if (backgroundColor == backgroundColor_1 || backgroundColor == backgroundColor_2) white else gray_9
+                if (backgroundColor == MaterialTheme.backgroundColorScheme.secondaryBackgroundColor
+                    || backgroundColor == MaterialTheme.backgroundColorScheme.mainBackgroundColor)
+                    MaterialTheme.textColorScheme.titleTextColor
+                else
+                    MaterialTheme.backgroundColorScheme.mainBackgroundColor
             ),
             modifier = Modifier
                 .fillMaxWidth()
@@ -137,7 +140,7 @@ fun AppBarPlain(
 fun AppBarCloseWithDialog(
     navController: NavHostController = rememberNavController(),
     pickedTopicTemplate: TarotSubjectData,
-    backgroundColor: Color = backgroundColor_1,
+    backgroundColor: Color = MaterialTheme.backgroundColorScheme.secondaryBackgroundColor,
     isTitleVisible: Boolean = true,
     dialogViewModel: DialogViewModel
 ) {
@@ -217,7 +220,7 @@ fun SetCloseOnRoomCreateDialog(
 fun AppBarCloseOnChatWithDialog(
     navController: NavHostController = rememberNavController(),
     pickedTopicTemplate: TarotSubjectData,
-    backgroundColor: Color = backgroundColor_1,
+    backgroundColor: Color = MaterialTheme.backgroundColorScheme.secondaryBackgroundColor,
     isTitleVisible: Boolean = true,
     harmonyViewModel: HarmonyViewModel,
     dialogViewModel: DialogViewModel
@@ -232,7 +235,7 @@ fun AppBarCloseOnChatWithDialog(
 fun AppBarCloseOnRoomInviteWithDialog(
     navController: NavHostController = rememberNavController(),
     pickedTopicTemplate: TarotSubjectData,
-    backgroundColor: Color = backgroundColor_1,
+    backgroundColor: Color = MaterialTheme.backgroundColorScheme.secondaryBackgroundColor,
     isTitleVisible: Boolean = true,
     harmonyViewModel: HarmonyViewModel,
     dialogViewModel: DialogViewModel
@@ -247,7 +250,7 @@ fun AppBarCloseOnRoomInviteWithDialog(
 fun AppBarCloseOnRoomCreateWithDialog(
     navController: NavHostController = rememberNavController(),
     pickedTopicTemplate: TarotSubjectData,
-    backgroundColor: Color = backgroundColor_1,
+    backgroundColor: Color = MaterialTheme.backgroundColorScheme.secondaryBackgroundColor,
     isTitleVisible: Boolean = true,
     harmonyViewModel: HarmonyViewModel,
     dialogViewModel: DialogViewModel
@@ -262,7 +265,7 @@ fun AppBarCloseOnRoomCreateWithDialog(
 fun AppBarClose(
     navController: NavHostController = rememberNavController(),
     pickedTopicTemplate: TarotSubjectData,
-    backgroundColor: Color = backgroundColor_1,
+    backgroundColor: Color = MaterialTheme.backgroundColorScheme.secondaryBackgroundColor,
     isTitleVisible: Boolean = true,
     dialogViewModel: DialogViewModel
 ) {
@@ -278,7 +281,11 @@ fun AppBarClose(
             style = getTextStyle(
                 16,
                 FontWeight.Medium,
-                if (backgroundColor == backgroundColor_1 || backgroundColor == backgroundColor_2) white else gray_9
+                if (backgroundColor == MaterialTheme.backgroundColorScheme.secondaryBackgroundColor
+                    || backgroundColor == MaterialTheme.backgroundColorScheme.mainBackgroundColor)
+                    MaterialTheme.textColorScheme.titleTextColor
+                else
+                    MaterialTheme.backgroundColorScheme.mainBackgroundColor
             ),
             modifier = Modifier
                 .fillMaxWidth()
@@ -293,7 +300,12 @@ fun AppBarClose(
                 .padding(end = 20.dp)
         ) {
             Image(
-                painter = painterResource(id = if (backgroundColor == backgroundColor_1 || backgroundColor == backgroundColor_2) R.drawable.cancel else R.drawable.cancel_black),
+                painter = painterResource(id =
+                    if (backgroundColor == MaterialTheme.backgroundColorScheme.secondaryBackgroundColor
+                        || backgroundColor == MaterialTheme.backgroundColorScheme.mainBackgroundColor)
+                    R.drawable.cancel
+                else
+                    R.drawable.cancel_black),
                 contentDescription = "닫기버튼",
                 modifier = Modifier
                     .clickable { dialogViewModel.openDialog() }
@@ -308,7 +320,7 @@ fun AppBarClose(
 fun AppBarCloseTarotResult(
     navController: NavHostController = rememberNavController(),
     pickedTopicTemplate: TarotSubjectData,
-    backgroundColor: Color = backgroundColor_1,
+    backgroundColor: Color = MaterialTheme.backgroundColorScheme.secondaryBackgroundColor,
     isTitleVisible: Boolean = true,
     resultViewModel: ResultViewModel
 ) {
@@ -325,7 +337,11 @@ fun AppBarCloseTarotResult(
             style = getTextStyle(
                 16,
                 FontWeight.Medium,
-                if (backgroundColor == backgroundColor_1 || backgroundColor == backgroundColor_2) white else gray_9
+                if (backgroundColor == MaterialTheme.backgroundColorScheme.secondaryBackgroundColor
+                    || backgroundColor == MaterialTheme.backgroundColorScheme.mainBackgroundColor)
+                    MaterialTheme.textColorScheme.titleTextColor
+                else
+                    MaterialTheme.backgroundColorScheme.mainBackgroundColor
             ),
             modifier = Modifier
                 .fillMaxWidth()
@@ -340,7 +356,12 @@ fun AppBarCloseTarotResult(
                 .padding(end = 20.dp)
         ) {
             Image(
-                painter = painterResource(id = if (backgroundColor == backgroundColor_1 || backgroundColor == backgroundColor_2) R.drawable.cancel else R.drawable.cancel_black),
+                painter = painterResource(id =
+                    if (backgroundColor == MaterialTheme.backgroundColorScheme.secondaryBackgroundColor
+                    || backgroundColor == MaterialTheme.backgroundColorScheme.mainBackgroundColor)
+                    R.drawable.cancel
+                else
+                    R.drawable.cancel_black),
                 contentDescription = "닫기버튼",
                 modifier = Modifier
                     .clickable { resultViewModel.openCloseDialog() }
@@ -419,7 +440,7 @@ fun BottomNavigationBar(navController: NavHostController = rememberNavController
         )
 
         BottomNavigation(
-            backgroundColor = gray_9
+            backgroundColor = MaterialTheme.backgroundColorScheme.mainBackgroundColor
         ) {
             val navBackStackEntry by navController.currentBackStackEntryAsState()
             val currentRoute = navBackStackEntry?.destination?.route
@@ -438,17 +459,20 @@ fun BottomNavigationBar(navController: NavHostController = rememberNavController
                                 .height(26.dp)
                         )
                     },
-                    selectedContentColor = highlightPurple,
+                    selectedContentColor = MaterialTheme.backgroundColorScheme.activeSecondaryButtonBackgroundColor,
                     label = {
                         Text(
                             text = item.title, style = getTextStyle(
                                 fontSize = 12,
                                 fontWeight = FontWeight.Normal,
-                                color = if (currentRoute == item.screenName) highlightPurple else gray_6
+                                color = if (currentRoute == item.screenName)
+                                    MaterialTheme.textColorScheme.highlightTextColor
+                                else
+                                    MaterialTheme.textColorScheme.onDialogContentColor
                             )
                         )
                     },
-                    unselectedContentColor = gray_6,
+                    unselectedContentColor = MaterialTheme.textColorScheme.onDialogContentColor,
                     selected = currentRoute == item.screenName,
                     alwaysShowLabel = true,
                     onClick = {

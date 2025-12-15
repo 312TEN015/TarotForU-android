@@ -16,6 +16,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.MaterialTheme
 import androidx.compose.material3.BottomSheetDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ModalBottomSheet
@@ -41,6 +42,9 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.fourleafclover.tarot.MyApplication
 import com.fourleafclover.tarot.R
+import com.fourleafclover.tarot.demo.ui.theme.backgroundColorScheme
+import com.fourleafclover.tarot.demo.ui.theme.color.ColorSet
+import com.fourleafclover.tarot.demo.ui.theme.textColorScheme
 import com.fourleafclover.tarot.ui.component.AppBarPlain
 import com.fourleafclover.tarot.ui.component.DeleteTarotResultDialog
 import com.fourleafclover.tarot.ui.component.setStatusbarColor
@@ -51,15 +55,7 @@ import com.fourleafclover.tarot.ui.screen.my.viewmodel.MyTarotViewModel
 import com.fourleafclover.tarot.ui.theme.TextB03M14
 import com.fourleafclover.tarot.ui.theme.TextB04M12
 import com.fourleafclover.tarot.ui.theme.TextH03SB18
-import com.fourleafclover.tarot.ui.theme.backgroundColor_2
 import com.fourleafclover.tarot.ui.theme.getTextStyle
-import com.fourleafclover.tarot.ui.theme.gray_2
-import com.fourleafclover.tarot.ui.theme.gray_5
-import com.fourleafclover.tarot.ui.theme.gray_6
-import com.fourleafclover.tarot.ui.theme.gray_8
-import com.fourleafclover.tarot.ui.theme.gray_9
-import com.fourleafclover.tarot.ui.theme.highlightPurple
-import com.fourleafclover.tarot.ui.theme.white
 
 var showSheet = mutableStateOf(false)
 
@@ -71,7 +67,7 @@ fun MyTarotScreen(
     fortuneViewModel: FortuneViewModel = hiltViewModel()
 ) {
 
-    setStatusbarColor(LocalView.current, backgroundColor_2)
+    setStatusbarColor(LocalView.current, MaterialTheme.backgroundColorScheme.mainBackgroundColor)
 
     Box {
 
@@ -81,13 +77,13 @@ fun MyTarotScreen(
 
         Column(
             modifier = Modifier
-                .background(color = gray_9)
+                .background(color = MaterialTheme.backgroundColorScheme.mainBackgroundColor)
                 .padding(horizontal = 20.dp)
                 .fillMaxSize()
         ) {
 
             // MY 타로 앱바
-            AppBarPlain(title = "MY 타로", backgroundColor = backgroundColor_2, backButtonVisible = false)
+            AppBarPlain(title = "MY 타로", backgroundColor = MaterialTheme.backgroundColorScheme.mainBackgroundColor, backButtonVisible = false)
 
             // 갯수 표시
             Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.End) {
@@ -95,7 +91,7 @@ fun MyTarotScreen(
                     text = "${myTarotViewModel.myTarotResults.size}", style = getTextStyle(
                         fontSize = 14,
                         fontWeight = FontWeight.Medium,
-                        color = highlightPurple,
+                        color = MaterialTheme.textColorScheme.highlightTextColor,
                     )
                 )
 
@@ -103,7 +99,7 @@ fun MyTarotScreen(
                     text = "/10", style = getTextStyle(
                         fontSize = 14,
                         fontWeight = FontWeight.Medium,
-                        color = gray_6,
+                        color = MaterialTheme.textColorScheme.onDialogContentColor,
                     )
                 )
 
@@ -128,7 +124,7 @@ fun MyTarotScreen(
                     )
                     TextB03M14(
                         text = "아직 저장된\n타로 기록이 없어요!",
-                        color = gray_5,
+                        color = MaterialTheme.textColorScheme.captionTextColor,
                         textAlign = TextAlign.Center
                     )
                 }
@@ -172,7 +168,7 @@ fun MyTarotItemComponent(
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .background(color = gray_8, shape = RoundedCornerShape(10.dp))
+                .background(color = MaterialTheme.backgroundColorScheme.secondaryBackgroundColor, shape = RoundedCornerShape(10.dp))
                 .padding(start = 16.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
@@ -199,13 +195,13 @@ fun MyTarotItemComponent(
 
                     TextH03SB18(
                         text = fortuneViewModel.getPickedTopic(myTarotViewModel.myTarotResults[idx].tarotType).majorTopic,
-                        color = white,
+                        color = MaterialTheme.textColorScheme.titleTextColor,
                         modifier = Modifier.padding(end = 8.dp)
                     )
 
                     TextB04M12(
                         text = fortuneViewModel.getPickedTopic(myTarotViewModel.myTarotResults[idx].tarotType).majorQuestion,
-                        color = gray_2,
+                        color = MaterialTheme.textColorScheme.resultScreenSubTitleColor,
                         modifier = Modifier
                     )
 
@@ -214,7 +210,7 @@ fun MyTarotItemComponent(
 
                 TextB04M12(
                     text = myTarotViewModel.myTarotResults[idx].createdAt,
-                    color = gray_5,
+                    color = MaterialTheme.textColorScheme.resultScreenCreatedAtColor,
                     modifier = Modifier,
                     textAlign = TextAlign.End
                 )
@@ -271,7 +267,7 @@ fun BottomSheet(myTarotViewModel: MyTarotViewModel) {
             style = getTextStyle(
                 fontSize = 18,
                 fontWeight = FontWeight.Normal,
-                color = gray_9
+                color = MaterialTheme.backgroundColorScheme.mainBackgroundColor
             ),
             modifier = Modifier
                 .padding(horizontal = 20.dp)

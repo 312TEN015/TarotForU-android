@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -26,6 +27,9 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.fourleafclover.tarot.R
+import com.fourleafclover.tarot.demo.ui.theme.backgroundColorScheme
+import com.fourleafclover.tarot.demo.ui.theme.color.ColorSet
+import com.fourleafclover.tarot.demo.ui.theme.textColorScheme
 import com.fourleafclover.tarot.ui.component.AppBarPlain
 import com.fourleafclover.tarot.ui.component.CardSlider
 import com.fourleafclover.tarot.ui.component.backgroundModifier
@@ -39,14 +43,6 @@ import com.fourleafclover.tarot.ui.theme.TextB03M14
 import com.fourleafclover.tarot.ui.theme.TextButtonM16
 import com.fourleafclover.tarot.ui.theme.TextH01M26
 import com.fourleafclover.tarot.ui.theme.TextH02M22
-import com.fourleafclover.tarot.ui.theme.backgroundColor_1
-import com.fourleafclover.tarot.ui.theme.backgroundColor_2
-import com.fourleafclover.tarot.ui.theme.gray_2
-import com.fourleafclover.tarot.ui.theme.gray_3
-import com.fourleafclover.tarot.ui.theme.gray_4
-import com.fourleafclover.tarot.ui.theme.gray_8
-import com.fourleafclover.tarot.ui.theme.highlightPurple
-import com.fourleafclover.tarot.ui.theme.white
 import com.fourleafclover.tarot.utils.ShareActionType
 import com.fourleafclover.tarot.utils.ShareLinkType
 import com.fourleafclover.tarot.utils.setDynamicLink
@@ -61,7 +57,7 @@ fun MyTarotDetailScreen(
 ) {
     val localContext = LocalContext.current
     val tarotSubjectData = fortuneViewModel.getPickedTopic(myTarotViewModel.selectedTarotResult.tarotType)
-    setStatusbarColor(LocalView.current, backgroundColor_1)
+    setStatusbarColor(LocalView.current, MaterialTheme.backgroundColorScheme.secondaryBackgroundColor)
 
     Column(modifier = backgroundModifier)
     {
@@ -69,7 +65,7 @@ fun MyTarotDetailScreen(
         AppBarPlain(
             navController = navController,
             title = "MY 타로",
-            backgroundColor = backgroundColor_1,
+            backgroundColor = MaterialTheme.backgroundColorScheme.secondaryBackgroundColor,
             backButtonVisible = true
         )
 
@@ -81,7 +77,7 @@ fun MyTarotDetailScreen(
         {
             Column(
                 modifier = Modifier
-                    .background(color = gray_8)
+                    .background(color = MaterialTheme.backgroundColorScheme.secondaryBackgroundColor)
                     .padding(top = 32.dp)
                     .wrapContentHeight()
                     .fillMaxWidth(),
@@ -89,7 +85,7 @@ fun MyTarotDetailScreen(
             ) {
                 TextB02M16(
                     text = tarotSubjectData.majorTopic,
-                    color = gray_2,
+                    color = MaterialTheme.textColorScheme.resultScreenSubTitleColor,
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(bottom = 16.dp),
@@ -102,7 +98,7 @@ fun MyTarotDetailScreen(
                 )
                 TextH02M22(
                     text = "$imoji ${tarotSubjectData.majorQuestion} $imoji",
-                    color = gray_2,
+                    color = MaterialTheme.textColorScheme.resultScreenSubTitleColor,
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(bottom = 16.dp),
@@ -111,7 +107,7 @@ fun MyTarotDetailScreen(
 
                 TextB03M14(
                     text = myTarotViewModel.selectedTarotResult.createdAt,
-                    color = gray_4,
+                    color = MaterialTheme.textColorScheme.resultScreenCreatedAtColor,
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(bottom = 32.dp),
@@ -120,13 +116,13 @@ fun MyTarotDetailScreen(
             }
 
 
-            Box(modifier = Modifier.background(color = backgroundColor_2)) {
+            Box(modifier = Modifier.background(color = MaterialTheme.backgroundColorScheme.mainBackgroundColor)) {
                 CardSlider(tarotResult = myTarotViewModel.selectedTarotResult, fortuneViewModel = fortuneViewModel)
             }
 
             Column(
                 modifier = Modifier
-                    .background(color = gray_8)
+                    .background(color = MaterialTheme.backgroundColorScheme.secondaryBackgroundColor)
                     .fillMaxWidth()
                     .padding(horizontal = 20.dp),
                 horizontalAlignment = Alignment.CenterHorizontally
@@ -134,7 +130,7 @@ fun MyTarotDetailScreen(
 
                 TextH01M26(
                     text = "타로 카드 종합 리딩",
-                    color = highlightPurple,
+                    color = MaterialTheme.textColorScheme.highlightTextColor,
                     modifier = Modifier
                         .padding(top = 48.dp)
                         .fillMaxWidth()
@@ -142,7 +138,7 @@ fun MyTarotDetailScreen(
 
                 TextB01M18(
                     text = myTarotViewModel.selectedTarotResult.overallResult?.summary.toString(),
-                    color = white,
+                    color = MaterialTheme.textColorScheme.titleTextColor,
                     modifier = Modifier
                         .padding(top = 24.dp)
                         .fillMaxWidth()
@@ -150,7 +146,7 @@ fun MyTarotDetailScreen(
 
                 TextB02M16(
                     text = myTarotViewModel.selectedTarotResult.overallResult?.full.toString(),
-                    color = gray_3,
+                    color = MaterialTheme.textColorScheme.subTitleTextColor,
                     modifier = Modifier
                         .padding(top = 12.dp, bottom = 64.dp)
                         .wrapContentHeight()
@@ -179,7 +175,7 @@ fun MyTarotDetailScreen(
                     )
                     TextButtonM16(
                         text = "공유하기",
-                        color = gray_3
+                        color = MaterialTheme.textColorScheme.subTitleTextColor
                     )
                 }
             }

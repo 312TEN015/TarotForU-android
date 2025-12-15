@@ -46,7 +46,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.fourleafclover.tarot.MyApplication
 import com.fourleafclover.tarot.R
-import com.fourleafclover.tarot.demo.ui.component.secondaryButtonColors
+import com.fourleafclover.tarot.demo.ui.component.SecondaryButtonColors
 import com.fourleafclover.tarot.demo.ui.theme.backgroundColorScheme
 import com.fourleafclover.tarot.demo.ui.theme.textColorScheme
 import com.fourleafclover.tarot.ui.component.AppBarCloseWithDialog
@@ -81,7 +81,7 @@ fun PickTarotScreen(
             AppBarCloseWithDialog(
                 navController = navController,
                 pickedTopicTemplate = fortuneViewModel.pickedTopicState.value.topicSubjectData,
-                backgroundColor = MaterialTheme.backgroundColorScheme.inputScreenBackgroundColor,
+                backgroundColor = MaterialTheme.backgroundColorScheme.secondaryBackgroundColor,
                 dialogViewModel = dialogViewModel
             )
 
@@ -170,7 +170,7 @@ fun PickTarotScreen(
                         .fillMaxWidth()
                         .padding(bottom = 34.dp)
                         .padding(horizontal = 20.dp),
-                    colors = secondaryButtonColors(),
+                    colors = SecondaryButtonColors(),
                     enabled = pickTarotViewModel.isCompleteButtonEnabled()
                 ) {
                     TextButtonM16(

@@ -21,6 +21,7 @@ import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.PageSize
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -39,17 +40,13 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.fourleafclover.tarot.data.CardResultData
 import com.fourleafclover.tarot.data.TarotOutputDto
+import com.fourleafclover.tarot.demo.ui.theme.backgroundColorScheme
+import com.fourleafclover.tarot.demo.ui.theme.color.ColorSet
+import com.fourleafclover.tarot.demo.ui.theme.textColorScheme
 import com.fourleafclover.tarot.ui.screen.fortune.viewModel.FortuneViewModel
 import com.fourleafclover.tarot.ui.screen.fortune.viewModel.dummyTarotOutputDto
 import com.fourleafclover.tarot.ui.theme.TextB02M16
 import com.fourleafclover.tarot.ui.theme.TextB04M12
-import com.fourleafclover.tarot.ui.theme.gray_3
-import com.fourleafclover.tarot.ui.theme.gray_4
-import com.fourleafclover.tarot.ui.theme.gray_6
-import com.fourleafclover.tarot.ui.theme.gray_8
-import com.fourleafclover.tarot.ui.theme.gray_9
-import com.fourleafclover.tarot.ui.theme.highlightPurple
-import com.fourleafclover.tarot.ui.theme.white
 import kotlin.math.absoluteValue
 
 @OptIn(ExperimentalFoundationApi::class)
@@ -145,7 +142,7 @@ fun CardSlider(
                 text = if (pagerState.currentPage == 0) "첫번째 카드"
                 else if (pagerState.currentPage == 1) "두번째 카드"
                 else "세번째 카드",
-                color = highlightPurple,
+                color = MaterialTheme.textColorScheme.highlightTextColor,
                 modifier = Modifier.padding(bottom = 12.dp)
             )
 
@@ -163,10 +160,10 @@ fun CardSlider(
                                 it
                             )
                         }",
-                        color = gray_4,
+                        color = MaterialTheme.textColorScheme.resultScreenCreatedAtColor,
                         modifier = Modifier
                             .padding(end = 8.dp)
-                            .background(color = gray_8, shape = RoundedCornerShape(6.dp))
+                            .background(color = MaterialTheme.backgroundColorScheme.secondaryBackgroundColor, shape = RoundedCornerShape(6.dp))
                             .padding(horizontal = 8.dp, vertical = 4.dp)
                     )
 
@@ -175,7 +172,7 @@ fun CardSlider(
 
             TextB02M16(
                 text = "${tarotResult.cardResults?.get(pagerState.currentPage)?.description}",
-                color = gray_3,
+                color = MaterialTheme.textColorScheme.subTitleTextColor,
                 textAlign = TextAlign.Center,
                 overflow = TextOverflow.Visible,
                 modifier = Modifier
@@ -191,8 +188,8 @@ fun DotsIndicator(
     modifier: Modifier = Modifier,
     totalDots: Int,
     selectedIndex: Int,
-    selectedColor: Color = white,
-    unSelectedColor: Color = gray_6,
+    selectedColor: Color = MaterialTheme.textColorScheme.titleTextColor,
+    unSelectedColor: Color = MaterialTheme.backgroundColorScheme.dotIndicatorColor,
     dotSize: Dp = 6.dp
 ) {
     LazyRow(
@@ -246,7 +243,7 @@ fun HarmonyCardSlider(
             text = if (pagerState.currentPage == 0) "첫번째 카드"
             else if (pagerState.currentPage == 1) "두번째 카드"
             else "세번째 카드",
-            color = highlightPurple,
+            color = MaterialTheme.textColorScheme.highlightTextColor,
             modifier = Modifier.padding(bottom = 16.dp)
         )
 
@@ -329,10 +326,10 @@ fun HarmonyCardSlider(
                                 secondCardResults[pagerState.currentPage].keywords[it]
                             }
                         }",
-                        color = gray_4,
+                        color = MaterialTheme.textColorScheme.resultScreenCreatedAtColor,
                         modifier = Modifier
                             .padding(end = 8.dp)
-                            .background(color = gray_9, shape = RoundedCornerShape(6.dp))
+                            .background(color = MaterialTheme.backgroundColorScheme.mainBackgroundColor, shape = RoundedCornerShape(6.dp))
                             .padding(horizontal = 8.dp, vertical = 4.dp)
                     )
 
@@ -345,7 +342,7 @@ fun HarmonyCardSlider(
                 } else {
                     secondCardResults[pagerState.currentPage].description
                 },
-                color = gray_3,
+                color = MaterialTheme.textColorScheme.subTitleTextColor,
                 textAlign = TextAlign.Center,
                 overflow = TextOverflow.Visible,
                 modifier = Modifier

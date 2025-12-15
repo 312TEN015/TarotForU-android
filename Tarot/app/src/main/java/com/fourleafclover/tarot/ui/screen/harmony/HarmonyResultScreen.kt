@@ -17,7 +17,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
@@ -34,8 +33,8 @@ import com.fourleafclover.tarot.MyApplication
 import com.fourleafclover.tarot.R
 import com.fourleafclover.tarot.SubjectHarmony
 import com.fourleafclover.tarot.data.TarotOutputDto
-import com.fourleafclover.tarot.demo.ui.component.primaryButtonColors
-import com.fourleafclover.tarot.demo.ui.component.secondaryButtonColors
+import com.fourleafclover.tarot.demo.ui.component.PrimaryButtonColors
+import com.fourleafclover.tarot.demo.ui.component.SecondaryButtonColors
 import com.fourleafclover.tarot.demo.ui.theme.backgroundColorScheme
 import com.fourleafclover.tarot.demo.ui.theme.textColorScheme
 import com.fourleafclover.tarot.ui.component.AppBarCloseTarotResult
@@ -111,7 +110,7 @@ fun HarmonyResultScreenPreview(
             Column(
                 modifier = Modifier
                     .padding(horizontal = 20.dp)
-                    .background(color = MaterialTheme.backgroundColorScheme.inputScreenBackgroundColor, shape = RoundedCornerShape(10.dp))
+                    .background(color = MaterialTheme.backgroundColorScheme.secondaryBackgroundColor, shape = RoundedCornerShape(10.dp))
                     .padding(vertical = 24.dp, horizontal = 20.dp)
             ) {
                 Row(
@@ -209,7 +208,7 @@ private fun OverallResult(tarotOutputDto: TarotOutputDto, resultViewModel: Resul
 
         TextH01M26(
             text = "타로 카드 종합 리딩",
-            color = MaterialTheme.textColorScheme.questionNumberColor,
+            color = MaterialTheme.textColorScheme.highlightTextColor,
             modifier = Modifier
                 .padding(top = 48.dp)
                 .fillMaxWidth()
@@ -246,7 +245,7 @@ private fun OverallResult(tarotOutputDto: TarotOutputDto, resultViewModel: Resul
                 .wrapContentHeight()
                 .fillMaxWidth()
                 .padding(bottom = 8.dp),
-            colors = secondaryButtonColors()
+            colors = SecondaryButtonColors()
         ) {
 
             if (resultViewModel.saveState.value) {
@@ -274,7 +273,7 @@ private fun OverallResult(tarotOutputDto: TarotOutputDto, resultViewModel: Resul
             modifier = Modifier
                 .wrapContentHeight()
                 .fillMaxWidth(),
-            colors = primaryButtonColors()
+            colors = PrimaryButtonColors()
         ) {
             TextButtonM16(
                 text = "홈으로 돌아가기",

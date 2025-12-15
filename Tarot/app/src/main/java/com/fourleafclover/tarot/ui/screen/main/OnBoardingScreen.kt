@@ -13,8 +13,8 @@ import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.PageSize
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.MaterialTheme
 import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -29,17 +29,15 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.fourleafclover.tarot.MyApplication
 import com.fourleafclover.tarot.R
+import com.fourleafclover.tarot.demo.ui.component.SecondaryButtonColors
+import com.fourleafclover.tarot.demo.ui.theme.backgroundColorScheme
+import com.fourleafclover.tarot.demo.ui.theme.color.ColorSet
+import com.fourleafclover.tarot.demo.ui.theme.textColorScheme
 import com.fourleafclover.tarot.ui.component.DotsIndicator
 import com.fourleafclover.tarot.ui.navigation.ScreenEnum
 import com.fourleafclover.tarot.ui.navigation.navigateInclusive
 import com.fourleafclover.tarot.ui.theme.TextButtonM16
 import com.fourleafclover.tarot.ui.theme.getTextStyle
-import com.fourleafclover.tarot.ui.theme.gray_1
-import com.fourleafclover.tarot.ui.theme.gray_3
-import com.fourleafclover.tarot.ui.theme.gray_5
-import com.fourleafclover.tarot.ui.theme.gray_6
-import com.fourleafclover.tarot.ui.theme.gray_9
-import com.fourleafclover.tarot.ui.theme.highlightPurple
 import com.fourleafclover.tarot.ui.theme.toSp
 
 @OptIn(ExperimentalFoundationApi::class)
@@ -53,7 +51,7 @@ fun PagerOnBoarding(navController: NavHostController = rememberNavController()) 
 
     Column(modifier = Modifier
         .fillMaxSize()
-        .background(color = gray_9),
+        .background(color = MaterialTheme.backgroundColorScheme.mainBackgroundColor),
         horizontalAlignment = Alignment.CenterHorizontally) {
 
         HorizontalPager(
@@ -91,17 +89,12 @@ fun PagerOnBoarding(navController: NavHostController = rememberNavController()) 
                 .fillMaxWidth()
                 .padding(top = 92.dp, bottom = 49.dp, end = 20.dp, start = 20.dp)
                 .alpha(if (pagerState.currentPage == onboardPagesList.size - 1) 1f else 0f),
-            colors = ButtonDefaults.buttonColors(
-                containerColor = highlightPurple,
-                contentColor = gray_1,
-                disabledContainerColor = gray_5,
-                disabledContentColor = gray_6
-            ),
+            colors = SecondaryButtonColors(),
             enabled = pagerState.currentPage == onboardPagesList.size-1
         ) {
             TextButtonM16(text = "시작하기",
                 modifier = Modifier.padding(vertical = 8.dp),
-                color = gray_1)
+                color = MaterialTheme.textColorScheme.onActiveSecondaryButtonColor)
         }
 
 
@@ -122,7 +115,7 @@ fun PagerOnBoarding2(navController: NavHostController = rememberNavController())
 
     Column(modifier = Modifier
         .fillMaxSize()
-        .background(color = gray_9),
+        .background(color = MaterialTheme.backgroundColorScheme.mainBackgroundColor),
         horizontalAlignment = Alignment.CenterHorizontally) {
 
         HorizontalPager(
@@ -160,17 +153,12 @@ fun PagerOnBoarding2(navController: NavHostController = rememberNavController())
                 .fillMaxWidth()
                 .padding(bottom = 49.dp, end = 20.dp, start = 20.dp)
                 .alpha(if (pagerState.currentPage == onboardPagesList.size - 1) 1f else 0f),
-            colors = ButtonDefaults.buttonColors(
-                containerColor = highlightPurple,
-                contentColor = gray_1,
-                disabledContainerColor = gray_5,
-                disabledContentColor = gray_6
-            ),
+            colors = SecondaryButtonColors(),
             enabled = pagerState.currentPage == onboardPagesList.size-1
         ) {
             TextButtonM16(text = "시작하기",
                 modifier = Modifier.padding(vertical = 8.dp),
-                color = gray_1)
+                color = MaterialTheme.textColorScheme.onActiveSecondaryButtonColor)
         }
 
 
@@ -191,7 +179,7 @@ fun PagerOnBoarding3(navController: NavHostController = rememberNavController())
 
     Column(modifier = Modifier
         .fillMaxSize()
-        .background(color = gray_9),
+        .background(color = MaterialTheme.backgroundColorScheme.mainBackgroundColor),
         horizontalAlignment = Alignment.CenterHorizontally) {
 
         HorizontalPager(
@@ -229,17 +217,12 @@ fun PagerOnBoarding3(navController: NavHostController = rememberNavController())
                 .fillMaxWidth()
                 .padding(bottom = 49.dp, end = 20.dp, start = 20.dp)
                 .alpha(if (pagerState.currentPage == onboardPagesList.size - 1) 1f else 0f),
-            colors = ButtonDefaults.buttonColors(
-                containerColor = highlightPurple,
-                contentColor = gray_1,
-                disabledContainerColor = gray_5,
-                disabledContentColor = gray_6
-            ),
+            colors = SecondaryButtonColors(),
             enabled = pagerState.currentPage == onboardPagesList.size-1
         ) {
             TextButtonM16(text = "시작하기",
                 modifier = Modifier.padding(vertical = 8.dp),
-                color = gray_1)
+                color = MaterialTheme.textColorScheme.onActiveSecondaryButtonColor)
         }
 
 
@@ -253,7 +236,7 @@ fun PagerOnBoarding3(navController: NavHostController = rememberNavController())
 fun OnBoardPage(page: Int = 0){
     Column(modifier = Modifier
         .fillMaxSize()
-        .background(color = gray_9),
+        .background(color = MaterialTheme.backgroundColorScheme.mainBackgroundColor),
         horizontalAlignment = Alignment.CenterHorizontally){
         Text(
             modifier = Modifier.padding(top = 108.dp, bottom = 8.dp),
@@ -265,7 +248,7 @@ fun OnBoardPage(page: Int = 0){
         Text(
             modifier = Modifier.padding(bottom = 48.dp),
             text = onboardPagesList[page].description,
-            style = getTextStyle(fontSize = 16, fontWeight = FontWeight.Normal, color = gray_3),
+            style = getTextStyle(fontSize = 16, fontWeight = FontWeight.Normal, color = MaterialTheme.textColorScheme.subTitleTextColor),
             textAlign = TextAlign.Center,
             lineHeight = toSp(24.dp)
         )

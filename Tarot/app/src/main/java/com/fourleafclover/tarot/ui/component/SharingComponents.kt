@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -15,11 +16,12 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import com.fourleafclover.tarot.R
+import com.fourleafclover.tarot.demo.ui.theme.backgroundColorScheme
+import com.fourleafclover.tarot.demo.ui.theme.color.ColorSet
+import com.fourleafclover.tarot.demo.ui.theme.color.gray_7
+import com.fourleafclover.tarot.demo.ui.theme.textColorScheme
 import com.fourleafclover.tarot.ui.screen.harmony.viewmodel.HarmonyViewModel
 import com.fourleafclover.tarot.ui.theme.TextB02M16
-import com.fourleafclover.tarot.ui.theme.gray_2
-import com.fourleafclover.tarot.ui.theme.gray_7
-import com.fourleafclover.tarot.ui.theme.gray_9
 import com.fourleafclover.tarot.utils.ShareActionType
 import com.fourleafclover.tarot.utils.ShareLinkType
 import com.fourleafclover.tarot.utils.setDynamicLink
@@ -73,7 +75,7 @@ fun HowToShareButton(
     Box(
         modifier = getOutlinedRectangleModifier(
             borderColor = gray_7,
-            fillColor = gray_9,
+            fillColor = MaterialTheme.backgroundColorScheme.activePrimaryButtonBackgroundColor,
             cornerRadius = 10.dp
         )
             .padding(vertical = 15.dp)
@@ -89,7 +91,7 @@ fun HowToShareButton(
                 painter = painterResource(id = iconResource),
                 contentDescription = null
             )
-            TextB02M16(text = text, color = gray_2)
+            TextB02M16(text = text, color = MaterialTheme.textColorScheme.resultScreenSubTitleColor)
         }
     }
 }

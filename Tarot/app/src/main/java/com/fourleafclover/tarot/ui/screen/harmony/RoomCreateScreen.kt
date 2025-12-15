@@ -198,7 +198,7 @@ fun DescriptionStep(
 
         Image(
             modifier = Modifier
-                .background(shape = CircleShape, color = MaterialTheme.backgroundColorScheme.inputScreenBackgroundColor)
+                .background(shape = CircleShape, color = MaterialTheme.backgroundColorScheme.secondaryBackgroundColor)
                 .padding(14.dp),
             painter = painterResource(id = imageResourceId),
             contentDescription = null,

@@ -16,7 +16,8 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.fourleafclover.tarot.SubjectHarmony
 import com.fourleafclover.tarot.demo.ui.theme.backgroundColorScheme
-import com.fourleafclover.tarot.demo.ui.theme.color.gray_5
+import com.fourleafclover.tarot.demo.ui.theme.color.ColorSet
+import com.fourleafclover.tarot.demo.ui.theme.textColorScheme
 import com.fourleafclover.tarot.ui.component.AppBarCloseOnRoomInviteWithDialog
 import com.fourleafclover.tarot.ui.component.LoadingCircle
 import com.fourleafclover.tarot.ui.component.ShareLinkOrCopy
@@ -85,7 +86,7 @@ fun RoomInviteLoadingScreen(
 
                 TextB03M14(
                     text = "상대방이 계속 들어오지 않는다면?\n한번 더 초대 링크를 공유해보세요!",
-                    color = gray_5,
+                    color = MaterialTheme.textColorScheme.onChatGuidBoxColor,
                     textAlign = TextAlign.Center
                 )
 

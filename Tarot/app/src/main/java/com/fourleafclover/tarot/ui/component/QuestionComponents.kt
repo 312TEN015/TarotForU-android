@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.MaterialTheme
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Text
@@ -22,6 +23,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
@@ -32,6 +34,11 @@ import androidx.navigation.compose.rememberNavController
 import com.fourleafclover.tarot.MyApplication
 import com.fourleafclover.tarot.constant.questionCount
 import com.fourleafclover.tarot.data.TarotSubjectData
+import com.fourleafclover.tarot.demo.ui.component.SecondaryButtonColors
+import com.fourleafclover.tarot.demo.ui.component.TextFieldColors
+import com.fourleafclover.tarot.demo.ui.theme.color.ColorSet
+import com.fourleafclover.tarot.demo.ui.theme.color.gray_9
+import com.fourleafclover.tarot.demo.ui.theme.textColorScheme
 import com.fourleafclover.tarot.ui.navigation.ScreenEnum
 import com.fourleafclover.tarot.ui.navigation.navigateSaveState
 import com.fourleafclover.tarot.ui.screen.fortune.viewModel.FortuneViewModel
@@ -43,19 +50,10 @@ import com.fourleafclover.tarot.ui.theme.TextCaptionM12
 import com.fourleafclover.tarot.ui.theme.TextH02M22
 import com.fourleafclover.tarot.ui.theme.TextH03SB18
 import com.fourleafclover.tarot.ui.theme.getTextStyle
-import com.fourleafclover.tarot.ui.theme.gray_1
-import com.fourleafclover.tarot.ui.theme.gray_3
-import com.fourleafclover.tarot.ui.theme.gray_5
-import com.fourleafclover.tarot.ui.theme.gray_6
-import com.fourleafclover.tarot.ui.theme.gray_8
-import com.fourleafclover.tarot.ui.theme.gray_9
-import com.fourleafclover.tarot.ui.theme.highlightPurple
-import com.fourleafclover.tarot.ui.theme.transparent
-import com.fourleafclover.tarot.ui.theme.white
 
 val questionNumberModifier = Modifier
     .padding(end = 10.dp)
-    .background(color = highlightPurple, shape = RoundedCornerShape(2.dp))
+    .background(color = ColorSet.Default.tarotLightColors.textColor.highlightTextColor, shape = RoundedCornerShape(2.dp))
     .padding(start = 4.dp, end = 4.dp)
 
 @Composable
@@ -115,7 +113,7 @@ fun QuestionViewHeader(
 
             TextH02M22(
                 text = "마음속에 있는 고민거리를\n입력해보세요!",
-                color = white,
+                color = MaterialTheme.textColorScheme.titleTextColor,
                 modifier = Modifier
                     .weight(1f)
                     .padding(top = 16.dp)
@@ -132,14 +130,14 @@ fun QuestionViewHeader(
         Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.padding(horizontal = 20.dp)) {
             TextCaptionM12(
                 text = "TIP!",
-                color = highlightPurple,
+                color = MaterialTheme.textColorScheme.highlightTextColor,
                 modifier = Modifier
                     .padding(horizontal = 4.dp, vertical = 2.dp)
             )
 
             TextCaptionM12(
                 text = "구체적으로 입력할수록 더욱 상세한 결과를 받아볼 수 있어요.",
-                color = gray_5,
+                color = MaterialTheme.textColorScheme.captionTextColor,
                 modifier = Modifier.padding(start = 8.dp)
             )
         }
@@ -164,7 +162,7 @@ fun QuestionViewBody(idx: Int, pickedTopicTemplate: TarotSubjectData, questionIn
             )
             TextH03SB18(
                 text = pickedTopicTemplate.subQuestions[idx-1],
-                color = gray_3,
+                color = MaterialTheme.textColorScheme.subTitleTextColor,
                 modifier = Modifier.padding(top = 8.dp, bottom = 16.dp)
             )
         }
@@ -174,8 +172,8 @@ fun QuestionViewBody(idx: Int, pickedTopicTemplate: TarotSubjectData, questionIn
             modifier = Modifier
                 .fillMaxWidth()
                 .height(92.dp)
-                .background(color = transparent),
-            textStyle = getTextStyle(fontSize = 14, fontWeight = FontWeight.Medium, color = gray_3),
+                .background(color = Color.Transparent),
+            textStyle = getTextStyle(fontSize = 14, fontWeight = FontWeight.Medium, color = MaterialTheme.textColorScheme.subTitleTextColor),
             shape = RoundedCornerShape(size = 10.dp),
             onValueChange = { newText ->
                 if (newText.text.length > maxChar){
@@ -189,21 +187,12 @@ fun QuestionViewBody(idx: Int, pickedTopicTemplate: TarotSubjectData, questionIn
             placeholder = {
                 TextB03M14(
                     text = pickedTopicTemplate.placeHolders[idx-1],
-                    color = gray_6,
+                    color = MaterialTheme.textColorScheme.textFieldPlaceHolderColor,
                     modifier = Modifier
                         .fillMaxSize()
                         .padding(2.dp)) },
             singleLine = false,
-            colors = TextFieldDefaults.colors(
-                cursorColor = highlightPurple,
-                focusedTextColor = gray_3,
-                focusedContainerColor = gray_8,
-                unfocusedContainerColor = gray_8,
-                disabledContainerColor = gray_8,
-                focusedIndicatorColor = transparent,
-                disabledIndicatorColor = transparent,
-                unfocusedIndicatorColor = transparent
-            )
+            colors = TextFieldColors()
         )
     }
 }
@@ -221,17 +210,13 @@ fun QuestionViewFooter(navController: NavHostController, questionInputViewModel:
             .fillMaxWidth()
             .padding(top = 72.dp, bottom = 44.dp)
             .padding(horizontal = 20.dp),
-        colors = ButtonDefaults.buttonColors(
-            containerColor = highlightPurple,
-            contentColor = gray_1,
-            disabledContainerColor = gray_6,
-            disabledContentColor = gray_5
-        ),
+        colors = SecondaryButtonColors(),
         enabled = questionInputViewModel.allFilled()
     ) {
         TextButtonM16(text = "다음",
             modifier = Modifier.padding(vertical = 8.dp),
-            color = if (questionInputViewModel.allFilled()) gray_1 else gray_5
+            color = if (questionInputViewModel.allFilled()) MaterialTheme.textColorScheme.onActiveSecondaryButtonColor
+            else MaterialTheme.textColorScheme.onDisabledButtonColor
         )
     }
 }
