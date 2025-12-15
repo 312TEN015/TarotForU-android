@@ -55,6 +55,7 @@ import com.fourleafclover.tarot.ui.screen.harmony.setOnExit
 import com.fourleafclover.tarot.ui.screen.harmony.viewmodel.HarmonyViewModel
 import com.fourleafclover.tarot.ui.screen.harmony.viewmodel.ResultViewModel
 import com.fourleafclover.tarot.ui.screen.main.DialogViewModel
+import com.fourleafclover.tarot.ui.screen.my.prepareDemoMyTarotData
 import com.fourleafclover.tarot.ui.screen.my.viewmodel.MyTarotViewModel
 import com.fourleafclover.tarot.ui.theme.getTextStyle
 import com.fourleafclover.tarot.utils.getMyTarotList

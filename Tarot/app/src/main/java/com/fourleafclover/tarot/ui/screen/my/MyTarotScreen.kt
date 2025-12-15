@@ -23,6 +23,7 @@ import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -42,6 +43,8 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.fourleafclover.tarot.MyApplication
 import com.fourleafclover.tarot.R
+import com.fourleafclover.tarot.demo.data.demoHarmonyTarotResult
+import com.fourleafclover.tarot.demo.data.demoTarotResult
 import com.fourleafclover.tarot.demo.ui.theme.backgroundColorScheme
 import com.fourleafclover.tarot.demo.ui.theme.color.ColorSet
 import com.fourleafclover.tarot.demo.ui.theme.textColorScheme
@@ -58,6 +61,15 @@ import com.fourleafclover.tarot.ui.theme.TextH03SB18
 import com.fourleafclover.tarot.ui.theme.getTextStyle
 
 var showSheet = mutableStateOf(false)
+
+fun prepareDemoMyTarotData(): ArrayList<String> {
+    val tarotResultArray = MyApplication.prefs.getTarotResultArray()
+    if (tarotResultArray.isEmpty()) {
+        MyApplication.prefs.addTarotResult(demoTarotResult.tarotId)
+        MyApplication.prefs.addTarotResult(demoHarmonyTarotResult.tarotId)
+    }
+    return tarotResultArray
+}
 
 @Preview
 @Composable

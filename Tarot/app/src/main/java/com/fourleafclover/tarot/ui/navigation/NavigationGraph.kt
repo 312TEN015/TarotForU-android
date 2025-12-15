@@ -10,6 +10,7 @@ import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.viewmodel.compose.LocalViewModelStoreOwner
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.NavHost
@@ -66,23 +67,23 @@ fun NavigationHost() {
     val currentRoute = navBackStackEntry?.destination?.route
 
     val activity = LocalViewModelStoreOwner.current as MainActivity
-    val fortuneViewModel: FortuneViewModel = viewModel(activity)
-    val questionInputViewModel: QuestionInputViewModel = viewModel(activity)
-    val pickTarotViewModel: PickTarotViewModel = viewModel(activity)
-    val resultViewModel: ResultViewModel = viewModel(activity)
+    val fortuneViewModel: FortuneViewModel = hiltViewModel(activity)
+    val questionInputViewModel: QuestionInputViewModel = hiltViewModel(activity)
+    val pickTarotViewModel: PickTarotViewModel = hiltViewModel(activity)
+    val resultViewModel: ResultViewModel = hiltViewModel(activity)
 
-    val dialogViewModel: DialogViewModel = viewModel(activity)
-    val shareViewModel: ShareViewModel = viewModel(activity)
-    val loadingViewModel: LoadingViewModel = viewModel(activity)
+    val dialogViewModel: DialogViewModel = hiltViewModel(activity)
+    val shareViewModel: ShareViewModel = hiltViewModel(activity)
+    val loadingViewModel: LoadingViewModel = hiltViewModel(activity)
 
-    val harmonyViewModel: HarmonyViewModel = viewModel(activity)
-    val roomCreateViewModel: RoomCreateViewModel = viewModel(activity)
-    val genderViewModel: GenderViewModel = viewModel(activity)
-    val nicknameViewModel: NicknameViewModel = viewModel(activity)
-    val chatViewModel: ChatViewModel = viewModel(activity)
+    val harmonyViewModel: HarmonyViewModel = hiltViewModel(activity)
+    val roomCreateViewModel: RoomCreateViewModel = hiltViewModel(activity)
+    val genderViewModel: GenderViewModel = hiltViewModel(activity)
+    val nicknameViewModel: NicknameViewModel = hiltViewModel(activity)
+    val chatViewModel: ChatViewModel = hiltViewModel(activity)
 
-    val myTarotViewModel: MyTarotViewModel = viewModel(activity)
-    val demoViewModel: DemoViewModel = viewModel(activity)
+    val myTarotViewModel: MyTarotViewModel = hiltViewModel(activity)
+    val demoViewModel: DemoViewModel = hiltViewModel(activity)
 
 
 
@@ -160,7 +161,8 @@ fun NavigationHost() {
                     navController,
                     fortuneViewModel,
                     resultViewModel,
-                    harmonyViewModel
+                    harmonyViewModel,
+                    demoViewModel
                     )
             }
             composable(ScreenEnum.OnBoardingScreen.name) {
@@ -271,7 +273,8 @@ fun NavigationHost() {
                     navController,
                     harmonyViewModel,
                     fortuneViewModel,
-                    resultViewModel
+                    resultViewModel,
+                    demoViewModel
                 )
             }
             composable(ScreenEnum.MyTarotHarmonyDetailScreen.name) {

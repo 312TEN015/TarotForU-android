@@ -23,6 +23,7 @@ import com.fourleafclover.tarot.ui.screen.harmony.viewmodel.ChatViewModel
 import com.fourleafclover.tarot.ui.screen.harmony.viewmodel.HarmonyViewModel
 import com.fourleafclover.tarot.ui.screen.harmony.viewmodel.LoadingViewModel
 import com.fourleafclover.tarot.ui.screen.harmony.viewmodel.ResultViewModel
+import com.fourleafclover.tarot.ui.screen.my.prepareDemoMyTarotData
 import com.fourleafclover.tarot.ui.screen.my.viewmodel.MyTarotViewModel
 import com.fourleafclover.tarot.ui.screen.my.viewmodel.ShareViewModel
 import kotlinx.coroutines.CoroutineScope
@@ -46,8 +47,7 @@ fun getMyTarotList(
     isDemo: Boolean = false
 ) {
     if (isDemo) {
-        myTarotViewModel.setMyTarotResults(demoTarotResultArray)
-        navigateInclusive(navController, ScreenEnum.MyTarotScreen.name)
+        setDemoMyTarotData(myTarotViewModel, navController)
         return
     }
 
@@ -73,6 +73,22 @@ fun getMyTarotList(
             }
         })
 
+}
+
+
+
+private fun setDemoMyTarotData(myTarotViewModel: MyTarotViewModel, navController: NavHostController) {
+    val tarotResultArray = prepareDemoMyTarotData()
+    val tmpArray = arrayListOf<TarotOutputDto>()
+    tarotResultArray.forEach {
+        if (it == demoTarotResult.tarotId)
+            tmpArray.add(demoTarotResult)
+        else if (it == demoHarmonyTarotResult.tarotId)
+            tmpArray.add(demoHarmonyTarotResult)
+    }
+
+    myTarotViewModel.setMyTarotResults(tmpArray)
+    navigateInclusive(navController, ScreenEnum.MyTarotScreen.name)
 }
 
 
