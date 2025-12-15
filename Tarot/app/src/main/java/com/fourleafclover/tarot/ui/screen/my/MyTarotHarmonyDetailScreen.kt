@@ -35,8 +35,14 @@ import com.fourleafclover.tarot.ui.component.AppBarPlain
 import com.fourleafclover.tarot.ui.component.HarmonyCardSlider
 import com.fourleafclover.tarot.ui.component.getBackgroundModifier
 import com.fourleafclover.tarot.ui.component.setStatusbarColor
+import com.fourleafclover.tarot.ui.navigation.navGraphViewModel
 import com.fourleafclover.tarot.ui.screen.fortune.viewModel.FortuneViewModel
+import com.fourleafclover.tarot.ui.screen.fortune.viewModel.PickTarotViewModel
+import com.fourleafclover.tarot.ui.screen.harmony.viewmodel.ChatViewModel
 import com.fourleafclover.tarot.ui.screen.harmony.viewmodel.HarmonyViewModel
+import com.fourleafclover.tarot.ui.screen.harmony.viewmodel.LoadingViewModel
+import com.fourleafclover.tarot.ui.screen.harmony.viewmodel.ResultViewModel
+import com.fourleafclover.tarot.ui.screen.main.DialogViewModel
 import com.fourleafclover.tarot.ui.screen.my.viewmodel.MyTarotViewModel
 import com.fourleafclover.tarot.ui.theme.TextB01M18
 import com.fourleafclover.tarot.ui.theme.TextB02M16
@@ -50,10 +56,12 @@ import com.fourleafclover.tarot.utils.setDynamicLink
 
 @Composable
 fun MyTarotHarmonyDetail(
-    navController: NavHostController,
-    fortuneViewModel: FortuneViewModel = hiltViewModel(),
-    myTarotViewModel: MyTarotViewModel = hiltViewModel(),
+    navController: NavHostController
 ) {
+
+    val myTarotViewModel = navGraphViewModel<MyTarotViewModel>(navController)
+    val fortuneViewModel = navGraphViewModel<FortuneViewModel>(navController)
+
     MyTarotHarmonyDetailPreview(navController, fortuneViewModel, myTarotViewModel)
 }
 
@@ -174,7 +182,7 @@ fun MyTarotHarmonyDetailPreview(
 
                 HarmonyCardSlider(
                     outsideHorizontalPadding = 40.dp,
-                    sliderList = getSliderList(LocalContext.current, fortuneViewModel, myTarotViewModel),
+                    cardImageList = getSliderList(LocalContext.current, fortuneViewModel, myTarotViewModel),
                     firstCardResults = myTarotViewModel.roomOwnerCardResults,
                     secondCardResults = myTarotViewModel.inviteeCardResults,
                     isFirstTab = myTarotViewModel.isRoomOwnerTab()

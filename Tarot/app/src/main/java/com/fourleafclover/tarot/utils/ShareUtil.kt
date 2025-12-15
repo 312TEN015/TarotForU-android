@@ -165,7 +165,7 @@ fun receiveShareRequest(
     shareViewModel: ShareViewModel,
     loadingViewModel: LoadingViewModel,
     harmonyViewModel: HarmonyViewModel,
-    demoViewModel: DemoViewModel
+    isDemo: Boolean
 ){
     Firebase.dynamicLinks
         .getDynamicLink(activity.intent)
@@ -180,7 +180,7 @@ fun receiveShareRequest(
             // 타로 결과 공유
             if (deepLinkUri.getBooleanQueryParameter("tarotId", false)){
                 val sharedTarotId = deepLinkUri.getQueryParameter("tarotId")!!
-                getSharedTarotDetail(navController, sharedTarotId, shareViewModel, loadingViewModel, demoViewModel.isDemo)
+                getSharedTarotDetail(navController, sharedTarotId, shareViewModel, loadingViewModel, isDemo)
                 loadingViewModel.startLoading(navController, ScreenEnum.LoadingScreen, ScreenEnum.ShareDetailScreen)
             }
 

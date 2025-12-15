@@ -34,6 +34,8 @@ import com.fourleafclover.tarot.ui.component.AppBarPlain
 import com.fourleafclover.tarot.ui.component.CardSlider
 import com.fourleafclover.tarot.ui.component.backgroundModifier
 import com.fourleafclover.tarot.ui.component.setStatusbarColor
+import com.fourleafclover.tarot.ui.navigation.navGraphViewModel
+import com.fourleafclover.tarot.ui.screen.fortune.getCardSliderImage
 import com.fourleafclover.tarot.ui.screen.fortune.viewModel.FortuneViewModel
 import com.fourleafclover.tarot.ui.screen.harmony.viewmodel.HarmonyViewModel
 import com.fourleafclover.tarot.ui.screen.my.viewmodel.MyTarotViewModel
@@ -51,10 +53,11 @@ import com.fourleafclover.tarot.utils.setDynamicLink
 @Preview
 fun MyTarotDetailScreen(
     navController: NavHostController = rememberNavController(),
-    fortuneViewModel: FortuneViewModel = hiltViewModel(),
-    myTarotViewModel: MyTarotViewModel = hiltViewModel(),
-    harmonyViewModel: HarmonyViewModel = hiltViewModel()
 ) {
+    val myTarotViewModel = navGraphViewModel<MyTarotViewModel>(navController)
+    val fortuneViewModel = navGraphViewModel<FortuneViewModel>(navController)
+    val harmonyViewModel = navGraphViewModel<HarmonyViewModel>(navController)
+
     val localContext = LocalContext.current
     val tarotSubjectData = fortuneViewModel.getPickedTopic(myTarotViewModel.selectedTarotResult.tarotType)
     setStatusbarColor(LocalView.current, MaterialTheme.backgroundColorScheme.secondaryBackgroundColor)
@@ -117,7 +120,15 @@ fun MyTarotDetailScreen(
 
 
             Box(modifier = Modifier.background(color = MaterialTheme.backgroundColorScheme.mainBackgroundColor)) {
-                CardSlider(tarotResult = myTarotViewModel.selectedTarotResult, fortuneViewModel = fortuneViewModel)
+                val result = myTarotViewModel.selectedTarotResult
+                CardSlider(
+                    tarotResult = result,
+                    cardImageList = getCardSliderImage(
+                        LocalContext.current,
+                        result.cards,
+                        fortuneViewModel
+                    )
+                )
             }
 
             Column(

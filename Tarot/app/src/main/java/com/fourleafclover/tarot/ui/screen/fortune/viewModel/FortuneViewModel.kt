@@ -3,6 +3,8 @@ package com.fourleafclover.tarot.ui.screen.fortune.viewModel
 import android.content.Context
 import android.content.res.Resources
 import android.util.Log
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.ProvidableCompositionLocal
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope

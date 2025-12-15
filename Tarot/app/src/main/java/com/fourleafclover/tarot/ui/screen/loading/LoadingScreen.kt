@@ -13,15 +13,14 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
+import com.fourleafclover.tarot.LocalIsDemo
 import com.fourleafclover.tarot.demo.ui.theme.backgroundColorScheme
-import com.fourleafclover.tarot.demo.ui.theme.color.ColorSet
-import com.fourleafclover.tarot.demo.viewmodel.DemoViewModel
 import com.fourleafclover.tarot.ui.component.LoadingCircle
 import com.fourleafclover.tarot.ui.navigation.PreventBackPressed
 import com.fourleafclover.tarot.ui.navigation.ScreenEnum
+import com.fourleafclover.tarot.ui.navigation.navGraphViewModel
 import com.fourleafclover.tarot.ui.screen.fortune.viewModel.FortuneViewModel
 import com.fourleafclover.tarot.ui.screen.fortune.viewModel.PickTarotViewModel
 import com.fourleafclover.tarot.ui.screen.fortune.viewModel.QuestionInputViewModel
@@ -34,15 +33,16 @@ import kotlinx.coroutines.delay
 @Composable
 @Preview
 fun LoadingScreen(
-    navController: NavHostController = rememberNavController(),
-    loadingViewModel: LoadingViewModel = hiltViewModel(),
-    resultViewModel: ResultViewModel = hiltViewModel(),
-    fortuneViewModel: FortuneViewModel = hiltViewModel(),
-    pickTarotViewModel: PickTarotViewModel = hiltViewModel(),
-    questionInputViewModel: QuestionInputViewModel = hiltViewModel(),
-    demoViewModel: DemoViewModel = hiltViewModel()
+    navController: NavHostController = rememberNavController()
 ){
+
+    val loadingViewModel = navGraphViewModel<LoadingViewModel>(navController)
+    val resultViewModel = navGraphViewModel<ResultViewModel>(navController)
+    val fortuneViewModel = navGraphViewModel<FortuneViewModel>(navController)
+    val pickTarotViewModel = navGraphViewModel<PickTarotViewModel>(navController)
+    val questionInputViewModel = navGraphViewModel<QuestionInputViewModel>(navController)
     val localContext = LocalContext.current
+    val isDemo = LocalIsDemo.current
 
     if (!loadingViewModel.isLoading.value) {
         loadingViewModel.endLoading(navController)
@@ -53,7 +53,7 @@ fun LoadingScreen(
     LaunchedEffect(Unit){
         if (loadingViewModel.destination == ScreenEnum.ResultScreen){
 
-            if (demoViewModel.isDemo) {
+            if (isDemo) {
                 delay(2500)
             }
 
@@ -63,7 +63,7 @@ fun LoadingScreen(
                 pickTarotViewModel = pickTarotViewModel,
                 loadingViewModel = loadingViewModel,
                 questionInputViewModel = questionInputViewModel,
-                demoViewModel.isDemo,
+                isDemo,
                 fortuneViewModel.pickedTopicState.value.topicNumber
             )
         }

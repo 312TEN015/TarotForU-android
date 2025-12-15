@@ -40,16 +40,18 @@ import com.fourleafclover.tarot.ui.theme.TextH02M22
 import com.fourleafclover.tarot.ui.theme.getTextStyle
 import androidx.compose.ui.graphics.Color
 import com.fourleafclover.tarot.demo.ui.theme.color.gray_7
+import com.fourleafclover.tarot.ui.navigation.navGraphViewModel
 
 @Preview
 @Composable
 fun RoomNicknameScreen(
-    navController: NavHostController = rememberNavController(),
-    nicknameViewModel: NicknameViewModel = hiltViewModel(),
-    harmonyViewModel: HarmonyViewModel = hiltViewModel(),
-    loadingViewModel: LoadingViewModel = hiltViewModel(),
-    dialogViewModel: DialogViewModel = hiltViewModel()
+    navController: NavHostController = rememberNavController()
 ) {
+
+    val dialogViewModel = navGraphViewModel<DialogViewModel>(navController)
+    val loadingViewModel = navGraphViewModel<LoadingViewModel>(navController)
+    val nicknameViewModel = navGraphViewModel<NicknameViewModel>(navController)
+    val harmonyViewModel = navGraphViewModel<HarmonyViewModel>(navController)
 
     PreventBackPressed()
 

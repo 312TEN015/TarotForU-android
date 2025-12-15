@@ -8,6 +8,8 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.compositionLocalOf
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.core.splashscreen.SplashScreen
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
@@ -18,13 +20,13 @@ import com.fourleafclover.tarot.demo.viewmodel.DemoViewModel
 import com.fourleafclover.tarot.network.PrettyJsonLogger
 import com.fourleafclover.tarot.network.TarotService
 import com.fourleafclover.tarot.ui.navigation.NavigationHost
-import com.fourleafclover.tarot.ui.screen.main.DialogViewModel
 
 import com.fourleafclover.tarot.utils.LogTags
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
@@ -32,6 +34,9 @@ import retrofit2.converter.gson.GsonConverterFactory
 import java.util.concurrent.TimeUnit
 import kotlin.coroutines.resume
 import kotlin.coroutines.suspendCoroutine
+
+var LocalIsDemo = compositionLocalOf { false }
+
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
@@ -56,11 +61,13 @@ class MainActivity : ComponentActivity() {
             Log.d("", appLinkData.getQueryParameter("resultId").toString())
         }
 
-        setServer()
-
-        setContent {
-            TarotTheme {
-                NavigationHost()
+        setServer() { isDemo, dialogData ->
+            setContent {
+                CompositionLocalProvider(LocalIsDemo provides isDemo) {
+                    TarotTheme {
+                        NavigationHost(dialogData)
+                    }
+                }
             }
         }
     }
@@ -73,17 +80,23 @@ class MainActivity : ComponentActivity() {
         }
     }
 
-    private fun setServer() = CoroutineScope(Dispatchers.IO).launch {
-        val demoViewModel by viewModels<DemoViewModel>()
-        val isDemo = checkIsDemo(demoViewModel)
-        if (isDemo) {
-            checkDemoDialogData(demoViewModel)
-        } else {
-            initServerSettings()
+    private fun setServer(setContent: (isDemo: Boolean, dialogData: DemoViewModel.DemoDialogData?) -> Unit = {_, _ ->}) = CoroutineScope(Dispatchers.IO).launch {
+        checkIsDemo().let { isDemo ->
+            var dialogData : DemoViewModel.DemoDialogData? = null
+
+            if (isDemo) {
+                dialogData = checkDemoDialogData()
+            } else {
+                initServerSettings()
+            }
+
+            withContext(Dispatchers.Main) {
+                setContent(isDemo, dialogData)
+            }
         }
     }
 
-    private suspend fun checkIsDemo(demoViewModel: DemoViewModel) = suspendCoroutine<Boolean> {
+    private suspend fun checkIsDemo() = suspendCoroutine<Boolean> {
         firestore
             .collection("properties")
             .document("is_demo")
@@ -91,8 +104,7 @@ class MainActivity : ComponentActivity() {
             .addOnSuccessListener { document ->
                 if (document != null) {
                     Log.d(LogTags.firestore, "DocumentSnapshot data: ${document.data}")
-                    demoViewModel.setIsDemo(document.data?.get("isDemo").toString().toBoolean())
-                    it.resume(true)
+                    it.resume(document.data?.get("isDemo").toString().toBoolean())
                 } else {
                     Log.d(LogTags.firestore, "No such document")
                     it.resume(false)
@@ -104,7 +116,7 @@ class MainActivity : ComponentActivity() {
             }
     }
 
-    private suspend fun checkDemoDialogData(demoViewModel: DemoViewModel) = suspendCoroutine<Boolean> {
+    private suspend fun checkDemoDialogData() = suspendCoroutine<DemoViewModel.DemoDialogData?> {
         firestore
             .collection("properties")
             .document("demo_popup")
@@ -112,20 +124,20 @@ class MainActivity : ComponentActivity() {
             .addOnSuccessListener { document ->
                 if (document != null) {
                     Log.d(LogTags.firestore, "DocumentSnapshot data: ${document.data}")
-                    demoViewModel.setDemoDialog(
+                    val result = DemoViewModel.DemoDialogData(
                         visibility = document.data?.get("visibility").toString().toBoolean(),
                         title = document.data?.get("title").toString(),
                         content = document.data?.get("content").toString()
                     )
-                    it.resume(true)
+                    it.resume(result)
                 } else {
                     Log.d(LogTags.firestore, "No such document")
-                    it.resume(false)
+                    it.resume(null)
                 }
             }
             .addOnFailureListener { exception ->
                 Log.w(LogTags.firestore, "Error getting documents.", exception)
-                it.resume(false)
+                it.resume(null)
             }
     }
 

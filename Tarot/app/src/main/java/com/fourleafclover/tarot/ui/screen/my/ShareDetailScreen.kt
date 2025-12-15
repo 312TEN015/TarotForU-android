@@ -29,7 +29,11 @@ import com.fourleafclover.tarot.ui.component.CardSlider
 import com.fourleafclover.tarot.ui.component.backgroundModifier
 import com.fourleafclover.tarot.ui.component.setStatusbarColor
 import com.fourleafclover.tarot.ui.navigation.NavigateHomeOnBackPressed
+import com.fourleafclover.tarot.ui.navigation.navGraphViewModel
+import com.fourleafclover.tarot.ui.screen.fortune.getCardSliderImage
 import com.fourleafclover.tarot.ui.screen.fortune.viewModel.FortuneViewModel
+import com.fourleafclover.tarot.ui.screen.harmony.viewmodel.HarmonyViewModel
+import com.fourleafclover.tarot.ui.screen.my.viewmodel.MyTarotViewModel
 import com.fourleafclover.tarot.ui.screen.my.viewmodel.ShareViewModel
 import com.fourleafclover.tarot.ui.theme.TextB01M18
 import com.fourleafclover.tarot.ui.theme.TextB02M16
@@ -40,10 +44,12 @@ import com.fourleafclover.tarot.ui.theme.TextH02M22
 @Composable
 @Preview
 fun ShareDetailScreen(
-    navController: NavHostController = rememberNavController(),
-    fortuneViewModel: FortuneViewModel = hiltViewModel(),
-    shareViewModel: ShareViewModel = hiltViewModel()
+    navController: NavHostController = rememberNavController()
 ){
+
+    val shareViewModel = navGraphViewModel<ShareViewModel>(navController)
+    val fortuneViewModel = navGraphViewModel<FortuneViewModel>(navController)
+
     val localContext = LocalContext.current
     val tarotSubjectData = fortuneViewModel.getPickedTopic(shareViewModel.sharedTarotResult.tarotType)
     setStatusbarColor(LocalView.current, MaterialTheme.backgroundColorScheme.secondaryBackgroundColor)
@@ -97,7 +103,15 @@ fun ShareDetailScreen(
             }
 
             Box(modifier = Modifier.background(color = MaterialTheme.backgroundColorScheme.mainBackgroundColor)) {
-                CardSlider(tarotResult = shareViewModel.sharedTarotResult, fortuneViewModel = fortuneViewModel)
+                val result = shareViewModel.sharedTarotResult
+                CardSlider(
+                    tarotResult = result,
+                    cardImageList = getCardSliderImage(
+                        LocalContext.current,
+                        result.cards,
+                        fortuneViewModel
+                    )
+                )
             }
 
             Column(

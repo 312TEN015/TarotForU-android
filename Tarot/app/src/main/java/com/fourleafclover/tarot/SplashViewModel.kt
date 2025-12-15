@@ -8,13 +8,13 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 
 class SplashViewModel: ViewModel() {
-    private val mutableStateFlow = MutableStateFlow(true)
-    val isLoading = mutableStateFlow.asStateFlow()
+    private val _isLoading = MutableStateFlow(true)
+    val isLoading = _isLoading.asStateFlow()
 
     init {
         viewModelScope.launch {
             delay(1500)
-            mutableStateFlow.value = false
+            _isLoading.value = false
         }
     }
 }

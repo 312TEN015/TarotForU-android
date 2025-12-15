@@ -23,6 +23,7 @@ import com.fourleafclover.tarot.ui.component.LoadingCircle
 import com.fourleafclover.tarot.ui.component.ShareLinkOrCopy
 import com.fourleafclover.tarot.ui.component.getBackgroundModifier
 import com.fourleafclover.tarot.ui.navigation.PreventBackPressed
+import com.fourleafclover.tarot.ui.navigation.navGraphViewModel
 import com.fourleafclover.tarot.ui.screen.harmony.emitJoin
 import com.fourleafclover.tarot.ui.screen.harmony.setOnJoin
 import com.fourleafclover.tarot.ui.screen.harmony.viewmodel.ChatViewModel
@@ -35,12 +36,13 @@ import com.fourleafclover.tarot.ui.theme.TextB03M14
 @Composable
 @Preview
 fun RoomInviteLoadingScreen(
-    navController: NavHostController = rememberNavController(),
-    harmonyViewModel: HarmonyViewModel = hiltViewModel(),
-    loadingViewModel: LoadingViewModel = hiltViewModel(),
-    chatViewModel: ChatViewModel = hiltViewModel(),
-    dialogViewModel: DialogViewModel = hiltViewModel()
+    navController: NavHostController = rememberNavController()
 ) {
+
+    val dialogViewModel = navGraphViewModel<DialogViewModel>(navController)
+    val chatViewModel = navGraphViewModel<ChatViewModel>(navController)
+    val loadingViewModel = navGraphViewModel<LoadingViewModel>(navController)
+    val harmonyViewModel = navGraphViewModel<HarmonyViewModel>(navController)
 
     if (!loadingViewModel.isLoading.value) {
         loadingViewModel.endLoading(navController)

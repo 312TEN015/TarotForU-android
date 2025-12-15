@@ -52,6 +52,7 @@ import com.fourleafclover.tarot.ui.component.AppBarPlain
 import com.fourleafclover.tarot.ui.component.DeleteTarotResultDialog
 import com.fourleafclover.tarot.ui.component.setStatusbarColor
 import com.fourleafclover.tarot.ui.navigation.ScreenEnum
+import com.fourleafclover.tarot.ui.navigation.navGraphViewModel
 import com.fourleafclover.tarot.ui.navigation.navigateSaveState
 import com.fourleafclover.tarot.ui.screen.fortune.viewModel.FortuneViewModel
 import com.fourleafclover.tarot.ui.screen.my.viewmodel.MyTarotViewModel
@@ -74,10 +75,11 @@ fun prepareDemoMyTarotData(): ArrayList<String> {
 @Preview
 @Composable
 fun MyTarotScreen(
-    navController: NavHostController = rememberNavController(),
-    myTarotViewModel: MyTarotViewModel = hiltViewModel(),
-    fortuneViewModel: FortuneViewModel = hiltViewModel()
+    navController: NavHostController = rememberNavController()
 ) {
+
+    val myTarotViewModel = navGraphViewModel<MyTarotViewModel>(navController)
+    val fortuneViewModel = navGraphViewModel<FortuneViewModel>(navController)
 
     setStatusbarColor(LocalView.current, MaterialTheme.backgroundColorScheme.mainBackgroundColor)
 

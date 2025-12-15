@@ -8,6 +8,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalView
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.fourleafclover.tarot.constant.questionCount
@@ -16,17 +17,20 @@ import com.fourleafclover.tarot.ui.component.AppBarCloseWithDialog
 import com.fourleafclover.tarot.ui.component.QuestionsComponent
 import com.fourleafclover.tarot.ui.component.getBackgroundModifier
 import com.fourleafclover.tarot.ui.component.setStatusbarColor
+import com.fourleafclover.tarot.ui.navigation.navGraphViewModel
 import com.fourleafclover.tarot.ui.screen.fortune.viewModel.FortuneViewModel
 import com.fourleafclover.tarot.ui.screen.fortune.viewModel.QuestionInputViewModel
 import com.fourleafclover.tarot.ui.screen.main.DialogViewModel
 
+@Preview
 @Composable
 fun InputScreen(
-    navController: NavHostController = rememberNavController(),
-    fortuneViewModel: FortuneViewModel,
-    questionInputViewModel: QuestionInputViewModel,
-    dialogViewModel: DialogViewModel
+    navController: NavHostController = rememberNavController()
 ) {
+    val fortuneViewModel = navGraphViewModel<FortuneViewModel>(navController)
+    val questionInputViewModel = navGraphViewModel<QuestionInputViewModel>(navController)
+    val dialogViewModel = navGraphViewModel<DialogViewModel>(navController)
+
     val localContext = LocalContext.current
     val pickedTopicTemplate by fortuneViewModel.pickedTopicState
 

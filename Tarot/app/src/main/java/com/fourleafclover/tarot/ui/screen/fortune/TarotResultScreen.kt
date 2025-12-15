@@ -1,6 +1,6 @@
 package com.fourleafclover.tarot.ui.screen.fortune
 
-import android.app.Activity
+import android.content.Context
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -19,7 +19,6 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material3.Button
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.currentCompositionLocalContext
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -28,10 +27,9 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
+import com.fourleafclover.tarot.LocalIsDemo
 import com.fourleafclover.tarot.MyApplication
 import com.fourleafclover.tarot.R
 import com.fourleafclover.tarot.demo.data.demoTarotResult
@@ -39,11 +37,11 @@ import com.fourleafclover.tarot.demo.ui.component.PrimaryButtonColors
 import com.fourleafclover.tarot.demo.ui.component.SecondaryButtonColors
 import com.fourleafclover.tarot.demo.ui.theme.backgroundColorScheme
 import com.fourleafclover.tarot.demo.ui.theme.textColorScheme
-import com.fourleafclover.tarot.demo.viewmodel.DemoViewModel
 import com.fourleafclover.tarot.ui.component.CardSlider
 import com.fourleafclover.tarot.ui.component.ControlDialog
 import com.fourleafclover.tarot.ui.component.appBarModifier
 import com.fourleafclover.tarot.ui.component.backgroundModifier
+import com.fourleafclover.tarot.ui.navigation.navGraphViewModel
 import com.fourleafclover.tarot.ui.screen.fortune.viewModel.FortuneViewModel
 import com.fourleafclover.tarot.ui.screen.harmony.viewmodel.HarmonyViewModel
 import com.fourleafclover.tarot.ui.screen.harmony.viewmodel.ResultViewModel
@@ -60,18 +58,16 @@ import com.fourleafclover.tarot.utils.setDynamicLink
 @Composable
 @Preview
 fun TarotResultScreen(
-    navController: NavHostController = rememberNavController(),
-    fortuneViewModel: FortuneViewModel = hiltViewModel(),
-    resultViewModel: ResultViewModel = hiltViewModel(),
-    harmonyViewModel: HarmonyViewModel = hiltViewModel(),
-    demoViewModel: DemoViewModel = hiltViewModel()
+    navController: NavHostController = rememberNavController()
 ){
+    val resultViewModel = navGraphViewModel<ResultViewModel>(navController)
+    val fortuneViewModel = navGraphViewModel<FortuneViewModel>(navController)
+    val harmonyViewModel = navGraphViewModel<HarmonyViewModel>(navController)
 
     Column(modifier = backgroundModifier.verticalScroll(rememberScrollState()))
     {
 
         ControlDialog(navController, resultViewModel)
-
 
         Box(modifier = appBarModifier
             .background(color = MaterialTheme.backgroundColorScheme.secondaryBackgroundColor)
@@ -111,20 +107,39 @@ fun TarotResultScreen(
             )
 
             Box(modifier = Modifier.background(color = MaterialTheme.backgroundColorScheme.cardSliderBackgroundColor)){
-                CardSlider(tarotResult = resultViewModel.tarotResult.value, fortuneViewModel = fortuneViewModel)
+
+                val result = resultViewModel.tarotResult.value
+                CardSlider(
+                    tarotResult = result,
+                    cardImageList = getCardSliderImage(
+                        LocalContext.current,
+                        result.cards,
+                        fortuneViewModel
+                    )
+                )
             }
 
 
-            OverallResult(resultViewModel, harmonyViewModel, demoViewModel)
+            OverallResult(resultViewModel, harmonyViewModel)
 
         }
 
     }
 }
 
+fun getCardSliderImage(context: Context, cards: ArrayList<Int>, fortuneViewModel: FortuneViewModel): MutableList<Int> {
+    val sliderList: MutableList<Int> = arrayListOf(0, 0, 0)
+    for ((idx, value) in cards.withIndex()) {
+        sliderList[idx] = fortuneViewModel.getCardImageId(context, value.toString())
+    }
+    return sliderList
+}
+
 
 @Composable
-private fun OverallResult(resultViewModel: ResultViewModel, harmonyViewModel: HarmonyViewModel, demoViewModel: DemoViewModel){
+private fun OverallResult(resultViewModel: ResultViewModel, harmonyViewModel: HarmonyViewModel){
+
+    val isDemo = LocalIsDemo.current
 
     Column(
         modifier = Modifier
@@ -162,7 +177,7 @@ private fun OverallResult(resultViewModel: ResultViewModel, harmonyViewModel: Ha
         Button(
             onClick = {
                 // 타로 결과 id 저장
-                saveToMyTarot(resultViewModel, demoViewModel.isDemo)
+                saveToMyTarot(resultViewModel, isDemo)
             },
             shape = RoundedCornerShape(10.dp),
             enabled = !resultViewModel.saveState.value,

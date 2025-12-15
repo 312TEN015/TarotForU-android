@@ -38,24 +38,21 @@ import androidx.core.view.WindowCompat
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import com.fourleafclover.tarot.LocalIsDemo
 import com.fourleafclover.tarot.MyApplication
 import com.fourleafclover.tarot.R
 import com.fourleafclover.tarot.data.TarotSubjectData
 import com.fourleafclover.tarot.demo.ui.theme.backgroundColorScheme
-import com.fourleafclover.tarot.demo.ui.theme.color.ColorSet
-import com.fourleafclover.tarot.demo.ui.theme.color.gray_1
 import com.fourleafclover.tarot.demo.ui.theme.color.gray_8
 import com.fourleafclover.tarot.demo.ui.theme.color.gray_9
 import com.fourleafclover.tarot.demo.ui.theme.textColorScheme
-import com.fourleafclover.tarot.demo.viewmodel.DemoViewModel
 import com.fourleafclover.tarot.ui.navigation.ScreenEnum
+import com.fourleafclover.tarot.ui.navigation.navGraphViewModel
 import com.fourleafclover.tarot.ui.navigation.navigateInclusive
 import com.fourleafclover.tarot.ui.screen.harmony.emitExit
-import com.fourleafclover.tarot.ui.screen.harmony.setOnExit
 import com.fourleafclover.tarot.ui.screen.harmony.viewmodel.HarmonyViewModel
 import com.fourleafclover.tarot.ui.screen.harmony.viewmodel.ResultViewModel
 import com.fourleafclover.tarot.ui.screen.main.DialogViewModel
-import com.fourleafclover.tarot.ui.screen.my.prepareDemoMyTarotData
 import com.fourleafclover.tarot.ui.screen.my.viewmodel.MyTarotViewModel
 import com.fourleafclover.tarot.ui.theme.getTextStyle
 import com.fourleafclover.tarot.utils.getMyTarotList
@@ -429,10 +426,11 @@ fun ControlDialog(
 
 @Composable
 fun BottomNavigationBar(
-    navController: NavHostController = rememberNavController(),
-    myTarotViewModel: MyTarotViewModel,
-    demoViewModel: DemoViewModel
+    navController: NavHostController = rememberNavController()
 ) {
+    val myTarotViewModel = navGraphViewModel<MyTarotViewModel>(navController)
+    val isDemo = LocalIsDemo.current
+
     val localContext = LocalContext.current
     val items = listOf<BottomNavItem>(
         BottomNavItem.Home,
@@ -485,7 +483,7 @@ fun BottomNavigationBar(
                         if (item.screenName == ScreenEnum.MyTarotScreen.name) {
                             val tarotResultArray = MyApplication.prefs.getTarotResultArray()
                             if (tarotResultArray.isNotEmpty()) {
-                                getMyTarotList(localContext, navController, tarotResultArray, myTarotViewModel, demoViewModel.isDemo)
+                                getMyTarotList(localContext, navController, tarotResultArray, myTarotViewModel, isDemo)
                                 return@BottomNavigationItem
                             }
                         }

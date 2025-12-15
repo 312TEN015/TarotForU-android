@@ -32,7 +32,6 @@ import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.platform.LocalConfiguration
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
@@ -41,10 +40,7 @@ import androidx.compose.ui.unit.dp
 import com.fourleafclover.tarot.data.CardResultData
 import com.fourleafclover.tarot.data.TarotOutputDto
 import com.fourleafclover.tarot.demo.ui.theme.backgroundColorScheme
-import com.fourleafclover.tarot.demo.ui.theme.color.ColorSet
 import com.fourleafclover.tarot.demo.ui.theme.textColorScheme
-import com.fourleafclover.tarot.ui.screen.fortune.viewModel.FortuneViewModel
-import com.fourleafclover.tarot.ui.screen.fortune.viewModel.dummyTarotOutputDto
 import com.fourleafclover.tarot.ui.theme.TextB02M16
 import com.fourleafclover.tarot.ui.theme.TextB04M12
 import kotlin.math.absoluteValue
@@ -53,14 +49,11 @@ import kotlin.math.absoluteValue
 @Composable
 fun CardSlider(
     modifier: Modifier = Modifier,
-    tarotResult: TarotOutputDto = dummyTarotOutputDto,
-    fortuneViewModel: FortuneViewModel
+    tarotResult: TarotOutputDto,
+    cardImageList: MutableList<Int>
 ) {
 
-    val sliderList: MutableList<Int> = arrayListOf(0, 0, 0)
-    for ((idx, value) in tarotResult.cards.withIndex()) {
-        sliderList[idx] = fortuneViewModel.getCardImageId(LocalContext.current, value.toString())
-    }
+    if (cardImageList.contains(0)) return
 
     val pagerState = rememberPagerState(
         initialPage = 0,
@@ -110,7 +103,7 @@ fun CardSlider(
                             scaleFactor.coerceIn(0f, 1f)
                         )) {
 
-                        val painter = painterResource(id = sliderList[page])
+                        val painter = painterResource(id = cardImageList[page])
                         val imageRatio = painter.intrinsicSize.width / painter.intrinsicSize.height
                         Image(
                             painter = painter,
@@ -127,7 +120,7 @@ fun CardSlider(
         }
 
         DotsIndicator(
-            totalDots = sliderList.size,
+            totalDots = cardImageList.size,
             selectedIndex = pagerState.currentPage
         )
 
@@ -220,7 +213,7 @@ fun DotsIndicator(
 fun HarmonyCardSlider(
     modifier: Modifier = Modifier,
     outsideHorizontalPadding: Dp = 0.dp,
-    sliderList: MutableList<Int> = arrayListOf(0, 0, 0),
+    cardImageList: MutableList<Int> = arrayListOf(0, 0, 0),
     firstCardResults: List<CardResultData>,
     secondCardResults: List<CardResultData>,
     isFirstTab: Boolean
@@ -281,7 +274,7 @@ fun HarmonyCardSlider(
                             scaleFactor.coerceIn(0f, 1f)
                         )) {
 
-                        val painter = painterResource(id = sliderList[page])
+                        val painter = painterResource(id = cardImageList[page])
                         val imageRatio = painter.intrinsicSize.width / painter.intrinsicSize.height
                         Image(
                             painter = painter,
@@ -298,7 +291,7 @@ fun HarmonyCardSlider(
         }
 
         DotsIndicator(
-            totalDots = sliderList.size,
+            totalDots = cardImageList.size,
             selectedIndex = pagerState.currentPage
         )
 

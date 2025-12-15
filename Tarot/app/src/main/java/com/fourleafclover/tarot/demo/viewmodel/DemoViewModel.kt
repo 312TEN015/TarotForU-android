@@ -7,8 +7,6 @@ import javax.inject.Inject
 
 @HiltViewModel
 class DemoViewModel @Inject constructor(): ViewModel() {
-    private var _isDemo = mutableStateOf(false)
-    val isDemo get() = _isDemo.value
 
     private var _demoDialogData = mutableStateOf(DemoDialogData())
     val demoDialogData get() = _demoDialogData.value
@@ -19,12 +17,8 @@ class DemoViewModel @Inject constructor(): ViewModel() {
         var content: String = ""
     )
 
-    fun setIsDemo(value: Boolean) {
-        _isDemo.value = value
-    }
-
-    fun setDemoDialog(visibility: Boolean, title: String, content: String) {
-        _demoDialogData.value = DemoDialogData(visibility, title, content)
+    fun setDemoDialog(demoDialogData: DemoDialogData) {
+        _demoDialogData.value = demoDialogData
     }
 
     fun setDemoDialogVisibility(value: Boolean) {

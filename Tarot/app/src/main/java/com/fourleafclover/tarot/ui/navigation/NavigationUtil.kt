@@ -1,6 +1,13 @@
 package com.fourleafclover.tarot.ui.navigation
 
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.ViewModel
+import androidx.navigation.NavController
 import androidx.navigation.NavHostController
+import androidx.navigation.compose.currentBackStackEntryAsState
 
 // 백 스택에 저장
 fun navigateSaveState(navController: NavHostController, screenName: String){
@@ -15,4 +22,18 @@ fun navigateInclusive(navController: NavHostController, screenName: String){
     navController.navigate(screenName) {
         popUpTo(screenName) {  inclusive = true }
     }
+}
+
+@Composable
+inline fun <reified VM : ViewModel> navGraphViewModel(
+    navController: NavHostController,
+    route: String = "root_graph"
+): VM {
+    val navBackStackEntry by navController.currentBackStackEntryAsState()
+
+    val parentEntry = remember(navBackStackEntry) {
+        navController.getBackStackEntry(route)
+    }
+
+    return hiltViewModel(parentEntry)
 }

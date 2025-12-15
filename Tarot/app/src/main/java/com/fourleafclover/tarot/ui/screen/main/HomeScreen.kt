@@ -33,6 +33,7 @@ import com.fourleafclover.tarot.ui.component.getBackgroundModifier
 import com.fourleafclover.tarot.ui.component.setStatusbarColor
 import com.fourleafclover.tarot.ui.navigation.FinishOnBackPressed
 import com.fourleafclover.tarot.ui.navigation.ScreenEnum
+import com.fourleafclover.tarot.ui.navigation.navGraphViewModel
 import com.fourleafclover.tarot.ui.navigation.navigateSaveState
 import com.fourleafclover.tarot.ui.screen.fortune.viewModel.FortuneViewModel
 import com.fourleafclover.tarot.ui.screen.fortune.viewModel.PickTarotViewModel
@@ -59,16 +60,11 @@ fun Context.findActivity(): Activity? = when (this) {
 @Composable
 fun HomeScreen(
     activity: Activity,
-    navController: NavHostController = rememberNavController(),
-    harmonyViewModel: HarmonyViewModel,
-    shareViewModel: ShareViewModel,
-    dialogViewModel: DialogViewModel,
-    loadingViewModel: LoadingViewModel,
-    fortuneViewModel: FortuneViewModel,
-    demoViewModel: DemoViewModel
+    navController: NavHostController = rememberNavController()
 ) {
 
-
+    val demoViewModel: DemoViewModel = navGraphViewModel(navController)
+    val fortuneViewModel: FortuneViewModel = navGraphViewModel(navController)
 
     // 상태바 초기화
     setStatusbarColor(LocalView.current, MaterialTheme.backgroundColorScheme.mainBackgroundColor)
@@ -77,7 +73,7 @@ fun HomeScreen(
     FinishOnBackPressed()
 
     // 데모앱 안내문
-    if (demoViewModel.isDemo && demoViewModel.demoDialogData.visibility) {
+    if (demoViewModel.demoDialogData.visibility) {
         Dialog(onDismissRequest = { demoViewModel.setDemoDialogVisibility(false) }) {
             DemoAppNoticeDialog(demoViewModel) { demoViewModel.setDemoDialogVisibility(false) }
         }

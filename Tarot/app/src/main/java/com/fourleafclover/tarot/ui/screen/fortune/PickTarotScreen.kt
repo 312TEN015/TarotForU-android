@@ -52,9 +52,11 @@ import com.fourleafclover.tarot.demo.ui.theme.textColorScheme
 import com.fourleafclover.tarot.ui.component.AppBarCloseWithDialog
 import com.fourleafclover.tarot.ui.component.backgroundModifier
 import com.fourleafclover.tarot.ui.navigation.ScreenEnum
+import com.fourleafclover.tarot.ui.navigation.navGraphViewModel
 import com.fourleafclover.tarot.ui.screen.fortune.viewModel.FortuneViewModel
 import com.fourleafclover.tarot.ui.screen.fortune.viewModel.PickTarotViewModel
 import com.fourleafclover.tarot.ui.screen.harmony.viewmodel.LoadingViewModel
+import com.fourleafclover.tarot.ui.screen.harmony.viewmodel.LoadingViewModel_Factory
 import com.fourleafclover.tarot.ui.screen.main.DialogViewModel
 import com.fourleafclover.tarot.ui.theme.TextButtonM16
 import com.fourleafclover.tarot.ui.theme.TextCaptionM12
@@ -66,11 +68,12 @@ import kotlin.math.roundToInt
 @Composable
 fun PickTarotScreen(
     navController: NavHostController = rememberNavController(),
-    loadingViewModel: LoadingViewModel = hiltViewModel(),
-    fortuneViewModel: FortuneViewModel = hiltViewModel(),
-    pickTarotViewModel: PickTarotViewModel = hiltViewModel(),
-    dialogViewModel: DialogViewModel = hiltViewModel()
 ) {
+    val loadingViewModel = navGraphViewModel<LoadingViewModel>(navController)
+    val fortuneViewModel = navGraphViewModel<FortuneViewModel>(navController)
+    val pickTarotViewModel = navGraphViewModel<PickTarotViewModel>(navController)
+    val dialogViewModel = navGraphViewModel<DialogViewModel>(navController)
+
     val localContext = LocalContext.current
     var showIndicator by remember { mutableStateOf(MyApplication.prefs.isPickCardIndicateComplete()) }
 

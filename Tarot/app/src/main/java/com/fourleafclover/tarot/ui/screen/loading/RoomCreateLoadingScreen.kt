@@ -15,6 +15,7 @@ import com.fourleafclover.tarot.demo.ui.theme.color.ColorSet
 import com.fourleafclover.tarot.ui.component.LoadingCircle
 import com.fourleafclover.tarot.ui.component.getBackgroundModifier
 import com.fourleafclover.tarot.ui.navigation.PreventBackPressed
+import com.fourleafclover.tarot.ui.navigation.navGraphViewModel
 import com.fourleafclover.tarot.ui.screen.harmony.emitCreate
 import com.fourleafclover.tarot.ui.screen.harmony.setOnCreateComplete
 import com.fourleafclover.tarot.ui.screen.harmony.viewmodel.HarmonyViewModel
@@ -24,10 +25,11 @@ import com.fourleafclover.tarot.ui.screen.harmony.viewmodel.LoadingViewModel
 @Composable
 @Preview
 fun RoomCreateLoadingScreen(
-    navController: NavHostController = rememberNavController(),
-    harmonyViewModel: HarmonyViewModel = hiltViewModel(),
-    loadingViewModel: LoadingViewModel = hiltViewModel()
+    navController: NavHostController = rememberNavController()
 ){
+
+    val loadingViewModel = navGraphViewModel<LoadingViewModel>(navController)
+    val harmonyViewModel = navGraphViewModel<HarmonyViewModel>(navController)
 
     if (!loadingViewModel.isLoading.value) {
         loadingViewModel.endLoading(navController)

@@ -32,6 +32,7 @@ import com.fourleafclover.tarot.ui.component.getBackgroundModifier
 import com.fourleafclover.tarot.ui.component.getOutlinedRectangleModifier
 import com.fourleafclover.tarot.ui.navigation.PreventBackPressed
 import com.fourleafclover.tarot.ui.navigation.ScreenEnum
+import com.fourleafclover.tarot.ui.navigation.navGraphViewModel
 import com.fourleafclover.tarot.ui.navigation.navigateSaveState
 import com.fourleafclover.tarot.ui.screen.harmony.viewmodel.GenderViewModel
 import com.fourleafclover.tarot.ui.screen.harmony.viewmodel.HarmonyViewModel
@@ -46,11 +47,11 @@ const val MAN = 1
 @Preview
 @Composable
 fun RoomGenderScreen(
-    navController: NavHostController = rememberNavController(),
-    genderViewModel: GenderViewModel = hiltViewModel(),
-    harmonyViewModel: HarmonyViewModel = hiltViewModel(),
-    dialogViewModel: DialogViewModel = hiltViewModel()
+    navController: NavHostController = rememberNavController()
 ) {
+    val genderViewModel = navGraphViewModel<GenderViewModel>(navController)
+    val dialogViewModel = navGraphViewModel<DialogViewModel>(navController)
+    val harmonyViewModel = navGraphViewModel<HarmonyViewModel>(navController)
     PreventBackPressed()
 
     Column(modifier = getBackgroundModifier(MaterialTheme.backgroundColorScheme.mainBackgroundColor)) {

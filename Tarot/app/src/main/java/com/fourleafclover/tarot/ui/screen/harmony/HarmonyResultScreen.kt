@@ -29,11 +29,11 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
+import com.fourleafclover.tarot.LocalIsDemo
 import com.fourleafclover.tarot.MyApplication
 import com.fourleafclover.tarot.R
 import com.fourleafclover.tarot.SubjectHarmony
 import com.fourleafclover.tarot.data.TarotOutputDto
-import com.fourleafclover.tarot.demo.data.demoHarmonyTarotResult
 import com.fourleafclover.tarot.demo.ui.component.PrimaryButtonColors
 import com.fourleafclover.tarot.demo.ui.component.SecondaryButtonColors
 import com.fourleafclover.tarot.demo.ui.theme.backgroundColorScheme
@@ -43,6 +43,7 @@ import com.fourleafclover.tarot.ui.component.AppBarCloseTarotResult
 import com.fourleafclover.tarot.ui.component.ControlDialog
 import com.fourleafclover.tarot.ui.component.HarmonyCardSlider
 import com.fourleafclover.tarot.ui.component.getBackgroundModifier
+import com.fourleafclover.tarot.ui.navigation.navGraphViewModel
 import com.fourleafclover.tarot.ui.screen.fortune.saveToMyTarot
 import com.fourleafclover.tarot.ui.screen.fortune.viewModel.FortuneViewModel
 import com.fourleafclover.tarot.ui.screen.harmony.viewmodel.HarmonyViewModel
@@ -60,11 +61,13 @@ import com.fourleafclover.tarot.utils.setDynamicLink
 @Composable
 fun HarmonyResultScreen(
     navController: NavHostController,
-    harmonyViewModel: HarmonyViewModel = hiltViewModel(),
-    fortuneViewModel: FortuneViewModel = hiltViewModel(),
-    resultViewModel: ResultViewModel = hiltViewModel(),
-    demoViewModel: DemoViewModel = hiltViewModel()
 ) {
+
+    val demoViewModel = navGraphViewModel<DemoViewModel>(navController)
+    val fortuneViewModel = navGraphViewModel<FortuneViewModel>(navController)
+    val harmonyViewModel = navGraphViewModel<HarmonyViewModel>(navController)
+    val resultViewModel = navGraphViewModel<ResultViewModel>(navController)
+
     HarmonyResultScreenPreview(navController, harmonyViewModel, fortuneViewModel, resultViewModel, demoViewModel)
 }
 
@@ -170,7 +173,7 @@ fun HarmonyResultScreenPreview(
 
                 HarmonyCardSlider(
                     outsideHorizontalPadding = 40.dp,
-                    sliderList = getSliderList(LocalContext.current, fortuneViewModel, resultViewModel),
+                    cardImageList = getSliderList(LocalContext.current, fortuneViewModel, resultViewModel),
                     firstCardResults = resultViewModel.myCardResults,
                     secondCardResults = resultViewModel.partnerCardResults,
                     isFirstTab = resultViewModel.isMyTab()
@@ -178,7 +181,7 @@ fun HarmonyResultScreenPreview(
             }
 
 
-            OverallResult(resultViewModel.tarotResult.value, resultViewModel, harmonyViewModel, demoViewModel)
+            OverallResult(resultViewModel.tarotResult.value, resultViewModel, harmonyViewModel)
 
         }
 
@@ -204,8 +207,9 @@ private fun getSliderList(context: Context, fortuneViewModel: FortuneViewModel, 
 private fun OverallResult(
     tarotOutputDto: TarotOutputDto,
     resultViewModel: ResultViewModel,
-    harmonyViewModel: HarmonyViewModel,
-    demoViewModel: DemoViewModel) {
+    harmonyViewModel: HarmonyViewModel) {
+
+    val isDemo = LocalIsDemo.current
 
     Column(
         modifier = Modifier
@@ -243,7 +247,7 @@ private fun OverallResult(
         Button(
             onClick = {
                 // 타로 결과 id 저장
-                saveToMyTarot(resultViewModel, demoViewModel.isDemo)
+                saveToMyTarot(resultViewModel, isDemo)
             },
             shape = RoundedCornerShape(10.dp),
             enabled = !resultViewModel.saveState.value,

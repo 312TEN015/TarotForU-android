@@ -32,6 +32,7 @@ import com.fourleafclover.tarot.ui.component.ShareLinkOrCopy
 import com.fourleafclover.tarot.ui.component.getBackgroundModifier
 import com.fourleafclover.tarot.ui.navigation.PreventBackPressed
 import com.fourleafclover.tarot.ui.navigation.ScreenEnum
+import com.fourleafclover.tarot.ui.navigation.navGraphViewModel
 import com.fourleafclover.tarot.ui.screen.harmony.viewmodel.HarmonyViewModel
 import com.fourleafclover.tarot.ui.screen.harmony.viewmodel.LoadingViewModel
 import com.fourleafclover.tarot.ui.screen.main.DialogViewModel
@@ -42,11 +43,12 @@ import com.fourleafclover.tarot.ui.theme.TextH02M22
 @Preview
 @Composable
 fun RoomShareScreen(
-    navController: NavHostController = rememberNavController(),
-    loadingViewModel: LoadingViewModel = hiltViewModel(),
-    harmonyViewModel: HarmonyViewModel = hiltViewModel(),
-    dialogViewModel: DialogViewModel = hiltViewModel()
+    navController: NavHostController = rememberNavController()
 ) {
+
+    val loadingViewModel = navGraphViewModel<LoadingViewModel>(navController)
+    val dialogViewModel = navGraphViewModel<DialogViewModel>(navController)
+    val harmonyViewModel = navGraphViewModel<HarmonyViewModel>(navController)
 
     PreventBackPressed()
 

@@ -1,33 +1,27 @@
 package com.fourleafclover.tarot.ui.navigation
 
-import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
-import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.viewmodel.compose.LocalViewModelStoreOwner
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import com.fourleafclover.tarot.LocalIsDemo
 import com.fourleafclover.tarot.MainActivity
 import com.fourleafclover.tarot.MyApplication
 import com.fourleafclover.tarot.demo.ui.theme.backgroundColorScheme
-import com.fourleafclover.tarot.demo.ui.theme.color.TarotColors
-import com.fourleafclover.tarot.demo.ui.theme.colorScheme
 import com.fourleafclover.tarot.demo.viewmodel.DemoViewModel
 import com.fourleafclover.tarot.ui.component.BottomNavigationBar
 import com.fourleafclover.tarot.ui.screen.fortune.InputScreen
 import com.fourleafclover.tarot.ui.screen.fortune.PickTarotScreen
 import com.fourleafclover.tarot.ui.screen.fortune.TarotResultScreen
-import com.fourleafclover.tarot.ui.screen.fortune.viewModel.FortuneViewModel
 import com.fourleafclover.tarot.ui.screen.fortune.viewModel.PickTarotViewModel
 import com.fourleafclover.tarot.ui.screen.fortune.viewModel.QuestionInputViewModel
 import com.fourleafclover.tarot.ui.screen.harmony.HarmonyResultScreen
@@ -57,40 +51,19 @@ import com.fourleafclover.tarot.ui.screen.my.ShareDetailScreen
 import com.fourleafclover.tarot.ui.screen.my.ShareHarmonyDetailScreen
 import com.fourleafclover.tarot.ui.screen.my.viewmodel.MyTarotViewModel
 import com.fourleafclover.tarot.ui.screen.my.viewmodel.ShareViewModel
-import com.fourleafclover.tarot.utils.LogTags
 import com.fourleafclover.tarot.utils.receiveShareRequest
 
 @Composable
-fun NavigationHost() {
+fun NavigationHost(dialogData: DemoViewModel.DemoDialogData? = null) {
     val navController = rememberNavController()
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentRoute = navBackStackEntry?.destination?.route
-
     val activity = LocalViewModelStoreOwner.current as MainActivity
-    val fortuneViewModel: FortuneViewModel = hiltViewModel(activity)
-    val questionInputViewModel: QuestionInputViewModel = hiltViewModel(activity)
-    val pickTarotViewModel: PickTarotViewModel = hiltViewModel(activity)
-    val resultViewModel: ResultViewModel = hiltViewModel(activity)
-
-    val dialogViewModel: DialogViewModel = hiltViewModel(activity)
-    val shareViewModel: ShareViewModel = hiltViewModel(activity)
-    val loadingViewModel: LoadingViewModel = hiltViewModel(activity)
-
-    val harmonyViewModel: HarmonyViewModel = hiltViewModel(activity)
-    val roomCreateViewModel: RoomCreateViewModel = hiltViewModel(activity)
-    val genderViewModel: GenderViewModel = hiltViewModel(activity)
-    val nicknameViewModel: NicknameViewModel = hiltViewModel(activity)
-    val chatViewModel: ChatViewModel = hiltViewModel(activity)
-
-    val myTarotViewModel: MyTarotViewModel = hiltViewModel(activity)
-    val demoViewModel: DemoViewModel = hiltViewModel(activity)
-
-
 
     Scaffold(
         bottomBar = {
             if (currentRoute == ScreenEnum.HomeScreen.name || currentRoute == ScreenEnum.MyTarotScreen.name) {
-                BottomNavigationBar(navController = navController, myTarotViewModel, demoViewModel)
+                BottomNavigationBar(navController = navController)
             }
         },
         modifier = Modifier
@@ -98,10 +71,34 @@ fun NavigationHost() {
             .systemBarsPadding()
     ) { innerPadding -> innerPadding
 
-        NavHost(navController = navController, startDestination = ScreenEnum.OnBoardingScreen.name) {
+        NavHost(navController = navController, startDestination = ScreenEnum.OnBoardingScreen.name, route = "root_graph") {
             composable(ScreenEnum.HomeScreen.name) {
+                val isDemo = LocalIsDemo.current
+
+                val questionInputViewModel: QuestionInputViewModel = navGraphViewModel(navController)
+                val pickTarotViewModel: PickTarotViewModel = navGraphViewModel(navController)
+                val resultViewModel: ResultViewModel = navGraphViewModel(navController)
+
+                val dialogViewModel: DialogViewModel = navGraphViewModel(navController)
+                val shareViewModel: ShareViewModel = navGraphViewModel(navController)
+                val loadingViewModel: LoadingViewModel = navGraphViewModel(navController)
+
+                val harmonyViewModel: HarmonyViewModel = navGraphViewModel(navController)
+                val roomCreateViewModel: RoomCreateViewModel = navGraphViewModel(navController)
+                val genderViewModel: GenderViewModel = navGraphViewModel(navController)
+                val nicknameViewModel: NicknameViewModel = navGraphViewModel(navController)
+                val chatViewModel: ChatViewModel = navGraphViewModel(navController)
+
+                val myTarotViewModel: MyTarotViewModel = navGraphViewModel(navController)
+                val demoViewModel: DemoViewModel = navGraphViewModel<DemoViewModel>(navController)
+                    .apply {
+                        LaunchedEffect(Unit) {
+                            dialogData?.let { setDemoDialog(dialogData) }
+                        }
+                    }
 
                 LaunchedEffect(Unit) {
+
                     questionInputViewModel.clear()
                     pickTarotViewModel.clear()
                     resultViewModel.clear()
@@ -117,52 +114,33 @@ fun NavigationHost() {
 
                     // 공유하기 확인
                     if (activity.intent != null) {
-                        receiveShareRequest(activity, navController, shareViewModel, loadingViewModel, harmonyViewModel, demoViewModel)
+                        receiveShareRequest(activity, navController, shareViewModel, loadingViewModel, harmonyViewModel, isDemo)
                     }
                 }
 
                 HomeScreen(
                     activity,
-                    navController,
-                    harmonyViewModel,
-                    shareViewModel,
-                    dialogViewModel,
-                    loadingViewModel,
-                    fortuneViewModel,
-                    demoViewModel
+                    navController
                     )
             }
             composable(ScreenEnum.MyTarotScreen.name) {
                 MyTarotScreen(
-                    navController,
-                    myTarotViewModel,
-                    fortuneViewModel
+                    navController
                 )
             }
             composable(ScreenEnum.InputScreen.name) {
                 InputScreen(
-                    navController,
-                    fortuneViewModel,
-                    questionInputViewModel,
-                    dialogViewModel
+                    navController
                 )
             }
             composable(ScreenEnum.PickTarotScreen.name) {
                 PickTarotScreen(
-                    navController,
-                    loadingViewModel,
-                    fortuneViewModel,
-                    pickTarotViewModel,
-                    dialogViewModel
+                    navController
                     )
             }
             composable(ScreenEnum.ResultScreen.name) {
                 TarotResultScreen(
-                    navController,
-                    fortuneViewModel,
-                    resultViewModel,
-                    harmonyViewModel,
-                    demoViewModel
+                    navController
                     )
             }
             composable(ScreenEnum.OnBoardingScreen.name) {
@@ -174,83 +152,52 @@ fun NavigationHost() {
             }
             composable(ScreenEnum.LoadingScreen.name) {
                 LoadingScreen(
-                    navController,
-                    loadingViewModel,
-                    resultViewModel,
-                    fortuneViewModel,
-                    pickTarotViewModel,
-                    questionInputViewModel,
-                    demoViewModel
+                    navController
                     )
             }
             composable(ScreenEnum.MyTarotDetailScreen.name) {
                 MyTarotDetailScreen(
-                    navController,
-                    fortuneViewModel,
-                    myTarotViewModel,
-                    harmonyViewModel
+                    navController
                     )
             }
             composable(ScreenEnum.ShareDetailScreen.name) {
                 ShareDetailScreen(
-                    navController,
-                    fortuneViewModel,
-                    shareViewModel
+                    navController
                 )
             }
             composable(ScreenEnum.ShareHarmonyDetailScreen.name) {
                 ShareHarmonyDetailScreen(
-                    navController,
-                    fortuneViewModel,
-                    shareViewModel
+                    navController
                 )
             }
             composable(ScreenEnum.RoomCreateScreen.name) {
                 RoomCreateScreen(
-                    navController,
-                    roomCreateViewModel,
-                    harmonyViewModel
+                    navController
                 )
             }
             composable(ScreenEnum.RoomGenderScreen.name) {
                 RoomGenderScreen(
-                    navController,
-                    genderViewModel,
-                    harmonyViewModel,
-                    dialogViewModel
+                    navController
                     )
             }
             composable(ScreenEnum.RoomNicknameScreen.name) {
                 RoomNicknameScreen(
-                    navController,
-                    nicknameViewModel,
-                    harmonyViewModel,
-                    loadingViewModel,
-                    dialogViewModel
+                    navController
                 )
             }
             composable(ScreenEnum.RoomCreateLoadingScreen.name) {
                 RoomCreateLoadingScreen(
-                    navController,
-                    harmonyViewModel,
-                    loadingViewModel
+                    navController
                     )
             }
             composable(ScreenEnum.RoomShareScreen.name) {
                 RoomShareScreen(
-                    navController,
-                    loadingViewModel,
-                    harmonyViewModel,
-                    dialogViewModel
+                    navController
                 )
             }
             composable(ScreenEnum.RoomInviteLoadingScreen.name) {
                 RoomInviteLoadingScreen(
-                    navController,
-                    harmonyViewModel,
-                    loadingViewModel,
-                    chatViewModel,
-                    dialogViewModel
+                    navController
                     )
             }
             composable(ScreenEnum.RoomEnteringScreen.name) {
@@ -258,30 +205,17 @@ fun NavigationHost() {
             }
             composable(ScreenEnum.RoomChatScreen.name) {
                 RoomChatScreen(
-                    navController,
-                    harmonyViewModel,
-                    chatViewModel,
-                    fortuneViewModel,
-                    pickTarotViewModel,
-                    resultViewModel,
-                    loadingViewModel,
-                    dialogViewModel
+                    navController
                     )
             }
             composable(ScreenEnum.RoomResultScreen.name) {
                 HarmonyResultScreen(
-                    navController,
-                    harmonyViewModel,
-                    fortuneViewModel,
-                    resultViewModel,
-                    demoViewModel
+                    navController
                 )
             }
             composable(ScreenEnum.MyTarotHarmonyDetailScreen.name) {
                 MyTarotHarmonyDetail(
-                    navController,
-                    fortuneViewModel,
-                    myTarotViewModel
+                    navController
                 )
             }
         }

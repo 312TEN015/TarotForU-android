@@ -60,6 +60,7 @@ import com.fourleafclover.tarot.ui.component.ButtonText
 import com.fourleafclover.tarot.ui.component.getBackgroundModifier
 import com.fourleafclover.tarot.ui.navigation.PreventBackPressed
 import com.fourleafclover.tarot.ui.navigation.ScreenEnum
+import com.fourleafclover.tarot.ui.navigation.navGraphViewModel
 import com.fourleafclover.tarot.ui.navigation.navigateInclusive
 import com.fourleafclover.tarot.ui.screen.fortune.CardDeck
 import com.fourleafclover.tarot.ui.screen.fortune.viewModel.FortuneViewModel
@@ -86,15 +87,16 @@ var initialComposition = true
 @Composable
 @Preview
 fun RoomChatScreen(
-    navController: NavHostController = rememberNavController(),
-    harmonyViewModel: HarmonyViewModel = hiltViewModel(),
-    chatViewModel: ChatViewModel = hiltViewModel(),
-    fortuneViewModel: FortuneViewModel = hiltViewModel(),
-    pickTarotViewModel: PickTarotViewModel = hiltViewModel(),
-    resultViewModel: ResultViewModel = hiltViewModel(),
-    loadingViewModel: LoadingViewModel = hiltViewModel(),
-    dialogViewModel: DialogViewModel = hiltViewModel()
+    navController: NavHostController = rememberNavController()
 ) {
+
+    val chatViewModel = navGraphViewModel<ChatViewModel>(navController)
+    val fortuneViewModel = navGraphViewModel<FortuneViewModel>(navController)
+    val harmonyViewModel = navGraphViewModel<HarmonyViewModel>(navController)
+    val pickTarotViewModel = navGraphViewModel<PickTarotViewModel>(navController)
+    val resultViewModel = navGraphViewModel<ResultViewModel>(navController)
+    val loadingViewModel = navGraphViewModel<LoadingViewModel>(navController)
+    val dialogViewModel = navGraphViewModel<DialogViewModel>(navController)
 
     val chatState = chatViewModel.chatState.collectAsState()
     val partnerChatState = chatViewModel.partnerChatState.collectAsState()
