@@ -47,6 +47,7 @@ import com.fourleafclover.tarot.demo.ui.theme.color.gray_1
 import com.fourleafclover.tarot.demo.ui.theme.color.gray_8
 import com.fourleafclover.tarot.demo.ui.theme.color.gray_9
 import com.fourleafclover.tarot.demo.ui.theme.textColorScheme
+import com.fourleafclover.tarot.demo.viewmodel.DemoViewModel
 import com.fourleafclover.tarot.ui.navigation.ScreenEnum
 import com.fourleafclover.tarot.ui.navigation.navigateInclusive
 import com.fourleafclover.tarot.ui.screen.harmony.emitExit
@@ -426,7 +427,11 @@ fun ControlDialog(
 
 
 @Composable
-fun BottomNavigationBar(navController: NavHostController = rememberNavController(), myTarotViewModel: MyTarotViewModel) {
+fun BottomNavigationBar(
+    navController: NavHostController = rememberNavController(),
+    myTarotViewModel: MyTarotViewModel,
+    demoViewModel: DemoViewModel
+) {
     val localContext = LocalContext.current
     val items = listOf<BottomNavItem>(
         BottomNavItem.Home,
@@ -479,7 +484,7 @@ fun BottomNavigationBar(navController: NavHostController = rememberNavController
                         if (item.screenName == ScreenEnum.MyTarotScreen.name) {
                             val tarotResultArray = MyApplication.prefs.getTarotResultArray()
                             if (tarotResultArray.isNotEmpty()) {
-                                getMyTarotList(localContext, navController, tarotResultArray, myTarotViewModel)
+                                getMyTarotList(localContext, navController, tarotResultArray, myTarotViewModel, demoViewModel.isDemo)
                                 return@BottomNavigationItem
                             }
                         }

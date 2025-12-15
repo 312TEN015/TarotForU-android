@@ -11,7 +11,9 @@ import com.fourleafclover.tarot.data.TarotOutputDto
 import com.fourleafclover.tarot.demo.viewmodel.DemoViewModel
 import androidx.activity.viewModels
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.fourleafclover.tarot.demo.data.demoHarmonyTarotResult
 import com.fourleafclover.tarot.demo.data.demoTarotResult
+import com.fourleafclover.tarot.demo.data.demoTarotResultArray
 import com.fourleafclover.tarot.ui.navigation.ScreenEnum
 import com.fourleafclover.tarot.ui.navigation.navigateInclusive
 import com.fourleafclover.tarot.ui.screen.fortune.viewModel.PickTarotViewModel
@@ -40,8 +42,15 @@ fun getMyTarotList(
     localContext: Context,
     navController: NavHostController,
     tarotResultArray: ArrayList<String>,
-    myTarotViewModel: MyTarotViewModel
+    myTarotViewModel: MyTarotViewModel,
+    isDemo: Boolean = false
 ) {
+    if (isDemo) {
+        myTarotViewModel.setMyTarotResults(demoTarotResultArray)
+        navigateInclusive(navController, ScreenEnum.MyTarotScreen.name)
+        return
+    }
+
     Log.d("", tarotResultArray.joinToString(" "))
     MyApplication.tarotService.getMyTarotResult(TarotIdsInputDto(tarotResultArray))
         .enqueue(object : Callback<ArrayList<TarotOutputDto>> {
@@ -72,7 +81,8 @@ fun getSharedTarotDetail(
     navController: NavHostController,
     tarotId: String,
     shareViewModel: ShareViewModel,
-    loadingViewModel: LoadingViewModel
+    loadingViewModel: LoadingViewModel,
+    isDemo: Boolean = false
 ) {
 
     getCertainTarotDetail(
@@ -85,7 +95,8 @@ fun getSharedTarotDetail(
                 loadingViewModel.changeDestination(ScreenEnum.ShareHarmonyDetailScreen)
             }
             loadingViewModel.endLoading(navController)
-        }
+        },
+        isDemo = isDemo
     )
 
 }
@@ -96,8 +107,15 @@ fun getCertainTarotDetail(
     tarotId: String,
     loadingViewModel: LoadingViewModel,
     onResponse: (responseBody: TarotOutputDto) -> Unit = {},
-    onFailure: () -> Unit = {}
+    onFailure: () -> Unit = {},
+    isDemo: Boolean = false
 ) {
+    if (isDemo) {
+        val response = if (tarotId == "1") demoTarotResult else demoHarmonyTarotResult
+        onResponse(response)
+        return
+    }
+
     MyApplication.tarotService.getMyTarotResult(TarotIdsInputDto(arrayListOf(tarotId)))
         .enqueue(object : Callback<ArrayList<TarotOutputDto>> {
             override fun onResponse(

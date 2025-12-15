@@ -84,10 +84,12 @@ fun NavigationHost() {
     val myTarotViewModel: MyTarotViewModel = viewModel(activity)
     val demoViewModel: DemoViewModel = viewModel(activity)
 
+
+
     Scaffold(
         bottomBar = {
             if (currentRoute == ScreenEnum.HomeScreen.name || currentRoute == ScreenEnum.MyTarotScreen.name) {
-                BottomNavigationBar(navController = navController, myTarotViewModel)
+                BottomNavigationBar(navController = navController, myTarotViewModel, demoViewModel)
             }
         },
         modifier = Modifier
@@ -114,7 +116,7 @@ fun NavigationHost() {
 
                     // 공유하기 확인
                     if (activity.intent != null) {
-                        receiveShareRequest(activity, navController, shareViewModel, loadingViewModel, harmonyViewModel)
+                        receiveShareRequest(activity, navController, shareViewModel, loadingViewModel, harmonyViewModel, demoViewModel)
                     }
                 }
 

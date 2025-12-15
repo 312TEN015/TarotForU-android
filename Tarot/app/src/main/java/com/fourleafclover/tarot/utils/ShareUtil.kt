@@ -11,6 +11,7 @@ import androidx.core.net.toUri
 import androidx.navigation.NavHostController
 import com.fourleafclover.tarot.MyApplication
 import com.fourleafclover.tarot.R
+import com.fourleafclover.tarot.demo.viewmodel.DemoViewModel
 import com.fourleafclover.tarot.ui.navigation.ScreenEnum
 import com.fourleafclover.tarot.ui.navigation.navigateInclusive
 import com.fourleafclover.tarot.ui.screen.harmony.viewmodel.HarmonyViewModel
@@ -163,7 +164,8 @@ fun receiveShareRequest(
     navController: NavHostController,
     shareViewModel: ShareViewModel,
     loadingViewModel: LoadingViewModel,
-    harmonyViewModel: HarmonyViewModel
+    harmonyViewModel: HarmonyViewModel,
+    demoViewModel: DemoViewModel
 ){
     Firebase.dynamicLinks
         .getDynamicLink(activity.intent)
@@ -178,7 +180,7 @@ fun receiveShareRequest(
             // 타로 결과 공유
             if (deepLinkUri.getBooleanQueryParameter("tarotId", false)){
                 val sharedTarotId = deepLinkUri.getQueryParameter("tarotId")!!
-                getSharedTarotDetail(navController, sharedTarotId, shareViewModel, loadingViewModel)
+                getSharedTarotDetail(navController, sharedTarotId, shareViewModel, loadingViewModel, demoViewModel.isDemo)
                 loadingViewModel.startLoading(navController, ScreenEnum.LoadingScreen, ScreenEnum.ShareDetailScreen)
             }
 

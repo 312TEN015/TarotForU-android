@@ -231,7 +231,10 @@ fun setOnNext(
     pickTarotViewModel.initCardDeck()
 }
 
-fun setOnResult(harmonyViewModel: HarmonyViewModel, loadingViewModel: LoadingViewModel, resultViewModel: ResultViewModel) {
+fun setOnResult(
+    harmonyViewModel: HarmonyViewModel,
+    loadingViewModel: LoadingViewModel,
+    resultViewModel: ResultViewModel) {
 
     // 응답 생성 완료
     val onResult = Emitter.Listener { args ->
