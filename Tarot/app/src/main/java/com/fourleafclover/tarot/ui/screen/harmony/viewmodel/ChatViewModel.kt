@@ -1,5 +1,7 @@
 package com.fourleafclover.tarot.ui.screen.harmony.viewmodel
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
@@ -74,6 +76,8 @@ class ChatViewModel  @Inject constructor() : ViewModel() {
 
     private var chatList = mutableStateListOf<Chat>()
 
+    val startButtonVisibility = mutableStateOf(true)
+
     private lateinit var opening: List<Chat>
     private lateinit var firstCard: List<Chat>
     private lateinit var secondCard: List<Chat>
@@ -82,6 +86,14 @@ class ChatViewModel  @Inject constructor() : ViewModel() {
 
     private var _isExiting = mutableStateOf(false)
     val isExiting get() = _isExiting
+
+    fun setStartButtonVisible() {
+        startButtonVisibility.value = false
+    }
+
+    fun setStartButtonInvisible() {
+        startButtonVisibility.value = true
+    }
 
     fun clear() {
         _isExiting.value = false
@@ -149,6 +161,7 @@ class ChatViewModel  @Inject constructor() : ViewModel() {
         )
     }
 
+    @RequiresApi(Build.VERSION_CODES.VANILLA_ICE_CREAM)
     fun removeChatListLastItem() = chatList.removeLast()
 
     fun updateGuidText(text: String) {
