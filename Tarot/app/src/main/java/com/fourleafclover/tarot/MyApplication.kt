@@ -40,7 +40,7 @@ class MyApplication: Application() {
         lateinit var firestore: FirebaseFirestore
 
         fun closeSocket() {
-            if (socket != null) socket.close()
+            if (::socket.isInitialized) socket.close()
         }
 
         fun connectSocket(){

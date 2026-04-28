@@ -16,6 +16,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.fourleafclover.tarot.LocalIsDemo
+import com.fourleafclover.tarot.demo.data.demoHarmonyTarotResult
 import com.fourleafclover.tarot.demo.ui.theme.backgroundColorScheme
 import com.fourleafclover.tarot.ui.component.LoadingCircle
 import com.fourleafclover.tarot.ui.navigation.PreventBackPressed
@@ -24,6 +25,7 @@ import com.fourleafclover.tarot.ui.navigation.navGraphViewModel
 import com.fourleafclover.tarot.ui.screen.fortune.viewModel.FortuneViewModel
 import com.fourleafclover.tarot.ui.screen.fortune.viewModel.PickTarotViewModel
 import com.fourleafclover.tarot.ui.screen.fortune.viewModel.QuestionInputViewModel
+import com.fourleafclover.tarot.ui.screen.harmony.viewmodel.HarmonyViewModel
 import com.fourleafclover.tarot.ui.screen.harmony.viewmodel.LoadingViewModel
 import com.fourleafclover.tarot.ui.screen.harmony.viewmodel.ResultViewModel
 import com.fourleafclover.tarot.utils.getTarotResult
@@ -41,6 +43,7 @@ fun LoadingScreen(
     val fortuneViewModel = navGraphViewModel<FortuneViewModel>(navController)
     val pickTarotViewModel = navGraphViewModel<PickTarotViewModel>(navController)
     val questionInputViewModel = navGraphViewModel<QuestionInputViewModel>(navController)
+    val harmonyViewModel = navGraphViewModel<HarmonyViewModel>(navController)
     val localContext = LocalContext.current
     val isDemo = LocalIsDemo.current
 
@@ -68,7 +71,15 @@ fun LoadingScreen(
             )
         }
         else if (loadingViewModel.destination == ScreenEnum.RoomResultScreen){
-            if (resultViewModel.isMatchResultPrepared.value) {
+            if (isDemo) {
+                delay(2500)
+                resultViewModel.distinguishCardResult(
+                    demoHarmonyTarotResult,
+                    harmonyViewModel.isRoomOwner.value
+                )
+                resultViewModel.setIsMatchResultPrepared(true)
+                loadingViewModel.updateLoadingState(false)
+            } else if (resultViewModel.isMatchResultPrepared.value) {
                 Handler(Looper.getMainLooper())
                     .postDelayed({
                         loadingViewModel.updateLoadingState(false)

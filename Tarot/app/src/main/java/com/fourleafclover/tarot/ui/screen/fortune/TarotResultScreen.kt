@@ -32,7 +32,6 @@ import androidx.navigation.compose.rememberNavController
 import com.fourleafclover.tarot.LocalIsDemo
 import com.fourleafclover.tarot.MyApplication
 import com.fourleafclover.tarot.R
-import com.fourleafclover.tarot.demo.data.demoTarotResult
 import com.fourleafclover.tarot.demo.ui.component.PrimaryButtonColors
 import com.fourleafclover.tarot.demo.ui.component.SecondaryButtonColors
 import com.fourleafclover.tarot.demo.ui.theme.backgroundColorScheme
@@ -248,11 +247,7 @@ private fun OverallResult(resultViewModel: ResultViewModel, harmonyViewModel: Ha
 
 
 fun saveToMyTarot(resultViewModel: ResultViewModel, isDemo: Boolean) {
-    if (isDemo) {
-        MyApplication.prefs.addTarotResult(demoTarotResult.tarotId)
-    } else {
-        MyApplication.prefs.addTarotResult(resultViewModel.tarotResult.value.tarotId)
-    }
+    MyApplication.prefs.addTarotResult(resultViewModel.tarotResult.value.tarotId)
     resultViewModel.saveResult()
     resultViewModel.openCompleteDialog()
 }
