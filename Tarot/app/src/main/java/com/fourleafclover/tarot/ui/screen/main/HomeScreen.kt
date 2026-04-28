@@ -7,6 +7,7 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
@@ -15,6 +16,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
@@ -101,71 +103,99 @@ fun HomeScreen(
                 Column(modifier = Modifier
                     .padding(end = 4.dp)
                     .weight(1f)) {
-                    Image(modifier = Modifier
-                        .padding(bottom = 8.dp)
-                        .clickable {
-                            fortuneViewModel.setPickedTopic(0)
-                            navigateSaveState(navController, ScreenEnum.InputScreen.name)
-                        }, painter = painterResource(id = R.drawable.category_love), contentDescription = "연애운")
-                    Image(painter = painterResource(id = R.drawable.category_dream),
+                    Image(
+                        painter = painterResource(id = R.drawable.category_love),
+                        contentDescription = "연애운",
+                        contentScale = ContentScale.FillWidth,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(bottom = 8.dp)
+                            .clickable {
+                                fortuneViewModel.setPickedTopic(0)
+                                navigateSaveState(navController, ScreenEnum.InputScreen.name)
+                            }
+                    )
+                    Image(
+                        painter = painterResource(id = R.drawable.category_dream),
                         contentDescription = "소망운",
-                        modifier = Modifier.clickable {
-                            fortuneViewModel.setPickedTopic(2)
-                            navigateSaveState(navController, ScreenEnum.InputScreen.name)
-                        }
+                        contentScale = ContentScale.FillWidth,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .clickable {
+                                fortuneViewModel.setPickedTopic(2)
+                                navigateSaveState(navController, ScreenEnum.InputScreen.name)
+                            }
                     )
                 }
 
                 Column(modifier = Modifier
                     .padding(start = 4.dp)
                     .weight(1f)) {
-                    Image(modifier = Modifier
-                        .padding(bottom = 8.dp)
-                        .clickable {
-                            fortuneViewModel.setPickedTopic(1)
-                            navigateSaveState(navController, ScreenEnum.InputScreen.name)
-                        },
+                    Image(
                         painter = painterResource(id = R.drawable.category_study),
-                        contentDescription = "학업운")
-                    Image(painter = painterResource(id = R.drawable.category_job),
+                        contentDescription = "학업운",
+                        contentScale = ContentScale.FillWidth,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(bottom = 8.dp)
+                            .clickable {
+                                fortuneViewModel.setPickedTopic(1)
+                                navigateSaveState(navController, ScreenEnum.InputScreen.name)
+                            }
+                    )
+                    Image(
+                        painter = painterResource(id = R.drawable.category_job),
                         contentDescription = "취업운",
-                        modifier = Modifier.clickable {
-                            fortuneViewModel.setPickedTopic(3)
-                            navigateSaveState(navController, ScreenEnum.InputScreen.name)
-                        }
+                        contentScale = ContentScale.FillWidth,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .clickable {
+                                fortuneViewModel.setPickedTopic(3)
+                                navigateSaveState(navController, ScreenEnum.InputScreen.name)
+                            }
                     )
                 }
             }
 
-            Column(modifier = Modifier.padding(bottom = 42.dp)) {
+            Column(modifier = Modifier.padding(bottom = 42.dp).fillMaxWidth()) {
                 TextB02M16(
                     text = "오늘의 운세",
                     color = MaterialTheme.textColorScheme.subTitleTextColor,
                     modifier = Modifier.padding(bottom = 6.dp)
                 )
 
-                Image(painter = painterResource(id = R.drawable.category_today),
+                Image(
+                    painter = painterResource(id = R.drawable.category_today),
                     contentDescription = "오늘의 운세",
-                    Modifier.clickable {
-                        fortuneViewModel.setPickedTopic(4)
-                        navigateSaveState(navController, ScreenEnum.PickTarotScreen.name)
-                    })
+                    contentScale = ContentScale.FillWidth,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .clickable {
+                            fortuneViewModel.setPickedTopic(4)
+                            navigateSaveState(navController, ScreenEnum.PickTarotScreen.name)
+                        }
+                )
 
             }
 
-            Column(modifier = Modifier.padding(bottom = 42.dp)) {
+            Column(modifier = Modifier.padding(bottom = 42.dp).fillMaxWidth()) {
                 TextB02M16(
                     text = "궁합 운세",
                     color = MaterialTheme.textColorScheme.subTitleTextColor,
                     modifier = Modifier.padding(bottom = 6.dp)
                 )
 
-                Image(painter = painterResource(id = R.drawable.category_harmony),
+                Image(
+                    painter = painterResource(id = R.drawable.category_harmony),
                     contentDescription = "궁합 운세",
-                    Modifier.clickable {
-                        fortuneViewModel.setPickedTopic(5)
-                        navigateSaveState(navController, ScreenEnum.RoomCreateScreen.name)
-                    })
+                    contentScale = ContentScale.FillWidth,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .clickable {
+                            fortuneViewModel.setPickedTopic(5)
+                            navigateSaveState(navController, ScreenEnum.RoomCreateScreen.name)
+                        }
+                )
 
             }
 
