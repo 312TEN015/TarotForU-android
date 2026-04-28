@@ -25,6 +25,8 @@ import com.google.firebase.dynamiclinks.dynamicLink
 import com.google.firebase.dynamiclinks.dynamicLinks
 import com.google.firebase.dynamiclinks.iosParameters
 import com.google.firebase.dynamiclinks.shortLinkAsync
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.launch
 
 
 enum class ShareLinkType {
@@ -159,49 +161,50 @@ fun copyLink(context: Context, linkToCopy: String){
 
 
 // receive =========================================================================================
+/**
+ * Inspects the launch intent for a Firebase Dynamic Link. If present, dispatches:
+ *  - a shared tarot reading → loads via [ShareViewModel.loadSharedTarot] then navigates
+ *  - a harmony room invite → updates [HarmonyViewModel] and navigates to gender screen
+ *
+ * The repository implementation (real vs fake) is selected by Hilt.
+ */
 fun receiveShareRequest(
     activity: Activity,
     navController: NavHostController,
     shareViewModel: ShareViewModel,
     loadingViewModel: LoadingViewModel,
     harmonyViewModel: HarmonyViewModel,
-    isDemo: Boolean
+    coroutineScope: CoroutineScope
 ){
     Firebase.dynamicLinks
         .getDynamicLink(activity.intent)
         .addOnSuccessListener(activity) { pendingDynamicLinkData: PendingDynamicLinkData? ->
-            // Get deep link from result (may be null if no link is found)
             if (pendingDynamicLinkData == null) return@addOnSuccessListener
 
             val deepLink = pendingDynamicLinkData.link ?: return@addOnSuccessListener
-
             val deepLinkUri = Uri.parse(deepLink.toString())
 
-            // 타로 결과 공유
-            if (deepLinkUri.getBooleanQueryParameter("tarotId", false)){
+            if (deepLinkUri.getBooleanQueryParameter("tarotId", false)) {
                 val sharedTarotId = deepLinkUri.getQueryParameter("tarotId")!!
-                getSharedTarotDetail(navController, sharedTarotId, shareViewModel, loadingViewModel, isDemo)
                 loadingViewModel.startLoading(navController, ScreenEnum.LoadingScreen, ScreenEnum.ShareDetailScreen)
+                coroutineScope.launch {
+                    val tarot = shareViewModel.loadSharedTarot(sharedTarotId)
+                    if (tarot?.tarotType == 5) {
+                        loadingViewModel.changeDestination(ScreenEnum.ShareHarmonyDetailScreen)
+                    }
+                    loadingViewModel.endLoading(navController)
+                }
             }
 
-            // 궁합 초대
-            if (deepLinkUri.getBooleanQueryParameter("roomId", false)){
-
-                MyApplication.connectSocket()
+            if (deepLinkUri.getBooleanQueryParameter("roomId", false)) {
                 harmonyViewModel.setIsRoomOwner(false)
                 harmonyViewModel.enterInvitedRoom(deepLinkUri.getQueryParameter("roomId")!!)
                 navigateInclusive(navController, ScreenEnum.RoomGenderScreen.name)
-
             }
 
             activity.intent = null
-
         }
         .addOnFailureListener(activity) { e ->
-            Log.w(
-                "DynamicLink",
-                "getDynamicLink:onFailure",
-                e
-            )
+            Log.w("DynamicLink", "getDynamicLink:onFailure", e)
         }
 }

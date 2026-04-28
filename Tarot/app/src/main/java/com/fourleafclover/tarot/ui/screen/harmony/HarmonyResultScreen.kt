@@ -29,8 +29,6 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
-import com.fourleafclover.tarot.LocalIsDemo
-import com.fourleafclover.tarot.MyApplication
 import com.fourleafclover.tarot.R
 import com.fourleafclover.tarot.SubjectHarmony
 import com.fourleafclover.tarot.data.TarotOutputDto
@@ -38,13 +36,11 @@ import com.fourleafclover.tarot.demo.ui.component.PrimaryButtonColors
 import com.fourleafclover.tarot.demo.ui.component.SecondaryButtonColors
 import com.fourleafclover.tarot.demo.ui.theme.backgroundColorScheme
 import com.fourleafclover.tarot.demo.ui.theme.textColorScheme
-import com.fourleafclover.tarot.demo.viewmodel.DemoViewModel
 import com.fourleafclover.tarot.ui.component.AppBarCloseTarotResult
 import com.fourleafclover.tarot.ui.component.ControlDialog
 import com.fourleafclover.tarot.ui.component.HarmonyCardSlider
 import com.fourleafclover.tarot.ui.component.getBackgroundModifier
 import com.fourleafclover.tarot.ui.navigation.navGraphViewModel
-import com.fourleafclover.tarot.ui.screen.fortune.saveToMyTarot
 import com.fourleafclover.tarot.ui.screen.fortune.viewModel.FortuneViewModel
 import com.fourleafclover.tarot.ui.screen.harmony.viewmodel.HarmonyViewModel
 import com.fourleafclover.tarot.ui.screen.harmony.viewmodel.ResultViewModel
@@ -59,16 +55,13 @@ import com.fourleafclover.tarot.utils.ShareLinkType
 import com.fourleafclover.tarot.utils.setDynamicLink
 
 @Composable
-fun HarmonyResultScreen(
-    navController: NavHostController,
-) {
+fun HarmonyResultScreen(navController: NavHostController) {
 
-    val demoViewModel = navGraphViewModel<DemoViewModel>(navController)
     val fortuneViewModel = navGraphViewModel<FortuneViewModel>(navController)
     val harmonyViewModel = navGraphViewModel<HarmonyViewModel>(navController)
     val resultViewModel = navGraphViewModel<ResultViewModel>(navController)
 
-    HarmonyResultScreenPreview(navController, harmonyViewModel, fortuneViewModel, resultViewModel, demoViewModel)
+    HarmonyResultScreenPreview(navController, harmonyViewModel, fortuneViewModel, resultViewModel)
 }
 
 @Preview
@@ -77,18 +70,16 @@ fun HarmonyResultScreenPreview(
     navController: NavHostController = rememberNavController(),
     harmonyViewModel: HarmonyViewModel = hiltViewModel(),
     fortuneViewModel: FortuneViewModel = hiltViewModel(),
-    resultViewModel: ResultViewModel = hiltViewModel(),
-    demoViewModel: DemoViewModel = hiltViewModel()
+    resultViewModel: ResultViewModel = hiltViewModel()
 ) {
 
     LaunchedEffect(Unit) {
         harmonyViewModel.deleteRoom()
-        MyApplication.closeSocket()
     }
 
-    Column(modifier =
-        getBackgroundModifier(MaterialTheme.backgroundColorScheme.mainBackgroundColor)
-        .verticalScroll(rememberScrollState())
+    Column(
+        modifier = getBackgroundModifier(MaterialTheme.backgroundColorScheme.mainBackgroundColor)
+            .verticalScroll(rememberScrollState())
     ) {
         ControlDialog(navController, resultViewModel)
 
@@ -100,20 +91,17 @@ fun HarmonyResultScreenPreview(
             resultViewModel
         )
 
-        Column(
-            modifier = Modifier
-        ) {
+        Column(modifier = Modifier) {
 
             TextH02M22(
-                text = "${if (resultViewModel.isMyTab()) harmonyViewModel.getUserNickname() 
-                else harmonyViewModel.getPartnerNickname() }님이\n선택하신 카드는\n이런 의미를 담고 있어요.",
+                text = "${if (resultViewModel.isMyTab()) harmonyViewModel.getUserNickname()
+                else harmonyViewModel.getPartnerNickname()}님이\n선택하신 카드는\n이런 의미를 담고 있어요.",
                 color = MaterialTheme.textColorScheme.titleTextColor,
                 modifier = Modifier
                     .background(color = MaterialTheme.backgroundColorScheme.mainBackgroundColor)
                     .padding(horizontal = 20.dp, vertical = 32.dp)
                     .fillMaxWidth()
             )
-
 
             Column(
                 modifier = Modifier
@@ -127,20 +115,19 @@ fun HarmonyResultScreenPreview(
                         .padding(bottom = 36.dp),
                     horizontalArrangement = Arrangement.Center
                 ) {
-                    Box(modifier = Modifier
-                        .clickable {
-                            resultViewModel.myTab()
-                        }
-                        .padding(end = 4.dp)
-                        .background(
-                            shape = RoundedCornerShape(6.dp),
-                            color = if (resultViewModel.isMyTab()) MaterialTheme.backgroundColorScheme.activeTabColor
-                            else MaterialTheme.backgroundColorScheme.inactiveTabColor
-                        )
-                        .padding(vertical = 8.dp, horizontal = 16.dp)
-                        .weight(1f),
-                        contentAlignment = Alignment.Center) {
-
+                    Box(
+                        modifier = Modifier
+                            .clickable { resultViewModel.myTab() }
+                            .padding(end = 4.dp)
+                            .background(
+                                shape = RoundedCornerShape(6.dp),
+                                color = if (resultViewModel.isMyTab()) MaterialTheme.backgroundColorScheme.activeTabColor
+                                else MaterialTheme.backgroundColorScheme.inactiveTabColor
+                            )
+                            .padding(vertical = 8.dp, horizontal = 16.dp)
+                            .weight(1f),
+                        contentAlignment = Alignment.Center
+                    ) {
                         TextB03M14(
                             color = if (resultViewModel.isMyTab()) MaterialTheme.textColorScheme.onActiveTabColor
                             else MaterialTheme.textColorScheme.onInactiveTabColor,
@@ -149,22 +136,21 @@ fun HarmonyResultScreenPreview(
                         )
                     }
 
-                    Box(modifier = Modifier
-                        .clickable {
-                            resultViewModel.partnerTab()
-                        }
-                        .padding(start = 4.dp)
-                        .background(
-                            shape = RoundedCornerShape(6.dp),
-                            color = if (resultViewModel.isMyTab()) MaterialTheme.backgroundColorScheme.inactiveTabColor
-                            else MaterialTheme.backgroundColorScheme.activeTabColor
-                        )
-                        .padding(vertical = 8.dp, horizontal = 16.dp)
-                        .weight(1f),
-                        contentAlignment = Alignment.Center) {
-
+                    Box(
+                        modifier = Modifier
+                            .clickable { resultViewModel.partnerTab() }
+                            .padding(start = 4.dp)
+                            .background(
+                                shape = RoundedCornerShape(6.dp),
+                                color = if (resultViewModel.isMyTab()) MaterialTheme.backgroundColorScheme.inactiveTabColor
+                                else MaterialTheme.backgroundColorScheme.activeTabColor
+                            )
+                            .padding(vertical = 8.dp, horizontal = 16.dp)
+                            .weight(1f),
+                        contentAlignment = Alignment.Center
+                    ) {
                         TextB03M14(
-                            color = if (resultViewModel.isMyTab()) MaterialTheme.textColorScheme.onInactiveTabColor else MaterialTheme.textColorScheme.onActiveTabColor ,
+                            color = if (resultViewModel.isMyTab()) MaterialTheme.textColorScheme.onInactiveTabColor else MaterialTheme.textColorScheme.onActiveTabColor,
                             text = "상대방 카드",
                             textAlign = TextAlign.Center
                         )
@@ -184,22 +170,24 @@ fun HarmonyResultScreenPreview(
             OverallResult(resultViewModel.tarotResult.value, resultViewModel, harmonyViewModel)
 
         }
-
     }
 }
 
-private fun getSliderList(context: Context, fortuneViewModel: FortuneViewModel, resultViewModel: ResultViewModel) : ArrayList<Int> {
+private fun getSliderList(
+    context: Context,
+    fortuneViewModel: FortuneViewModel,
+    resultViewModel: ResultViewModel
+): ArrayList<Int> {
     val sliderList: ArrayList<Int> = arrayListOf(0, 0, 0)
     if (resultViewModel.isMyTab()) {
         sliderList[0] = fortuneViewModel.getCardImageId(context, resultViewModel.myCardNumbers[0].toString())
         sliderList[1] = fortuneViewModel.getCardImageId(context, resultViewModel.myCardNumbers[1].toString())
         sliderList[2] = fortuneViewModel.getCardImageId(context, resultViewModel.myCardNumbers[2].toString())
-    }else {
+    } else {
         sliderList[0] = fortuneViewModel.getCardImageId(context, resultViewModel.partnerCardNumbers[0].toString())
         sliderList[1] = fortuneViewModel.getCardImageId(context, resultViewModel.partnerCardNumbers[1].toString())
         sliderList[2] = fortuneViewModel.getCardImageId(context, resultViewModel.partnerCardNumbers[2].toString())
     }
-
     return sliderList
 }
 
@@ -207,9 +195,8 @@ private fun getSliderList(context: Context, fortuneViewModel: FortuneViewModel, 
 private fun OverallResult(
     tarotOutputDto: TarotOutputDto,
     resultViewModel: ResultViewModel,
-    harmonyViewModel: HarmonyViewModel) {
-
-    val isDemo = LocalIsDemo.current
+    harmonyViewModel: HarmonyViewModel
+) {
 
     Column(
         modifier = Modifier
@@ -245,10 +232,7 @@ private fun OverallResult(
         )
 
         Button(
-            onClick = {
-                // 타로 결과 id 저장
-                saveToMyTarot(resultViewModel, isDemo)
-            },
+            onClick = { resultViewModel.saveCurrentTarotToMyList() },
             shape = RoundedCornerShape(10.dp),
             enabled = !resultViewModel.saveState.value,
             modifier = Modifier
@@ -257,7 +241,6 @@ private fun OverallResult(
                 .padding(bottom = 8.dp),
             colors = SecondaryButtonColors()
         ) {
-
             if (resultViewModel.saveState.value) {
                 Image(
                     painter = painterResource(id = R.drawable.check_filled_disabled),
@@ -268,12 +251,11 @@ private fun OverallResult(
                     alignment = Alignment.Center
                 )
             }
-
             TextButtonM16(
                 text = if (resultViewModel.saveState.value) "저장 완료!" else "타로 저장하기",
                 modifier = Modifier.padding(vertical = 8.dp),
                 color = if (!resultViewModel.saveState.value) MaterialTheme.textColorScheme.onActivePrimaryButtonColor
-                else MaterialTheme.textColorScheme.onDisabledButtonColor ,
+                else MaterialTheme.textColorScheme.onDisabledButtonColor,
             )
         }
 
@@ -306,8 +288,7 @@ private fun OverallResult(
                     )
                 },
             horizontalArrangement = Arrangement.Center
-        )
-        {
+        ) {
             Image(
                 painter = painterResource(id = R.drawable.share),
                 contentDescription = null,

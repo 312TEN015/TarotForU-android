@@ -49,13 +49,14 @@ import com.fourleafclover.tarot.demo.ui.theme.textColorScheme
 import com.fourleafclover.tarot.ui.navigation.ScreenEnum
 import com.fourleafclover.tarot.ui.navigation.navGraphViewModel
 import com.fourleafclover.tarot.ui.navigation.navigateInclusive
-import com.fourleafclover.tarot.ui.screen.harmony.emitExit
 import com.fourleafclover.tarot.ui.screen.harmony.viewmodel.HarmonyViewModel
 import com.fourleafclover.tarot.ui.screen.harmony.viewmodel.ResultViewModel
 import com.fourleafclover.tarot.ui.screen.main.DialogViewModel
+import com.fourleafclover.tarot.ui.screen.my.prepareDemoMyTarotData
 import com.fourleafclover.tarot.ui.screen.my.viewmodel.MyTarotViewModel
 import com.fourleafclover.tarot.ui.theme.getTextStyle
-import com.fourleafclover.tarot.utils.getMyTarotList
+import androidx.compose.runtime.rememberCoroutineScope
+import kotlinx.coroutines.launch
 
 
 val backgroundModifier = Modifier
@@ -168,7 +169,7 @@ fun SetCloseOnChatDialog(
         Dialog(onDismissRequest = { dialogViewModel.closeDialog() }) {
             CloseOnChatDialog(onClickNo = { dialogViewModel.closeDialog() },
                 onClickOk = {
-                    emitExit(harmonyViewModel)
+                    harmonyViewModel.deleteRoom()
                     dialogViewModel.closeDialog()
                     navigateInclusive(navController, ScreenEnum.HomeScreen.name)
                 })
@@ -189,7 +190,6 @@ fun SetCloseOnRoomInviteDialog(
                 onClickOk = {
                     dialogViewModel.closeDialog()
                     harmonyViewModel.deleteRoom()
-                    MyApplication.closeSocket()
                     navigateInclusive(navController, ScreenEnum.HomeScreen.name)
                 })
         }
@@ -208,7 +208,6 @@ fun SetCloseOnRoomCreateDialog(
                 onClickOk = {
                     dialogViewModel.closeDialog()
                     harmonyViewModel.deleteRoom()
-                    MyApplication.closeSocket()
                     navigateInclusive(navController, ScreenEnum.HomeScreen.name)
                 })
         }
@@ -430,6 +429,7 @@ fun BottomNavigationBar(
 ) {
     val myTarotViewModel = navGraphViewModel<MyTarotViewModel>(navController)
     val isDemo = LocalIsDemo.current
+    val coroutineScope = rememberCoroutineScope()
 
     val localContext = LocalContext.current
     val items = listOf<BottomNavItem>(
@@ -481,11 +481,13 @@ fun BottomNavigationBar(
                     alwaysShowLabel = true,
                     onClick = {
                         if (item.screenName == ScreenEnum.MyTarotScreen.name) {
-                            val tarotResultArray = MyApplication.prefs.getTarotResultArray()
-                            if (tarotResultArray.isNotEmpty()) {
-                                getMyTarotList(localContext, navController, tarotResultArray, myTarotViewModel, isDemo)
-                                return@BottomNavigationItem
+                            val ids = if (isDemo) prepareDemoMyTarotData()
+                            else MyApplication.prefs.getTarotResultArray()
+                            coroutineScope.launch {
+                                myTarotViewModel.loadMyTarotList(ids)
+                                navigateInclusive(navController, item.screenName)
                             }
+                            return@BottomNavigationItem
                         }
                         navigateInclusive(navController, item.screenName)
                     }

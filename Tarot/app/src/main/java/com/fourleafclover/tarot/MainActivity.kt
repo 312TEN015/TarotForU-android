@@ -14,24 +14,17 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.core.splashscreen.SplashScreen
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import com.fourleafclover.tarot.MyApplication.Companion.firestore
-import com.fourleafclover.tarot.MyApplication.Companion.tarotService
+import com.fourleafclover.tarot.data.repository.DemoMode
 import com.fourleafclover.tarot.demo.ui.theme.TarotTheme
 import com.fourleafclover.tarot.demo.viewmodel.DemoViewModel
-import com.fourleafclover.tarot.network.PrettyJsonLogger
-import com.fourleafclover.tarot.network.TarotService
 import com.fourleafclover.tarot.ui.navigation.NavigationHost
-
 import com.fourleafclover.tarot.utils.LogTags
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import okhttp3.OkHttpClient
-import okhttp3.logging.HttpLoggingInterceptor
-import retrofit2.Retrofit
-import retrofit2.converter.gson.GsonConverterFactory
-import java.util.concurrent.TimeUnit
+import javax.inject.Inject
 import kotlin.coroutines.resume
 import kotlin.coroutines.suspendCoroutine
 
@@ -43,10 +36,12 @@ class MainActivity : ComponentActivity() {
     private lateinit var splashScreen: SplashScreen
     private val splashViewModel: SplashViewModel by viewModels()
 
+    @Inject lateinit var demoMode: DemoMode
+
     override fun onCreate(savedInstanceState: Bundle?) {
         splashScreen = installSplashScreen()
         super.onCreate(savedInstanceState)
-        splashScreen.setKeepOnScreenCondition{
+        splashScreen.setKeepOnScreenCondition {
             splashViewModel.isLoading.value
         }
 
@@ -55,13 +50,13 @@ class MainActivity : ComponentActivity() {
         val appLinkAction: String? = appLinkIntent.action
         val appLinkData: Uri? = appLinkIntent.data
 
-        if (appLinkData != null){
+        if (appLinkData != null) {
             Log.d("", appLinkAction.toString())
             Log.d("", appLinkData.toString())
             Log.d("", appLinkData.getQueryParameter("resultId").toString())
         }
 
-        setServer() { isDemo, dialogData ->
+        bootstrap { isDemo, dialogData ->
             setContent {
                 CompositionLocalProvider(LocalIsDemo provides isDemo) {
                     TarotTheme {
@@ -74,33 +69,27 @@ class MainActivity : ComponentActivity() {
 
     @Preview
     @Composable
-    fun HomePreview(){
+    fun HomePreview() {
         TarotTheme {
             NavigationHost()
         }
     }
 
-    private fun setServer(setContent: (isDemo: Boolean, dialogData: DemoViewModel.DemoDialogData?) -> Unit = {_, _ ->}) = CoroutineScope(Dispatchers.IO).launch {
-        checkIsDemo().let { isDemo ->
-            var dialogData : DemoViewModel.DemoDialogData? = null
+    private fun bootstrap(setContent: (isDemo: Boolean, dialogData: DemoViewModel.DemoDialogData?) -> Unit) =
+        CoroutineScope(Dispatchers.IO).launch {
+            val isDemo = checkIsDemo()
+            // IMPORTANT: set demo flag before any ViewModel injection runs.
+            demoMode.isDemo = isDemo
 
-            if (isDemo) {
-                dialogData = checkDemoDialogData()
-            } else {
-                initServerSettings()
-            }
+            val dialogData = if (isDemo) checkDemoDialogData() else null
 
             withContext(Dispatchers.Main) {
                 setContent(isDemo, dialogData)
             }
         }
-    }
 
     private suspend fun checkIsDemo() = suspendCoroutine<Boolean> {
-        firestore
-            .collection("properties")
-            .document("is_demo")
-            .get()
+        firestore.collection("properties").document("is_demo").get()
             .addOnSuccessListener { document ->
                 if (document != null) {
                     Log.d(LogTags.firestore, "DocumentSnapshot data: ${document.data}")
@@ -117,10 +106,7 @@ class MainActivity : ComponentActivity() {
     }
 
     private suspend fun checkDemoDialogData() = suspendCoroutine<DemoViewModel.DemoDialogData?> {
-        firestore
-            .collection("properties")
-            .document("demo_popup")
-            .get()
+        firestore.collection("properties").document("demo_popup").get()
             .addOnSuccessListener { document ->
                 if (document != null) {
                     Log.d(LogTags.firestore, "DocumentSnapshot data: ${document.data}")
@@ -140,32 +126,4 @@ class MainActivity : ComponentActivity() {
                 it.resume(null)
             }
     }
-
-    private fun initServerSettings() {
-        val logging = HttpLoggingInterceptor(PrettyJsonLogger()).apply {
-            // 요청과 응답의 본문 내용까지 로그에 포함
-            level = HttpLoggingInterceptor.Level.BODY
-        }
-
-        // 서버 초기화
-        val okHttpClient = OkHttpClient().newBuilder()
-            .connectTimeout(30, TimeUnit.SECONDS)
-            .readTimeout(30, TimeUnit.SECONDS)
-            .writeTimeout(30, TimeUnit.SECONDS)
-            .addInterceptor(logging)
-            .build()
-
-        val retrofit = Retrofit.Builder()
-            .baseUrl(BuildConfig.BASE_URL)
-            .client(okHttpClient)
-            .addConverterFactory(GsonConverterFactory.create())
-            .build()
-
-        tarotService = retrofit.create(TarotService::class.java)
-    }
-
-
 }
-
-
-

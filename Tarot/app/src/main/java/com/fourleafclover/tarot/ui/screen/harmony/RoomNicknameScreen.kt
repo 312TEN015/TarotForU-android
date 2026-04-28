@@ -10,17 +10,20 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
+import com.fourleafclover.tarot.LocalIsDemo
 import com.fourleafclover.tarot.SubjectHarmony
 import com.fourleafclover.tarot.demo.ui.theme.backgroundColorScheme
+import com.fourleafclover.tarot.demo.ui.theme.color.gray_7
 import com.fourleafclover.tarot.demo.ui.theme.colorScheme
 import com.fourleafclover.tarot.demo.ui.theme.textColorScheme
 import com.fourleafclover.tarot.ui.component.AppBarCloseOnRoomCreateWithDialog
@@ -29,6 +32,7 @@ import com.fourleafclover.tarot.ui.component.ButtonText
 import com.fourleafclover.tarot.ui.component.getBackgroundModifier
 import com.fourleafclover.tarot.ui.navigation.PreventBackPressed
 import com.fourleafclover.tarot.ui.navigation.ScreenEnum
+import com.fourleafclover.tarot.ui.navigation.navGraphViewModel
 import com.fourleafclover.tarot.ui.screen.harmony.viewmodel.HarmonyViewModel
 import com.fourleafclover.tarot.ui.screen.harmony.viewmodel.LoadingViewModel
 import com.fourleafclover.tarot.ui.screen.harmony.viewmodel.NicknameViewModel
@@ -38,9 +42,8 @@ import com.fourleafclover.tarot.ui.theme.TextB03M14
 import com.fourleafclover.tarot.ui.theme.TextCaptionM12
 import com.fourleafclover.tarot.ui.theme.TextH02M22
 import com.fourleafclover.tarot.ui.theme.getTextStyle
-import androidx.compose.ui.graphics.Color
-import com.fourleafclover.tarot.demo.ui.theme.color.gray_7
-import com.fourleafclover.tarot.ui.navigation.navGraphViewModel
+
+private const val DEMO_NICKNAME = "해달"
 
 @Preview
 @Composable
@@ -48,12 +51,17 @@ fun RoomNicknameScreen(
     navController: NavHostController = rememberNavController()
 ) {
 
+    val isDemo = LocalIsDemo.current
     val dialogViewModel = navGraphViewModel<DialogViewModel>(navController)
     val loadingViewModel = navGraphViewModel<LoadingViewModel>(navController)
     val nicknameViewModel = navGraphViewModel<NicknameViewModel>(navController)
     val harmonyViewModel = navGraphViewModel<HarmonyViewModel>(navController)
 
     PreventBackPressed()
+
+    LaunchedEffect(Unit) {
+        if (isDemo) nicknameViewModel.updateNickname(DEMO_NICKNAME)
+    }
 
     Column(modifier = getBackgroundModifier(MaterialTheme.backgroundColorScheme.mainBackgroundColor)) {
         AppBarCloseOnRoomCreateWithDialog(
@@ -90,6 +98,7 @@ fun RoomNicknameScreen(
                             fontWeight = FontWeight.Bold,
                             color = MaterialTheme.textColorScheme.titleTextColor
                         ),
+                        enabled = !isDemo,
                         onValueChange = { newText -> nicknameViewModel.updateNickname(newText) },
                         value = nicknameViewModel.nickname.value,
                         placeholder = {
@@ -111,7 +120,6 @@ fun RoomNicknameScreen(
                         )
                     )
 
-                    // 갯수 표시
                     Row(modifier = Modifier) {
                         Text(
                             text = "${nicknameViewModel.getNicknameLength()}", style = getTextStyle(
@@ -120,7 +128,6 @@ fun RoomNicknameScreen(
                                 color = MaterialTheme.colorScheme.secondary,
                             )
                         )
-
                         Text(
                             text = "/10", style = getTextStyle(
                                 fontSize = 14,
@@ -128,9 +135,7 @@ fun RoomNicknameScreen(
                                 color = MaterialTheme.textColorScheme.onDialogContentColor,
                             )
                         )
-
                     }
-
                 }
 
                 TextCaptionM12(
@@ -146,16 +151,13 @@ fun RoomNicknameScreen(
                 onClick = {
                     harmonyViewModel.setUserNickname(nicknameViewModel.nickname.value)
 
-                    // 새로 방을 생성
                     if (harmonyViewModel.roomId.value.isEmpty()) {
                         loadingViewModel.startLoading(
                             navController,
                             ScreenEnum.RoomCreateLoadingScreen,
                             ScreenEnum.RoomShareScreen
                         )
-                    }
-                    // 초대받아 입장 또는 기존 방 입장
-                    else{
+                    } else {
                         loadingViewModel.startLoading(
                             navController,
                             ScreenEnum.RoomInviteLoadingScreen,
@@ -167,8 +169,5 @@ fun RoomNicknameScreen(
                 content = { ButtonText(isEnabled = nicknameViewModel.isCompleted(), text = "입력완료") }
             )
         }
-
-
     }
-
 }

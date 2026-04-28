@@ -11,12 +11,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.fourleafclover.tarot.SubjectHarmony
 import com.fourleafclover.tarot.demo.ui.theme.backgroundColorScheme
-import com.fourleafclover.tarot.demo.ui.theme.color.ColorSet
 import com.fourleafclover.tarot.demo.ui.theme.textColorScheme
 import com.fourleafclover.tarot.ui.component.AppBarCloseOnRoomInviteWithDialog
 import com.fourleafclover.tarot.ui.component.LoadingCircle
@@ -24,15 +22,12 @@ import com.fourleafclover.tarot.ui.component.ShareLinkOrCopy
 import com.fourleafclover.tarot.ui.component.getBackgroundModifier
 import com.fourleafclover.tarot.ui.navigation.PreventBackPressed
 import com.fourleafclover.tarot.ui.navigation.navGraphViewModel
-import com.fourleafclover.tarot.ui.screen.harmony.emitJoin
-import com.fourleafclover.tarot.ui.screen.harmony.setOnJoin
 import com.fourleafclover.tarot.ui.screen.harmony.viewmodel.ChatViewModel
 import com.fourleafclover.tarot.ui.screen.harmony.viewmodel.HarmonyViewModel
 import com.fourleafclover.tarot.ui.screen.harmony.viewmodel.LoadingViewModel
 import com.fourleafclover.tarot.ui.screen.main.DialogViewModel
 import com.fourleafclover.tarot.ui.theme.TextB03M14
 
-// 추후 로딩 화면 컴포넌트화 하기
 @Composable
 @Preview
 fun RoomInviteLoadingScreen(
@@ -51,8 +46,9 @@ fun RoomInviteLoadingScreen(
     PreventBackPressed()
 
     LaunchedEffect(Unit) {
-        setOnJoin(harmonyViewModel, loadingViewModel, chatViewModel)
-        emitJoin(harmonyViewModel)
+        val partnerNickname = harmonyViewModel.joinRoomAndAwait()
+        chatViewModel.startChat(harmonyViewModel.getUserNickname(), partnerNickname)
+        loadingViewModel.updateLoadingState(false)
     }
 
 
@@ -71,10 +67,7 @@ fun RoomInviteLoadingScreen(
                 .padding(horizontal = 20.dp)
                 .padding(bottom = 24.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
-
-            ) {
-
-
+        ) {
             LoadingCircle(
                 modifier = Modifier.weight(1f),
                 "상대방을 기다리는 중입니다...",
@@ -85,19 +78,13 @@ fun RoomInviteLoadingScreen(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Center
             ) {
-
                 TextB03M14(
                     text = "상대방이 계속 들어오지 않는다면?\n한번 더 초대 링크를 공유해보세요!",
                     color = MaterialTheme.textColorScheme.onChatGuidBoxColor,
                     textAlign = TextAlign.Center
                 )
-
                 ShareLinkOrCopy(harmonyViewModel)
-
             }
-
-
         }
     }
-
 }

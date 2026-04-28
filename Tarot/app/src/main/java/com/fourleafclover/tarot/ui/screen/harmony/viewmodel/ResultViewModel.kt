@@ -1,65 +1,54 @@
 package com.fourleafclover.tarot.ui.screen.harmony.viewmodel
 
+import android.util.Log
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
+import com.fourleafclover.tarot.MyApplication
 import com.fourleafclover.tarot.data.CardResultData
 import com.fourleafclover.tarot.data.TarotInputDto
 import com.fourleafclover.tarot.data.TarotOutputDto
+import com.fourleafclover.tarot.data.repository.TarotRepository
 import com.fourleafclover.tarot.ui.screen.fortune.viewModel.PickTarotViewModel
 import com.fourleafclover.tarot.ui.screen.fortune.viewModel.QuestionInputViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.launch
 import javax.inject.Inject
 
-/** 타로 뽑기 결과 관리 */
-/** 타로 뽑기 결과 & 궁합보기 결과 화면에서 사용 */
+/**
+ * Holds tarot reading results for both single and harmony flows,
+ * and exposes suspend operations that delegate to the repository.
+ */
 @HiltViewModel
-class ResultViewModel @Inject constructor(): ViewModel() {
+class ResultViewModel @Inject constructor(
+    private val repository: TarotRepository
+) : ViewModel() {
 
-    // 타로보기 -------------------------------------------------------------------------------------
+    // ----- single tarot -----
 
     private var _tarotResult = mutableStateOf(TarotOutputDto())
     val tarotResult get() = _tarotResult
 
-    // 궁합보기 -------------------------------------------------------------------------------------
+    // ----- harmony -----
 
-    var myCardResults : List<CardResultData> = arrayListOf(CardResultData(), CardResultData(), CardResultData())
-    var myCardNumbers : List<Int> = arrayListOf(0, 0, 0)
-    var partnerCardResults : List<CardResultData> = arrayListOf(CardResultData(), CardResultData(), CardResultData())
-    var partnerCardNumbers : List<Int> = arrayListOf(0, 0, 0)
+    var myCardResults: List<CardResultData> =
+        arrayListOf(CardResultData(), CardResultData(), CardResultData())
+    var myCardNumbers: List<Int> = arrayListOf(0, 0, 0)
+    var partnerCardResults: List<CardResultData> =
+        arrayListOf(CardResultData(), CardResultData(), CardResultData())
+    var partnerCardNumbers: List<Int> = arrayListOf(0, 0, 0)
 
-    private var isMyTab = mutableStateOf(true) // 나의 탭 터치했는지 여부
-
+    private var isMyTab = mutableStateOf(true)
     var isMatchResultPrepared = mutableStateOf(false)
 
-    // 공통 ----------------------------------------------------------------------------------------
+    // ----- shared dialog state -----
 
-    private var _openCloseDialog = mutableStateOf(false) // close dialog state
+    private var _openCloseDialog = mutableStateOf(false)
     val openCloseDialog get() = _openCloseDialog
 
-    private var _openCompleteDialog = mutableStateOf(false)  // 타로 저장 완료 dialog state
+    private var _openCompleteDialog = mutableStateOf(false)
     val openCompleteDialog get() = _openCompleteDialog
 
-    private var _saveState = mutableStateOf(false)   // 타로 결과 저장했는지 여부
+    private var _saveState = mutableStateOf(false)
     val saveState get() = _saveState
-
-    // ---------------------------------------------------------------------------------------------
-
-    /** 타로 보기 결과 요청 */
-    fun getTarotInputDto(
-        pickTarotViewModel: PickTarotViewModel,
-        questionInputViewModel: QuestionInputViewModel)
-    = TarotInputDto(
-        questionInputViewModel.answer1.value.text,
-        questionInputViewModel.answer2.value.text,
-        questionInputViewModel.answer3.value.text,
-        arrayListOf(
-            pickTarotViewModel.pickedCardNumberState.value.firstCardNumber,
-            pickTarotViewModel.pickedCardNumberState.value.secondCardNumber,
-            pickTarotViewModel.pickedCardNumberState.value.thirdCardNumber,
-        )
-    )
 
     fun clear() {
         isMyTab.value = true
@@ -73,7 +62,7 @@ class ResultViewModel @Inject constructor(): ViewModel() {
         isMatchResultPrepared.value = isPrepared
     }
 
-    fun initResult(){
+    private fun initResult() {
         _tarotResult.value = TarotOutputDto()
 
         myCardResults = arrayListOf(CardResultData(), CardResultData(), CardResultData())
@@ -82,13 +71,12 @@ class ResultViewModel @Inject constructor(): ViewModel() {
         partnerCardNumbers = arrayListOf(0, 0, 0)
 
         isMyTab.value = true
-
         _openCloseDialog.value = false
         _openCompleteDialog.value = false
         _saveState.value = false
     }
 
-    fun distinguishCardResult(tarotResult: TarotOutputDto, isRoomOwner: Boolean){
+    fun distinguishCardResult(tarotResult: TarotOutputDto, isRoomOwner: Boolean) {
         initResult()
         setTarotResult(tarotResult)
         if (isRoomOwner) {
@@ -104,40 +92,58 @@ class ResultViewModel @Inject constructor(): ViewModel() {
         }
     }
 
-    fun openCloseDialog(){
-        _openCloseDialog.value = true
+    fun openCloseDialog() { _openCloseDialog.value = true }
+    fun closeCloseDialog() { _openCloseDialog.value = false }
+    fun openCompleteDialog() { _openCompleteDialog.value = true }
+    fun closeCompleteDialog() { _openCompleteDialog.value = false }
+    fun saveResult() { _saveState.value = true }
+
+    fun isMyTab(): Boolean = this.isMyTab.value
+    fun myTab() { this.isMyTab.value = true }
+    fun partnerTab() { this.isMyTab.value = false }
+
+    fun setTarotResult(result: TarotOutputDto) { _tarotResult.value = result }
+
+    /** Save the current tarot result id locally. */
+    fun saveCurrentTarotToMyList() {
+        MyApplication.prefs.addTarotResult(_tarotResult.value.tarotId)
+        saveResult()
+        openCompleteDialog()
     }
 
-    fun closeCloseDialog(){
-        _openCloseDialog.value = false
-    }
+    // ----- suspend operations exposed to the loading screen -----
 
-    fun openCompleteDialog(){
-        _openCompleteDialog.value = true
+    /**
+     * Calls the repository to generate a single tarot reading and stores it.
+     * Returns true on success, false on failure (UI may navigate home and toast).
+     */
+    suspend fun fetchTarotResult(
+        pickTarotViewModel: PickTarotViewModel,
+        questionInputViewModel: QuestionInputViewModel,
+        topicNumber: Int
+    ): Boolean {
+        val input = TarotInputDto(
+            firstAnswer = questionInputViewModel.answer1.value.text,
+            secondAnswer = questionInputViewModel.answer2.value.text,
+            thirdAnswer = questionInputViewModel.answer3.value.text,
+            cards = arrayListOf(
+                pickTarotViewModel.pickedCardNumberState.value.firstCardNumber,
+                pickTarotViewModel.pickedCardNumberState.value.secondCardNumber,
+                pickTarotViewModel.pickedCardNumberState.value.thirdCardNumber,
+            )
+        )
+        val result = repository.postTarotResult(input, topicNumber)
+        return result.fold(
+            onSuccess = { tarot ->
+                setTarotResult(tarot)
+                pickTarotViewModel.initCardDeck()
+                questionInputViewModel.initAnswers()
+                true
+            },
+            onFailure = { e ->
+                Log.e("ResultVM", "fetchTarotResult failed", e)
+                false
+            }
+        )
     }
-
-    fun closeCompleteDialog(){
-        _openCompleteDialog.value = false
-    }
-
-    fun saveResult(){
-        _saveState.value = true
-    }
-
-    fun isMyTab(): Boolean {
-        return this.isMyTab.value
-    }
-
-    fun myTab(){
-        this.isMyTab.value = true
-    }
-
-    fun partnerTab(){
-        this.isMyTab.value = false
-    }
-
-    fun setTarotResult(result: TarotOutputDto) {
-        _tarotResult.value = result
-    }
-
 }

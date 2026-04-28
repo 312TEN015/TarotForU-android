@@ -13,18 +13,9 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
-import com.fourleafclover.tarot.LocalIsDemo
+import androidx.compose.runtime.rememberCoroutineScope
 import com.fourleafclover.tarot.MainActivity
 import com.fourleafclover.tarot.MyApplication
-import com.fourleafclover.tarot.demo.ui.screen.harmony.DemoRoomChatScreen
-import com.fourleafclover.tarot.demo.ui.screen.harmony.DemoRoomCreateScreen
-import com.fourleafclover.tarot.demo.ui.screen.harmony.DemoRoomEnteringScreen
-import com.fourleafclover.tarot.demo.ui.screen.harmony.DemoRoomGenderScreen
-import com.fourleafclover.tarot.demo.ui.screen.harmony.DemoRoomNicknameScreen
-import com.fourleafclover.tarot.demo.ui.screen.harmony.DemoRoomResultScreen
-import com.fourleafclover.tarot.demo.ui.screen.harmony.DemoRoomShareScreen
-import com.fourleafclover.tarot.demo.ui.screen.loading.DemoRoomCreateLoadingScreen
-import com.fourleafclover.tarot.demo.ui.screen.loading.DemoRoomInviteLoadingScreen
 import com.fourleafclover.tarot.demo.ui.theme.backgroundColorScheme
 import com.fourleafclover.tarot.demo.viewmodel.DemoViewModel
 import com.fourleafclover.tarot.ui.component.BottomNavigationBar
@@ -68,7 +59,6 @@ fun NavigationHost(dialogData: DemoViewModel.DemoDialogData? = null) {
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentRoute = navBackStackEntry?.destination?.route
     val activity = LocalViewModelStoreOwner.current as MainActivity
-    val isDemo = LocalIsDemo.current
 
     Scaffold(
         bottomBar = {
@@ -106,6 +96,7 @@ fun NavigationHost(dialogData: DemoViewModel.DemoDialogData? = null) {
                         }
                     }
 
+                val coroutineScope = rememberCoroutineScope()
                 LaunchedEffect(Unit) {
 
                     questionInputViewModel.clear()
@@ -123,7 +114,7 @@ fun NavigationHost(dialogData: DemoViewModel.DemoDialogData? = null) {
 
                     // 공유하기 확인
                     if (activity.intent != null) {
-                        receiveShareRequest(activity, navController, shareViewModel, loadingViewModel, harmonyViewModel, isDemo)
+                        receiveShareRequest(activity, navController, shareViewModel, loadingViewModel, harmonyViewModel, coroutineScope)
                     }
                 }
 
@@ -179,42 +170,15 @@ fun NavigationHost(dialogData: DemoViewModel.DemoDialogData? = null) {
                     navController
                 )
             }
-            composable(ScreenEnum.RoomCreateScreen.name) {
-                if (isDemo) DemoRoomCreateScreen(navController)
-                else RoomCreateScreen(navController)
-            }
-            composable(ScreenEnum.RoomGenderScreen.name) {
-                if (isDemo) DemoRoomGenderScreen(navController)
-                else RoomGenderScreen(navController)
-            }
-            composable(ScreenEnum.RoomNicknameScreen.name) {
-                if (isDemo) DemoRoomNicknameScreen(navController)
-                else RoomNicknameScreen(navController)
-            }
-            composable(ScreenEnum.RoomCreateLoadingScreen.name) {
-                if (isDemo) DemoRoomCreateLoadingScreen(navController)
-                else RoomCreateLoadingScreen(navController)
-            }
-            composable(ScreenEnum.RoomShareScreen.name) {
-                if (isDemo) DemoRoomShareScreen(navController)
-                else RoomShareScreen(navController)
-            }
-            composable(ScreenEnum.RoomInviteLoadingScreen.name) {
-                if (isDemo) DemoRoomInviteLoadingScreen(navController)
-                else RoomInviteLoadingScreen(navController)
-            }
-            composable(ScreenEnum.RoomEnteringScreen.name) {
-                if (isDemo) DemoRoomEnteringScreen(navController)
-                else RoomEnteringScreen(navController)
-            }
-            composable(ScreenEnum.RoomChatScreen.name) {
-                if (isDemo) DemoRoomChatScreen(navController)
-                else RoomChatScreen(navController)
-            }
-            composable(ScreenEnum.RoomResultScreen.name) {
-                if (isDemo) DemoRoomResultScreen(navController)
-                else HarmonyResultScreen(navController)
-            }
+            composable(ScreenEnum.RoomCreateScreen.name) { RoomCreateScreen(navController) }
+            composable(ScreenEnum.RoomGenderScreen.name) { RoomGenderScreen(navController) }
+            composable(ScreenEnum.RoomNicknameScreen.name) { RoomNicknameScreen(navController) }
+            composable(ScreenEnum.RoomCreateLoadingScreen.name) { RoomCreateLoadingScreen(navController) }
+            composable(ScreenEnum.RoomShareScreen.name) { RoomShareScreen(navController) }
+            composable(ScreenEnum.RoomInviteLoadingScreen.name) { RoomInviteLoadingScreen(navController) }
+            composable(ScreenEnum.RoomEnteringScreen.name) { RoomEnteringScreen(navController) }
+            composable(ScreenEnum.RoomChatScreen.name) { RoomChatScreen(navController) }
+            composable(ScreenEnum.RoomResultScreen.name) { HarmonyResultScreen(navController) }
             composable(ScreenEnum.MyTarotHarmonyDetailScreen.name) {
                 MyTarotHarmonyDetail(
                     navController

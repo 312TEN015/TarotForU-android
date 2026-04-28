@@ -1,6 +1,5 @@
 package com.fourleafclover.tarot.ui.screen.harmony
 
-import android.util.Log
 import androidx.collection.mutableIntSetOf
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.ExperimentalAnimationApi
@@ -45,14 +44,11 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
-import com.fourleafclover.tarot.MyApplication
 import com.fourleafclover.tarot.R
 import com.fourleafclover.tarot.SubjectHarmony
 import com.fourleafclover.tarot.demo.ui.theme.backgroundColorScheme
-import com.fourleafclover.tarot.demo.ui.theme.colorScheme
 import com.fourleafclover.tarot.demo.ui.theme.textColorScheme
 import com.fourleafclover.tarot.ui.component.AppBarCloseOnChatWithDialog
 import com.fourleafclover.tarot.ui.component.ButtonNext
@@ -67,7 +63,6 @@ import com.fourleafclover.tarot.ui.screen.fortune.viewModel.FortuneViewModel
 import com.fourleafclover.tarot.ui.screen.fortune.viewModel.PickTarotViewModel
 import com.fourleafclover.tarot.ui.screen.harmony.viewmodel.CardDeckStatus
 import com.fourleafclover.tarot.ui.screen.harmony.viewmodel.Chat
-import com.fourleafclover.tarot.ui.screen.harmony.viewmodel.ChatState
 import com.fourleafclover.tarot.ui.screen.harmony.viewmodel.ChatType
 import com.fourleafclover.tarot.ui.screen.harmony.viewmodel.ChatViewModel
 import com.fourleafclover.tarot.ui.screen.harmony.viewmodel.HarmonyViewModel
@@ -81,8 +76,6 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 private val toShowProfileList = mutableIntSetOf()
-
-var initialComposition = true
 
 @Composable
 @Preview
@@ -99,17 +92,11 @@ fun RoomChatScreen(
     val dialogViewModel = navGraphViewModel<DialogViewModel>(navController)
 
     val chatState = chatViewModel.chatState.collectAsState()
-    val partnerChatState = chatViewModel.partnerChatState.collectAsState()
 
     PreventBackPressed()
 
     LaunchedEffect(Unit) {
-        if (initialComposition) {
-            setOnNext(harmonyViewModel, loadingViewModel, chatViewModel, pickTarotViewModel)
-            setOnResult(harmonyViewModel, loadingViewModel, resultViewModel)
-            setOnExit(chatViewModel, harmonyViewModel)
-            initialComposition = false
-        }
+        chatViewModel.bindSession(harmonyViewModel, pickTarotViewModel, resultViewModel, loadingViewModel)
     }
 
     Column(modifier = getBackgroundModifier(MaterialTheme.backgroundColorScheme.mainBackgroundColor)) {
@@ -134,29 +121,26 @@ fun RoomChatScreen(
 
                 items(chatViewModel.getChatListSize() + 1) {
 
-                    val itemSize = 20.dp    // 대략적인 사이즈
+                    val itemSize = 20.dp
                     val density = LocalDensity.current
                     val itemSizePx = with(density) { itemSize.toPx() }
                     val itemsScrollCount = chatViewModel.getChatListSize()
 
                     if (it == chatViewModel.getChatListSize()) {
-                        Box(modifier = Modifier
-                            .requiredHeight(310.dp)
-                            .fillMaxWidth())
+                        Box(
+                            modifier = Modifier
+                                .requiredHeight(310.dp)
+                                .fillMaxWidth()
+                        )
                     } else {
                         val chatItem by remember { mutableStateOf(chatViewModel.getChatItem(it)) }
                         val sec by remember { mutableStateOf(chatViewModel.getSec(chatItem)) }
 
-                        withChatAnimation(
-                            idx = sec,
-                            chatItem = chatItem
-                        ) {
+                        withChatAnimation(idx = sec, chatItem = chatItem) {
 
                             when (chatItem.type) {
                                 ChatType.PartnerChatText -> {
-                                    if (sec == 0){
-                                        toShowProfileList.add(it)
-                                    }
+                                    if (sec == 0) toShowProfileList.add(it)
                                     PartnerChattingBox(
                                         text = chatItem.text,
                                         idx = it,
@@ -167,9 +151,7 @@ fun RoomChatScreen(
                                 }
 
                                 ChatType.PartnerChatButton -> {
-                                    if (sec == 0){
-                                        toShowProfileList.add(it)
-                                    }
+                                    if (sec == 0) toShowProfileList.add(it)
                                     PartnerChattingBox(
                                         text = chatItem.text,
                                         idx = it,
@@ -182,9 +164,7 @@ fun RoomChatScreen(
                                 }
 
                                 ChatType.PartnerChatImage -> {
-                                    if (sec == 0){
-                                        toShowProfileList.add(it)
-                                    }
+                                    if (sec == 0) toShowProfileList.add(it)
                                     PartnerChattingBox(
                                         text = chatItem.text,
                                         idx = it,
@@ -202,17 +182,7 @@ fun RoomChatScreen(
                                             text = chatItem.text,
                                             onClick = {
                                                 buttonVisibility = false
-
-                                                chatViewModel.addChatItem(
-                                                    Chat(
-                                                        type = ChatType.MyChatText,
-                                                        text = chatItem.text
-                                                    )
-                                                )
-
-                                                emitStart(harmonyViewModel)
-
-                                                checkEachOtherScenario(chatState.value, partnerChatState.value, chatViewModel)
+                                                chatViewModel.onUserStart(chatItem.text)
                                             },
                                             buttonVisibility
                                         )
@@ -228,7 +198,6 @@ fun RoomChatScreen(
                                 }
 
                                 ChatType.PickCard -> {
-
                                     if (chatViewModel.isExiting.value) return@withChatAnimation
 
                                     if (chatState.value.scenario != Scenario.Complete) {
@@ -244,30 +213,25 @@ fun RoomChatScreen(
 
                                 else -> {}
                             }
-
                         }
 
                         if (!chatItem.isShown) {
                             scope.launch {
                                 scrollState.animateScrollBy(
                                     value = itemSizePx * itemsScrollCount,
-                                    animationSpec = tween(
-                                        durationMillis = 1500,
-                                        easing = EaseOutQuart
-                                    )
+                                    animationSpec = tween(durationMillis = 1500, easing = EaseOutQuart)
                                 )
                             }
-
                         }
                     }
                 }
-
             }
 
-            if (chatState.value.cardDeckStatus == CardDeckStatus.Spread)
-                withChatAnimation(){
+            if (chatState.value.cardDeckStatus == CardDeckStatus.Spread) {
+                withChatAnimation {
                     ChatCardDeck(harmonyViewModel, chatViewModel, fortuneViewModel, pickTarotViewModel)
                 }
+            }
 
             if (chatViewModel.isExiting.value) {
                 Box(modifier = Modifier.padding(horizontal = 20.dp)) {
@@ -275,7 +239,6 @@ fun RoomChatScreen(
                         onClick = {
                             dialogViewModel.closeDialog()
                             harmonyViewModel.deleteRoom()
-                            MyApplication.closeSocket()
                             navigateInclusive(navController, ScreenEnum.HomeScreen.name)
                             chatViewModel.setExit(false)
                         },
@@ -283,58 +246,9 @@ fun RoomChatScreen(
                         content = { ButtonText(true, "메인으로 이동") }
                     )
                 }
-
             }
         }
-
     }
-
-}
-
-fun checkEachOtherScenario(chatState: ChatState, partnerChatState: ChatState, chatViewModel: ChatViewModel) {
-
-    Log.d("socket-test", "emit my: " + chatViewModel.chatState.value.scenario.name)
-    Log.d("socket-test", "emit partner: " + chatViewModel.partnerChatState.value.scenario.name)
-
-    // 상대방이랑 다름 = 내가 뒤처짐
-    if (chatState.scenario != partnerChatState.scenario){
-        confirmSelectedCard(chatState, chatViewModel)
-        chatViewModel.moveToNextScenario()
-    }
-    // 상대방이랑 같음 = 내가 먼저함
-    else {
-        confirmSelectedCard(chatState, chatViewModel)
-
-        chatViewModel.updateScenario()
-
-        chatViewModel.addChatItem(
-            Chat(
-                type = ChatType.GuidText,
-                text = "상대방의 답변을 기다리는 중입니다...✏️"
-            )
-        )
-        // -> onPartnerChecked
-    }
-}
-
-fun confirmSelectedCard(chatState: ChatState, chatViewModel: ChatViewModel) {
-
-    if (chatState.scenario != Scenario.Opening) {
-        if (chatState.pickedCardNumberState.thirdCardNumber != -1){
-            chatViewModel.addChatItem(
-                Chat(ChatType.PartnerChatText, "세번째 카드 선택이 완료되었습니다! ${chatViewModel.getAdjectives()} 카드를 뽑으셨네요✨", code = "secondCard_1")
-            )
-        } else if (chatState.pickedCardNumberState.secondCardNumber != -1){
-            chatViewModel.addChatItem(
-                Chat(ChatType.PartnerChatText, "두번째 카드 선택이 완료되었습니다! ${chatViewModel.getAdjectives()} 카드를 뽑으셨네요✨", code = "secondCard_1")
-            )
-        } else{
-            chatViewModel.addChatItem(
-                Chat(ChatType.PartnerChatText, "첫번째 카드 선택이 완료되었습니다! ${chatViewModel.getAdjectives()} 카드를 뽑으셨네요✨", code = "secondCard_1")
-            )
-        }
-    }
-
 }
 
 
@@ -348,7 +262,6 @@ fun ChatCardDeck(
     val localContext = LocalContext.current
     val pickSequence = chatViewModel.pickSequence.collectAsState()
 
-    // 카드덱
     Column(
         modifier = Modifier.padding(top = 80.dp, bottom = 32.dp),
         verticalArrangement = Arrangement.Bottom,
@@ -359,26 +272,13 @@ fun ChatCardDeck(
         ButtonSelect(
             text = "선택완료",
             onClick = {
-                pickTarotViewModel.setPickedCard(pickSequence.value)
-                chatViewModel.updatePickedCardNumberState(pickTarotViewModel.pickedCardNumberState.value)
-                chatViewModel.addChatItem(
-                    Chat(
-                        type = ChatType.MyChatImage,
-                        drawable = fortuneViewModel.getCardImageId(localContext, pickTarotViewModel.getCardNumber(pickSequence.value).toString())
-                    )
-                )
-
-                emitCardSelect(harmonyViewModel, pickTarotViewModel, pickSequence.value)
-
-                chatViewModel.updatePickSequence()
-                chatViewModel.updateCardDeckStatus(CardDeckStatus.Gathered)
-
-                pickTarotViewModel.resetNowSelectedCardIdx()
-                checkEachOtherScenario(chatViewModel.chatState.value, chatViewModel.partnerChatState.value, chatViewModel)
+                val seq = pickSequence.value
+                val cardNumber = pickTarotViewModel.getCardNumber(seq)
+                val drawable = fortuneViewModel.getCardImageId(localContext, cardNumber.toString())
+                chatViewModel.onUserCardSelected(cardNumber, drawable)
             },
             isEnable = pickTarotViewModel.isCompleteButtonEnabled()
         )
-
     }
 }
 
@@ -387,7 +287,8 @@ fun ChatCardDeck(
 fun withChatAnimation(
     idx: Int = 0,
     chatItem: Chat,
-    content: @Composable () -> Unit = {}) {
+    content: @Composable () -> Unit = {}
+) {
     var visible by remember { mutableStateOf(false) }
 
     if (!visible) {
@@ -407,7 +308,7 @@ fun withChatAnimation(
         exit = fadeOut(animationSpec = tween(durationMillis = 500))
     ) {
         content()
-        if (this.transition.currentState == this.transition.targetState){
+        if (this.transition.currentState == this.transition.targetState) {
             chatItem.isShown = true
         }
     }
@@ -416,12 +317,13 @@ fun withChatAnimation(
 @Composable
 fun withChatAnimation(
     idx: Int = 0,
-    content: @Composable () -> Unit = {}) {
+    content: @Composable () -> Unit = {}
+) {
     var visible by remember { mutableStateOf(false) }
 
     if (!visible) {
         LaunchedEffect(Unit) {
-            delay(((idx) * 1200).toLong())
+            delay((idx * 1200).toLong())
             visible = true
         }
     }
@@ -466,10 +368,7 @@ fun PartnerChattingBox(
             contentDescription = null
         )
 
-        Row(
-            modifier = Modifier
-                .padding(top = 16.dp)
-        ) {
+        Row(modifier = Modifier.padding(top = 16.dp)) {
             Image(
                 painter = painterResource(id = R.drawable.chat_tail_left_gray),
                 contentDescription = null
@@ -482,7 +381,6 @@ fun PartnerChattingBox(
                         shape = RoundedCornerShape(0.dp, 10.dp, 10.dp, 10.dp)
                     )
                     .padding(8.dp)
-
             ) {
 
                 if (drawable != -1) {
@@ -503,22 +401,17 @@ fun PartnerChattingBox(
                         text = buttonText,
                         onClick = {
                             chatViewModel.moveToNextScenario()
-
                             loadingViewModel.startLoading(
                                 navController,
                                 ScreenEnum.LoadingScreen,
                                 ScreenEnum.RoomResultScreen
                             )
-
                         }
                     )
                 }
             }
         }
-
     }
-
-
 }
 
 @Composable
@@ -531,10 +424,7 @@ fun MyChattingBox(text: String = "", drawable: Int = 0) {
             .fillMaxWidth(),
         horizontalArrangement = Arrangement.End
     ) {
-        Row(
-            modifier = Modifier
-                .padding(top = 16.dp)
-        ) {
+        Row(modifier = Modifier.padding(top = 16.dp)) {
 
             Box(
                 Modifier
@@ -543,7 +433,6 @@ fun MyChattingBox(text: String = "", drawable: Int = 0) {
                         shape = RoundedCornerShape(10.dp, 0.dp, 10.dp, 10.dp)
                     )
                     .padding(8.dp)
-
             ) {
 
                 if (drawable != 0) {
@@ -558,8 +447,6 @@ fun MyChattingBox(text: String = "", drawable: Int = 0) {
                         color = MaterialTheme.textColorScheme.onMyChatItemColor
                     )
                 }
-
-
             }
 
             Image(
@@ -567,14 +454,12 @@ fun MyChattingBox(text: String = "", drawable: Int = 0) {
                 contentDescription = null
             )
         }
-
     }
 }
 
 @Preview
 @Composable
 fun GuidBox(text: String = "상대방의 답변을 기다리는 중입니다...✏️") {
-
     Box(
         modifier = Modifier
             .fillMaxWidth()
@@ -588,9 +473,7 @@ fun GuidBox(text: String = "상대방의 답변을 기다리는 중입니다...�
             color = MaterialTheme.textColorScheme.onChatGuidBoxColor,
             textAlign = TextAlign.Center
         )
-
     }
-
 }
 
 
@@ -616,19 +499,15 @@ fun ButtonSelect(
                         color = if (isEnable) MaterialTheme.backgroundColorScheme.activeSecondaryButtonBackgroundColor
                         else MaterialTheme.backgroundColorScheme.disabledButtonBackgroundColor
                     )
-                    .clickable(enabled = isEnable) {
-                        onClick()
-                    }
+                    .clickable(enabled = isEnable) { onClick() }
                     .padding(horizontal = 50.dp)
                     .wrapContentHeight(),
                 contentAlignment = Alignment.Center
             ) {
                 ButtonText(isEnabled = isEnable, text = text, paddingVertical = 9.dp)
             }
-
         }
     }
-
 }
 
 @Preview
@@ -636,7 +515,7 @@ fun ButtonSelect(
 fun ButtonSelectInChat(
     text: String = "궁합 결과 보러가기",
     onClick: () -> Unit = {},
-){
+) {
     Box(
         modifier = Modifier
             .padding(top = 16.dp)
@@ -645,9 +524,7 @@ fun ButtonSelectInChat(
                 shape = RoundedCornerShape(10.dp),
                 color = MaterialTheme.backgroundColorScheme.activeSecondaryButtonBackgroundColor
             )
-            .clickable {
-                onClick()
-            }
+            .clickable { onClick() }
             .wrapContentHeight(),
         contentAlignment = Alignment.Center
     ) {

@@ -29,8 +29,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
-import com.fourleafclover.tarot.LocalIsDemo
-import com.fourleafclover.tarot.MyApplication
 import com.fourleafclover.tarot.R
 import com.fourleafclover.tarot.demo.ui.component.PrimaryButtonColors
 import com.fourleafclover.tarot.demo.ui.component.SecondaryButtonColors
@@ -138,8 +136,6 @@ fun getCardSliderImage(context: Context, cards: ArrayList<Int>, fortuneViewModel
 @Composable
 private fun OverallResult(resultViewModel: ResultViewModel, harmonyViewModel: HarmonyViewModel){
 
-    val isDemo = LocalIsDemo.current
-
     Column(
         modifier = Modifier
             .background(color = MaterialTheme.backgroundColorScheme.secondaryBackgroundColor)
@@ -174,10 +170,7 @@ private fun OverallResult(resultViewModel: ResultViewModel, harmonyViewModel: Ha
         )
 
         Button(
-            onClick = {
-                // 타로 결과 id 저장
-                saveToMyTarot(resultViewModel, isDemo)
-            },
+            onClick = { resultViewModel.saveCurrentTarotToMyList() },
             shape = RoundedCornerShape(10.dp),
             enabled = !resultViewModel.saveState.value,
             modifier = Modifier
@@ -245,11 +238,5 @@ private fun OverallResult(resultViewModel: ResultViewModel, harmonyViewModel: Ha
     }
 }
 
-
-fun saveToMyTarot(resultViewModel: ResultViewModel, isDemo: Boolean) {
-    MyApplication.prefs.addTarotResult(resultViewModel.tarotResult.value.tarotId)
-    resultViewModel.saveResult()
-    resultViewModel.openCompleteDialog()
-}
 
 

@@ -2,26 +2,34 @@ package com.fourleafclover.tarot.ui.screen.harmony.viewmodel
 
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.fourleafclover.tarot.MyApplication
+import com.fourleafclover.tarot.data.repository.RoomEvent
+import com.fourleafclover.tarot.data.repository.TarotRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.filterIsInstance
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.onStart
+import kotlinx.coroutines.launch
 import java.util.Date
 import javax.inject.Inject
 
 @HiltViewModel
-class HarmonyViewModel @Inject constructor(): ViewModel() {
+class HarmonyViewModel @Inject constructor(
+    private val repository: TarotRepository
+) : ViewModel() {
 
-    private var userNickname = mutableStateOf("")   // 사용자 닉네임
-    private var partnerNickname = mutableStateOf("")    // 상대방 닉네임
+    private var userNickname = mutableStateOf("")
+    private var partnerNickname = mutableStateOf("")
 
-    private var _roomId = mutableStateOf("")       // 현재 들어가 있는 방 코드
+    private var _roomId = mutableStateOf("")
     val roomId get() = _roomId
 
-    private var _createdRoomId = mutableStateOf("")       // 내가 생성한 방 코드
+    private var _createdRoomId = mutableStateOf("")
     val createdRoomId get() = _createdRoomId
 
-    private var _invitedRoomId = mutableStateOf("")       // 초대된 방 코드
+    private var _invitedRoomId = mutableStateOf("")
     val invitedRoomId get() = _invitedRoomId
-
 
     private var _isRoomOwner = mutableStateOf(false)
     val isRoomOwner get() = _isRoomOwner
@@ -44,46 +52,34 @@ class HarmonyViewModel @Inject constructor(): ViewModel() {
         _isRoomOwner.value = isRoomOwner
     }
 
-    fun getOwnerNickname(): String {
-        return if (isRoomOwner.value) userNickname.value else partnerNickname.value
-    }
+    fun getOwnerNickname(): String =
+        if (isRoomOwner.value) userNickname.value else partnerNickname.value
 
-    fun getInviteeNickname(): String {
-        return if (!isRoomOwner.value) userNickname.value else partnerNickname.value
-    }
+    fun getInviteeNickname(): String =
+        if (!isRoomOwner.value) userNickname.value else partnerNickname.value
 
-    fun setUserNickname(userNickname: String) {
-        this.userNickname.value = userNickname
-    }
-
+    fun setUserNickname(nickname: String) { userNickname.value = nickname }
     fun getUserNickname() = userNickname.value
-
-    fun setPartnerNickname(partnerNickname: String) {
-        this.partnerNickname.value = partnerNickname
-    }
-
+    fun setPartnerNickname(nickname: String) { partnerNickname.value = nickname }
     fun getPartnerNickname() = partnerNickname.value
 
-    // 기존 내가 만든 방에 입장하기
     fun enterExistingRoom() {
         _roomId.value = MyApplication.prefs.getHarmonyRoomId()
         _createdRoomId.value = MyApplication.prefs.getHarmonyRoomId()
     }
 
-    // 새로운 방을 생성
     fun createNewRoom(newRoomId: String) {
         _roomId.value = newRoomId
         _createdRoomId.value = newRoomId
         _isRoomOwner.value = true
 
-        val mNow = System.currentTimeMillis()
-        val mDate = Date(mNow)
+        val mDate = Date(System.currentTimeMillis())
         MyApplication.prefs.saveHarmonyRoomCreatedAt(mDate.toString())
         MyApplication.prefs.saveHarmonyRoomId(newRoomId)
     }
 
-    // 초대 또는 생성한 방에서 나가기, 1시간 지나서 사라짐, 궁합 보기 완료
     fun deleteRoom() {
+        val currentRoomId = _roomId.value
         _roomId.value = ""
 
         if (_isRoomOwner.value) {
@@ -95,18 +91,42 @@ class HarmonyViewModel @Inject constructor(): ViewModel() {
         }
 
         _isRoomOwner.value = false
-//        pickTarotViewModel.clear()
-//        resultViewModel.clear()
-//        chatViewModel.clear()
-//        harmonyShareViewModel.clear()
 
+        if (currentRoomId.isNotEmpty()) {
+            viewModelScope.launch { repository.exitRoom(currentRoomId) }
+        }
+        repository.disconnect()
     }
 
-
-    // 초대된 방에 들어가기
     fun enterInvitedRoom(invitedRoomId: String) {
         _roomId.value = invitedRoomId
         _invitedRoomId.value = invitedRoomId
     }
 
+    /** Suspends until repository confirms room creation, then updates this VM's state. */
+    suspend fun createRoomAndAwait() {
+        repository.connect()
+        val event = repository.observeRoomEvents()
+            .filterIsInstance<RoomEvent.Created>()
+            .onStart { repository.createRoom() }
+            .first()
+        createNewRoom(event.roomId)
+    }
+
+    /** Suspends until both clients have joined and the partner nickname is known. */
+    suspend fun joinRoomAndAwait(): String {
+        repository.connect()
+        val event = repository.observeRoomEvents()
+            .filterIsInstance<RoomEvent.Joined>()
+            .onStart {
+                repository.joinRoom(
+                    roomId = _roomId.value,
+                    nickname = userNickname.value
+                )
+            }
+            .first()
+        val partner = event.nicknames.find { it != userNickname.value } ?: " "
+        setPartnerNickname(partner)
+        return partner
+    }
 }

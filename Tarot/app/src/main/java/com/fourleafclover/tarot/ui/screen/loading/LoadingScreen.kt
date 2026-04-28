@@ -1,7 +1,5 @@
 package com.fourleafclover.tarot.ui.screen.loading
 
-import android.os.Handler
-import android.os.Looper
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -11,24 +9,21 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
-import com.fourleafclover.tarot.LocalIsDemo
-import com.fourleafclover.tarot.demo.data.demoHarmonyTarotResult
+import com.fourleafclover.tarot.MyApplication
 import com.fourleafclover.tarot.demo.ui.theme.backgroundColorScheme
 import com.fourleafclover.tarot.ui.component.LoadingCircle
+import com.fourleafclover.tarot.ui.component.getBackgroundModifier
 import com.fourleafclover.tarot.ui.navigation.PreventBackPressed
 import com.fourleafclover.tarot.ui.navigation.ScreenEnum
 import com.fourleafclover.tarot.ui.navigation.navGraphViewModel
 import com.fourleafclover.tarot.ui.screen.fortune.viewModel.FortuneViewModel
 import com.fourleafclover.tarot.ui.screen.fortune.viewModel.PickTarotViewModel
 import com.fourleafclover.tarot.ui.screen.fortune.viewModel.QuestionInputViewModel
-import com.fourleafclover.tarot.ui.screen.harmony.viewmodel.HarmonyViewModel
 import com.fourleafclover.tarot.ui.screen.harmony.viewmodel.LoadingViewModel
 import com.fourleafclover.tarot.ui.screen.harmony.viewmodel.ResultViewModel
-import com.fourleafclover.tarot.utils.getTarotResult
 import kotlinx.coroutines.delay
 
 
@@ -36,16 +31,13 @@ import kotlinx.coroutines.delay
 @Preview
 fun LoadingScreen(
     navController: NavHostController = rememberNavController()
-){
+) {
 
     val loadingViewModel = navGraphViewModel<LoadingViewModel>(navController)
     val resultViewModel = navGraphViewModel<ResultViewModel>(navController)
     val fortuneViewModel = navGraphViewModel<FortuneViewModel>(navController)
     val pickTarotViewModel = navGraphViewModel<PickTarotViewModel>(navController)
     val questionInputViewModel = navGraphViewModel<QuestionInputViewModel>(navController)
-    val harmonyViewModel = navGraphViewModel<HarmonyViewModel>(navController)
-    val localContext = LocalContext.current
-    val isDemo = LocalIsDemo.current
 
     if (!loadingViewModel.isLoading.value) {
         loadingViewModel.endLoading(navController)
@@ -53,44 +45,39 @@ fun LoadingScreen(
 
     PreventBackPressed()
 
-    LaunchedEffect(Unit){
-        if (loadingViewModel.destination == ScreenEnum.ResultScreen){
-
-            if (isDemo) {
-                delay(2500)
-            }
-
-            getTarotResult(
-                localContext,
-                resultViewModel = resultViewModel,
-                pickTarotViewModel = pickTarotViewModel,
-                loadingViewModel = loadingViewModel,
-                questionInputViewModel = questionInputViewModel,
-                isDemo,
-                fortuneViewModel.pickedTopicState.value.topicNumber
-            )
-        }
-        else if (loadingViewModel.destination == ScreenEnum.RoomResultScreen){
-            if (isDemo) {
-                delay(2500)
-                resultViewModel.distinguishCardResult(
-                    demoHarmonyTarotResult,
-                    harmonyViewModel.isRoomOwner.value
+    LaunchedEffect(Unit) {
+        when (loadingViewModel.destination) {
+            ScreenEnum.ResultScreen -> {
+                val ok = resultViewModel.fetchTarotResult(
+                    pickTarotViewModel,
+                    questionInputViewModel,
+                    fortuneViewModel.pickedTopicState.value.topicNumber
                 )
-                resultViewModel.setIsMatchResultPrepared(true)
-                loadingViewModel.updateLoadingState(false)
-            } else if (resultViewModel.isMatchResultPrepared.value) {
-                Handler(Looper.getMainLooper())
-                    .postDelayed({
-                        loadingViewModel.updateLoadingState(false)
-                    }, 4000)
+                if (ok) {
+                    loadingViewModel.updateLoadingState(false)
+                } else {
+                    MyApplication.toastUtil.makeShortToast("네트워크 상태를 확인 후 다시 시도해 주세요.")
+                    loadingViewModel.changeDestination(ScreenEnum.HomeScreen)
+                    loadingViewModel.updateLoadingState(false)
+                }
             }
+            ScreenEnum.RoomResultScreen -> {
+                // Match result is fetched by ChatViewModel via repository events.
+                // Wait for the ready flag, then add a brief beat to keep the loading animation.
+                while (!resultViewModel.isMatchResultPrepared.value) {
+                    delay(200)
+                }
+                delay(4000)
+                loadingViewModel.updateLoadingState(false)
+            }
+            else -> {}
         }
     }
 
-    Column(modifier = Modifier
-        .fillMaxSize()
-        .background(MaterialTheme.backgroundColorScheme.secondaryBackgroundColor),
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(MaterialTheme.backgroundColorScheme.secondaryBackgroundColor),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {

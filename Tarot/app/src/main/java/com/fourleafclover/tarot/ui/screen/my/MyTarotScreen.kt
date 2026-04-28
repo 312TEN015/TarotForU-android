@@ -43,8 +43,6 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.fourleafclover.tarot.MyApplication
 import com.fourleafclover.tarot.R
-import com.fourleafclover.tarot.demo.data.demoHarmonyTarotResult
-import com.fourleafclover.tarot.demo.data.demoTarotResult
 import com.fourleafclover.tarot.demo.ui.theme.backgroundColorScheme
 import com.fourleafclover.tarot.demo.ui.theme.color.ColorSet
 import com.fourleafclover.tarot.demo.ui.theme.textColorScheme
@@ -63,11 +61,13 @@ import com.fourleafclover.tarot.ui.theme.getTextStyle
 
 var showSheet = mutableStateOf(false)
 
+/** Seeds prefs with demo tarot ids on first launch in demo mode. */
 fun prepareDemoMyTarotData(): ArrayList<String> {
     val tarotResultArray = MyApplication.prefs.getTarotResultArray()
     if (tarotResultArray.isEmpty()) {
-        MyApplication.prefs.addTarotResult(demoTarotResult.tarotId)
-        MyApplication.prefs.addTarotResult(demoHarmonyTarotResult.tarotId)
+        MyApplication.prefs.addTarotResult(com.fourleafclover.tarot.demo.data.demoTarotResult.tarotId)
+        MyApplication.prefs.addTarotResult(com.fourleafclover.tarot.demo.data.demoHarmonyTarotResult.tarotId)
+        return MyApplication.prefs.getTarotResultArray()
     }
     return tarotResultArray
 }
