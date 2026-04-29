@@ -92,7 +92,7 @@ class FortuneViewModel @Inject constructor() : ViewModel() {
     }
 
     fun getCardImageId(localContext: Context, cardNumber: String): Int {
-        val resources: Resources = localContext.resources
-        return resources.getIdentifier("tarot_$cardNumber", "drawable", localContext.packageName)
+        val idx = (cardNumber.toIntOrNull() ?: return 0) + 1
+        return localContext.resources.getIdentifier("tarot_$idx", "drawable", localContext.packageName)
     }
 }
