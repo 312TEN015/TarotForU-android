@@ -16,7 +16,6 @@ import androidx.navigation.compose.rememberNavController
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.navigation.compose.navigation
 import com.fourleafclover.tarot.MainActivity
-import com.fourleafclover.tarot.MyApplication
 import com.fourleafclover.tarot.demo.ui.theme.backgroundColorScheme
 import com.fourleafclover.tarot.demo.viewmodel.DemoViewModel
 import com.fourleafclover.tarot.ui.component.BottomNavigationBar
@@ -51,7 +50,10 @@ import com.fourleafclover.tarot.ui.screen.my.viewmodel.ShareViewModel
 import com.fourleafclover.tarot.utils.receiveShareRequest
 
 @Composable
-fun NavigationHost(dialogData: DemoViewModel.DemoDialogData? = null) {
+fun NavigationHost(
+    startDestination: String = ScreenEnum.HomeScreen.name,
+    dialogData: DemoViewModel.DemoDialogData? = null,
+) {
     val navController = rememberNavController()
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentRoute = navBackStackEntry?.destination?.route
@@ -68,7 +70,7 @@ fun NavigationHost(dialogData: DemoViewModel.DemoDialogData? = null) {
             .systemBarsPadding()
     ) { innerPadding -> innerPadding
 
-        NavHost(navController = navController, startDestination = ScreenEnum.OnBoardingScreen.name, route = NavGraphRoute.ROOT) {
+        NavHost(navController = navController, startDestination = startDestination, route = NavGraphRoute.ROOT) {
             composable(ScreenEnum.HomeScreen.name) {
 
                 val questionInputViewModel: QuestionInputViewModel = navGraphViewModel(navController)
@@ -133,11 +135,7 @@ fun NavigationHost(dialogData: DemoViewModel.DemoDialogData? = null) {
                     )
             }
             composable(ScreenEnum.OnBoardingScreen.name) {
-                if (MyApplication.prefs.isOnBoardingComplete()){
-                    navigateInclusive(navController, ScreenEnum.HomeScreen.name)
-                }else{
-                    PagerOnBoarding(navController)
-                }
+                PagerOnBoarding(navController)
             }
             composable(ScreenEnum.LoadingScreen.name) {
                 LoadingScreen(

@@ -18,6 +18,7 @@ import com.fourleafclover.tarot.data.repository.DemoMode
 import com.fourleafclover.tarot.demo.ui.theme.TarotTheme
 import com.fourleafclover.tarot.demo.viewmodel.DemoViewModel
 import com.fourleafclover.tarot.ui.navigation.NavigationHost
+import com.fourleafclover.tarot.ui.navigation.ScreenEnum
 import com.fourleafclover.tarot.utils.LogTags
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
@@ -57,10 +58,17 @@ class MainActivity : ComponentActivity() {
         }
 
         bootstrap { isDemo, dialogData ->
+            val startDestination =
+                if (MyApplication.prefs.isOnBoardingComplete()) ScreenEnum.HomeScreen.name
+                else ScreenEnum.OnBoardingScreen.name
+
             setContent {
                 CompositionLocalProvider(LocalIsDemo provides isDemo) {
                     TarotTheme {
-                        NavigationHost(dialogData)
+                        NavigationHost(
+                            startDestination = startDestination,
+                            dialogData = dialogData,
+                        )
                     }
                 }
             }
