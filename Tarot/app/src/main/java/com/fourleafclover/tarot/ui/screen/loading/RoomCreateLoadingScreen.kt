@@ -26,15 +26,11 @@ fun RoomCreateLoadingScreen(
     val loadingViewModel = navGraphViewModel<LoadingViewModel>(navController)
     val harmonyViewModel = navGraphViewModel<HarmonyViewModel>(navController)
 
-    if (!loadingViewModel.isLoading.value) {
-        loadingViewModel.endLoading(navController)
-    }
-
     PreventBackPressed()
 
     LaunchedEffect(Unit) {
         harmonyViewModel.createRoomAndAwait()
-        loadingViewModel.updateLoadingState(false)
+        loadingViewModel.endLoading(navController)
     }
 
     Column(

@@ -39,10 +39,6 @@ fun LoadingScreen(
     val pickTarotViewModel = navGraphViewModel<PickTarotViewModel>(navController)
     val questionInputViewModel = navGraphViewModel<QuestionInputViewModel>(navController)
 
-    if (!loadingViewModel.isLoading.value) {
-        loadingViewModel.endLoading(navController)
-    }
-
     PreventBackPressed()
 
     LaunchedEffect(Unit) {
@@ -53,13 +49,11 @@ fun LoadingScreen(
                     questionInputViewModel,
                     fortuneViewModel.pickedTopicState.value.topicNumber
                 )
-                if (ok) {
-                    loadingViewModel.updateLoadingState(false)
-                } else {
+                if (!ok) {
                     MyApplication.toastUtil.makeShortToast("네트워크 상태를 확인 후 다시 시도해 주세요.")
                     loadingViewModel.changeDestination(ScreenEnum.HomeScreen)
-                    loadingViewModel.updateLoadingState(false)
                 }
+                loadingViewModel.endLoading(navController)
             }
             ScreenEnum.RoomResultScreen -> {
                 // Match result is fetched by ChatViewModel via repository events.
@@ -68,7 +62,7 @@ fun LoadingScreen(
                     delay(200)
                 }
                 delay(4000)
-                loadingViewModel.updateLoadingState(false)
+                loadingViewModel.endLoading(navController)
             }
             else -> {}
         }

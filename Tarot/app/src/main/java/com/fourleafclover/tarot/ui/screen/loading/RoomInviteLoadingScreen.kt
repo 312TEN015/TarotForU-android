@@ -40,16 +40,12 @@ fun RoomInviteLoadingScreen(
     val loadingViewModel = navGraphViewModel<LoadingViewModel>(navController)
     val harmonyViewModel = navGraphViewModel<HarmonyViewModel>(navController)
 
-    if (!loadingViewModel.isLoading.value) {
-        loadingViewModel.endLoading(navController)
-    }
-
     PreventBackPressed()
 
     LaunchedEffect(Unit) {
         val partnerNickname = harmonyViewModel.joinRoomAndAwait()
         chatViewModel.startChat(harmonyViewModel.getUserNickname(), partnerNickname)
-        loadingViewModel.updateLoadingState(false)
+        loadingViewModel.endLoading(navController)
     }
 
 
