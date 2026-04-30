@@ -7,7 +7,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
@@ -46,23 +45,18 @@ fun InputScreen(
             dialogViewModel = dialogViewModel
         )
 
-        Column(modifier = Modifier) {
-
-            LazyColumn(content = {
-                // numberOfQuestion + header + footer
-                items(questionCount + 2) {
-                    QuestionsComponent(
-                        pickedTopicTemplate.topicSubjectData,
-                        it,
-                        navController,
-                        localContext,
-                        fortuneViewModel,
-                        questionInputViewModel
-                    )
-                }
-
-            })
-
+        LazyColumn(modifier = Modifier.weight(1f)) {
+            // numberOfQuestion + header + footer
+            items(questionCount + 2) {
+                QuestionsComponent(
+                    pickedTopicTemplate.topicSubjectData,
+                    it,
+                    navController,
+                    localContext,
+                    fortuneViewModel,
+                    questionInputViewModel
+                )
+            }
         }
     }
 
