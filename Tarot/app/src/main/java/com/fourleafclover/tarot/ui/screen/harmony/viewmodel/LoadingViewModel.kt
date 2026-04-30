@@ -4,7 +4,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.navigation.NavHostController
 import com.fourleafclover.tarot.ui.navigation.ScreenEnum
-import com.fourleafclover.tarot.ui.navigation.navigateInclusive
+import com.fourleafclover.tarot.ui.navigation.navigateReplacing
 import com.fourleafclover.tarot.ui.navigation.navigateSaveState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
@@ -41,7 +41,7 @@ class LoadingViewModel @Inject constructor(): ViewModel() {
     /** 로딩 화면을 끝냄 */
     fun endLoading(navController: NavHostController){
         updateLoadingState(false)
-        navigateInclusive(navController, _destination.name)
+        navigateReplacing(navController, _destination.name)
     }
 
     /** 로딩 후 도착 화면 수정 */
