@@ -14,6 +14,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.navigation.compose.navigation
 import com.fourleafclover.tarot.MainActivity
 import com.fourleafclover.tarot.MyApplication
 import com.fourleafclover.tarot.demo.ui.theme.backgroundColorScheme
@@ -31,13 +32,9 @@ import com.fourleafclover.tarot.ui.screen.harmony.RoomEnteringScreen
 import com.fourleafclover.tarot.ui.screen.harmony.RoomGenderScreen
 import com.fourleafclover.tarot.ui.screen.harmony.RoomNicknameScreen
 import com.fourleafclover.tarot.ui.screen.harmony.RoomShareScreen
-import com.fourleafclover.tarot.ui.screen.harmony.viewmodel.ChatViewModel
-import com.fourleafclover.tarot.ui.screen.harmony.viewmodel.GenderViewModel
 import com.fourleafclover.tarot.ui.screen.harmony.viewmodel.HarmonyViewModel
 import com.fourleafclover.tarot.ui.screen.harmony.viewmodel.LoadingViewModel
-import com.fourleafclover.tarot.ui.screen.harmony.viewmodel.NicknameViewModel
 import com.fourleafclover.tarot.ui.screen.harmony.viewmodel.ResultViewModel
-import com.fourleafclover.tarot.ui.screen.harmony.viewmodel.RoomCreateViewModel
 import com.fourleafclover.tarot.ui.screen.loading.LoadingScreen
 import com.fourleafclover.tarot.ui.screen.loading.RoomCreateLoadingScreen
 import com.fourleafclover.tarot.ui.screen.loading.RoomInviteLoadingScreen
@@ -71,7 +68,7 @@ fun NavigationHost(dialogData: DemoViewModel.DemoDialogData? = null) {
             .systemBarsPadding()
     ) { innerPadding -> innerPadding
 
-        NavHost(navController = navController, startDestination = ScreenEnum.OnBoardingScreen.name, route = "root_graph") {
+        NavHost(navController = navController, startDestination = ScreenEnum.OnBoardingScreen.name, route = NavGraphRoute.ROOT) {
             composable(ScreenEnum.HomeScreen.name) {
 
                 val questionInputViewModel: QuestionInputViewModel = navGraphViewModel(navController)
@@ -83,10 +80,6 @@ fun NavigationHost(dialogData: DemoViewModel.DemoDialogData? = null) {
                 val loadingViewModel: LoadingViewModel = navGraphViewModel(navController)
 
                 val harmonyViewModel: HarmonyViewModel = navGraphViewModel(navController)
-                val roomCreateViewModel: RoomCreateViewModel = navGraphViewModel(navController)
-                val genderViewModel: GenderViewModel = navGraphViewModel(navController)
-                val nicknameViewModel: NicknameViewModel = navGraphViewModel(navController)
-                val chatViewModel: ChatViewModel = navGraphViewModel(navController)
 
                 val myTarotViewModel: MyTarotViewModel = navGraphViewModel(navController)
                 val demoViewModel: DemoViewModel = navGraphViewModel<DemoViewModel>(navController)
@@ -106,10 +99,6 @@ fun NavigationHost(dialogData: DemoViewModel.DemoDialogData? = null) {
                     shareViewModel.clear()
                     loadingViewModel.clear()
                     harmonyViewModel.clear()
-                    roomCreateViewModel.clear()
-                    genderViewModel.clear()
-                    nicknameViewModel.clear()
-                    chatViewModel.clear()
                     myTarotViewModel.clear()
 
                     // 공유하기 확인
@@ -170,15 +159,20 @@ fun NavigationHost(dialogData: DemoViewModel.DemoDialogData? = null) {
                     navController
                 )
             }
-            composable(ScreenEnum.RoomCreateScreen.name) { RoomCreateScreen(navController) }
-            composable(ScreenEnum.RoomGenderScreen.name) { RoomGenderScreen(navController) }
-            composable(ScreenEnum.RoomNicknameScreen.name) { RoomNicknameScreen(navController) }
-            composable(ScreenEnum.RoomCreateLoadingScreen.name) { RoomCreateLoadingScreen(navController) }
-            composable(ScreenEnum.RoomShareScreen.name) { RoomShareScreen(navController) }
-            composable(ScreenEnum.RoomInviteLoadingScreen.name) { RoomInviteLoadingScreen(navController) }
-            composable(ScreenEnum.RoomEnteringScreen.name) { RoomEnteringScreen(navController) }
-            composable(ScreenEnum.RoomChatScreen.name) { RoomChatScreen(navController) }
-            composable(ScreenEnum.RoomResultScreen.name) { HarmonyResultScreen(navController) }
+            navigation(
+                startDestination = ScreenEnum.RoomCreateScreen.name,
+                route = NavGraphRoute.HARMONY
+            ) {
+                composable(ScreenEnum.RoomCreateScreen.name) { RoomCreateScreen(navController) }
+                composable(ScreenEnum.RoomGenderScreen.name) { RoomGenderScreen(navController) }
+                composable(ScreenEnum.RoomNicknameScreen.name) { RoomNicknameScreen(navController) }
+                composable(ScreenEnum.RoomCreateLoadingScreen.name) { RoomCreateLoadingScreen(navController) }
+                composable(ScreenEnum.RoomShareScreen.name) { RoomShareScreen(navController) }
+                composable(ScreenEnum.RoomInviteLoadingScreen.name) { RoomInviteLoadingScreen(navController) }
+                composable(ScreenEnum.RoomEnteringScreen.name) { RoomEnteringScreen(navController) }
+                composable(ScreenEnum.RoomChatScreen.name) { RoomChatScreen(navController) }
+                composable(ScreenEnum.RoomResultScreen.name) { HarmonyResultScreen(navController) }
+            }
             composable(ScreenEnum.MyTarotHarmonyDetailScreen.name) {
                 MyTarotHarmonyDetail(
                     navController

@@ -35,6 +35,7 @@ import com.fourleafclover.tarot.ui.component.RoomDeletedDialog
 import com.fourleafclover.tarot.ui.component.VerticalYesNoDialog
 import com.fourleafclover.tarot.ui.component.getBackgroundModifier
 import com.fourleafclover.tarot.ui.component.getOutlinedRectangleModifier
+import com.fourleafclover.tarot.ui.navigation.NavGraphRoute
 import com.fourleafclover.tarot.ui.navigation.ScreenEnum
 import com.fourleafclover.tarot.ui.navigation.navGraphViewModel
 import com.fourleafclover.tarot.ui.navigation.navigateInclusive
@@ -50,7 +51,7 @@ fun RoomCreateScreen(
     navController: NavHostController = rememberNavController()
 ) {
 
-    val roomCreateViewModel = navGraphViewModel<RoomCreateViewModel>(navController)
+    val roomCreateViewModel = navGraphViewModel<RoomCreateViewModel>(navController, NavGraphRoute.HARMONY)
     val harmonyViewModel = navGraphViewModel<HarmonyViewModel>(navController)
 
     OpenRoomDeletedDialog(navController = navController, roomCreateViewModel = roomCreateViewModel)

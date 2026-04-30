@@ -30,6 +30,7 @@ import com.fourleafclover.tarot.ui.component.AppBarCloseOnRoomCreateWithDialog
 import com.fourleafclover.tarot.ui.component.ButtonNext
 import com.fourleafclover.tarot.ui.component.ButtonText
 import com.fourleafclover.tarot.ui.component.getBackgroundModifier
+import com.fourleafclover.tarot.ui.navigation.NavGraphRoute
 import com.fourleafclover.tarot.ui.navigation.PreventBackPressed
 import com.fourleafclover.tarot.ui.navigation.ScreenEnum
 import com.fourleafclover.tarot.ui.navigation.navGraphViewModel
@@ -54,7 +55,7 @@ fun RoomNicknameScreen(
     val isDemo = LocalIsDemo.current
     val dialogViewModel = navGraphViewModel<DialogViewModel>(navController)
     val loadingViewModel = navGraphViewModel<LoadingViewModel>(navController)
-    val nicknameViewModel = navGraphViewModel<NicknameViewModel>(navController)
+    val nicknameViewModel = navGraphViewModel<NicknameViewModel>(navController, NavGraphRoute.HARMONY)
     val harmonyViewModel = navGraphViewModel<HarmonyViewModel>(navController)
 
     PreventBackPressed()

@@ -30,6 +30,7 @@ import com.fourleafclover.tarot.ui.component.ButtonNext
 import com.fourleafclover.tarot.ui.component.ButtonText
 import com.fourleafclover.tarot.ui.component.getBackgroundModifier
 import com.fourleafclover.tarot.ui.component.getOutlinedRectangleModifier
+import com.fourleafclover.tarot.ui.navigation.NavGraphRoute
 import com.fourleafclover.tarot.ui.navigation.PreventBackPressed
 import com.fourleafclover.tarot.ui.navigation.ScreenEnum
 import com.fourleafclover.tarot.ui.navigation.navGraphViewModel
@@ -49,7 +50,7 @@ const val MAN = 1
 fun RoomGenderScreen(
     navController: NavHostController = rememberNavController()
 ) {
-    val genderViewModel = navGraphViewModel<GenderViewModel>(navController)
+    val genderViewModel = navGraphViewModel<GenderViewModel>(navController, NavGraphRoute.HARMONY)
     val dialogViewModel = navGraphViewModel<DialogViewModel>(navController)
     val harmonyViewModel = navGraphViewModel<HarmonyViewModel>(navController)
     PreventBackPressed()

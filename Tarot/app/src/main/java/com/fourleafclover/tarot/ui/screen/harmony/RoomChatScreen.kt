@@ -54,6 +54,7 @@ import com.fourleafclover.tarot.ui.component.AppBarCloseOnChatWithDialog
 import com.fourleafclover.tarot.ui.component.ButtonNext
 import com.fourleafclover.tarot.ui.component.ButtonText
 import com.fourleafclover.tarot.ui.component.getBackgroundModifier
+import com.fourleafclover.tarot.ui.navigation.NavGraphRoute
 import com.fourleafclover.tarot.ui.navigation.PreventBackPressed
 import com.fourleafclover.tarot.ui.navigation.ScreenEnum
 import com.fourleafclover.tarot.ui.navigation.navGraphViewModel
@@ -83,7 +84,7 @@ fun RoomChatScreen(
     navController: NavHostController = rememberNavController()
 ) {
 
-    val chatViewModel = navGraphViewModel<ChatViewModel>(navController)
+    val chatViewModel = navGraphViewModel<ChatViewModel>(navController, NavGraphRoute.HARMONY)
     val fortuneViewModel = navGraphViewModel<FortuneViewModel>(navController)
     val harmonyViewModel = navGraphViewModel<HarmonyViewModel>(navController)
     val pickTarotViewModel = navGraphViewModel<PickTarotViewModel>(navController)

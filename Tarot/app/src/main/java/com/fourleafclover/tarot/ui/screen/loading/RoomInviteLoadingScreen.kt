@@ -20,6 +20,7 @@ import com.fourleafclover.tarot.ui.component.AppBarCloseOnRoomInviteWithDialog
 import com.fourleafclover.tarot.ui.component.LoadingCircle
 import com.fourleafclover.tarot.ui.component.ShareLinkOrCopy
 import com.fourleafclover.tarot.ui.component.getBackgroundModifier
+import com.fourleafclover.tarot.ui.navigation.NavGraphRoute
 import com.fourleafclover.tarot.ui.navigation.PreventBackPressed
 import com.fourleafclover.tarot.ui.navigation.navGraphViewModel
 import com.fourleafclover.tarot.ui.screen.harmony.viewmodel.ChatViewModel
@@ -35,7 +36,7 @@ fun RoomInviteLoadingScreen(
 ) {
 
     val dialogViewModel = navGraphViewModel<DialogViewModel>(navController)
-    val chatViewModel = navGraphViewModel<ChatViewModel>(navController)
+    val chatViewModel = navGraphViewModel<ChatViewModel>(navController, NavGraphRoute.HARMONY)
     val loadingViewModel = navGraphViewModel<LoadingViewModel>(navController)
     val harmonyViewModel = navGraphViewModel<HarmonyViewModel>(navController)
 

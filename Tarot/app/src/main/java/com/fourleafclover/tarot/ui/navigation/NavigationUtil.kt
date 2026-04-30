@@ -9,6 +9,11 @@ import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
 
+object NavGraphRoute {
+    const val ROOT = "root_graph"
+    const val HARMONY = "harmony_graph"
+}
+
 // 백 스택에 저장
 fun navigateSaveState(navController: NavHostController, screenName: String){
     navController.navigate(screenName) {
@@ -27,7 +32,7 @@ fun navigateInclusive(navController: NavHostController, screenName: String){
 @Composable
 inline fun <reified VM : ViewModel> navGraphViewModel(
     navController: NavHostController,
-    route: String = "root_graph"
+    route: String = NavGraphRoute.ROOT
 ): VM {
     val navBackStackEntry by navController.currentBackStackEntryAsState()
 
