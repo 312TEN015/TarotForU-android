@@ -274,6 +274,7 @@ fun ChatCardDeck(
             text = "선택완료",
             onClick = {
                 val seq = pickSequence.value
+                pickTarotViewModel.setPickedCard(seq)
                 val cardNumber = pickTarotViewModel.getCardNumber(seq)
                 val drawable = fortuneViewModel.getCardImageId(localContext, cardNumber.toString())
                 chatViewModel.onUserCardSelected(cardNumber, drawable)

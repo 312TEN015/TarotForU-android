@@ -164,12 +164,15 @@ class ChatViewModel @Inject constructor(
         }
     }
 
-    /** User finished picking a card in the deck. */
+    /**
+     * User finished picking a card in the deck. The caller must have already
+     * applied [PickTarotViewModel.setPickedCard] for the current sequence so
+     * that [cardNumber] / [cardImageRes] reflect the chosen card; otherwise
+     * the drawable is 0 (no resource) and the card chat bubble renders blank.
+     */
     fun onUserCardSelected(cardNumber: Int, cardImageRes: Int) {
         val harmony = harmonyVm ?: return
         val pickTarot = pickTarotVm ?: return
-        val seq = _pickSequence.value
-        pickTarot.setPickedCard(seq)
         updatePickedCardNumberState(pickTarot.pickedCardNumberState.value)
         addChatItem(Chat(type = ChatType.MyChatImage, drawable = cardImageRes))
 
