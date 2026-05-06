@@ -73,18 +73,29 @@ val demoHarmonyTarotResult = TarotOutputDto(
 val demoTarotResultArray = arrayListOf(demoTarotResult, demoHarmonyTarotResult)
 
 /**
- * Stamp the demo dummy result with the topic the user just picked so
- * MyTarot renders the right category icon/title for the saved demo entry.
- * Topic 5 (궁합) writes to the harmony dummy; everything else (연애/학업/소망/취업/오늘의 운세)
- * writes to the single-tarot dummy.
+ * Per-topic demo single-tarot dummies. Each entry shares the same dummy
+ * content as [demoTarotResult] but carries its own [TarotOutputDto.tarotId]
+ * and [TarotOutputDto.tarotType], so MyTarot can render distinct entries
+ * with the right category icon/title for each topic the user saved.
  *
- * Only meaningful in demo mode, where the same dummy is reused for every
- * reading. Caller is responsible for guarding on DemoMode.isDemo.
+ * Topic 0 (연애운) reuses [demoTarotResult] itself so existing references
+ * to that instance keep working.
  */
-fun applyDemoTopicType(topicNumber: Int) {
-    if (topicNumber == 5) {
-        demoHarmonyTarotResult.tarotType = topicNumber
-    } else {
-        demoTarotResult.tarotType = topicNumber
-    }
+val demoSingleTarotResults: Map<Int, TarotOutputDto> = mapOf(
+    0 to demoTarotResult,
+    1 to demoTarotResult.copy(tarotId = "demo-study", tarotType = 1),
+    2 to demoTarotResult.copy(tarotId = "demo-dream", tarotType = 2),
+    3 to demoTarotResult.copy(tarotId = "demo-job", tarotType = 3),
+    4 to demoTarotResult.copy(tarotId = "demo-today", tarotType = 4),
+)
+
+/** Demo dummy to return for [topicNumber]. Topic 5 maps to the harmony dummy. */
+fun demoTarotForTopic(topicNumber: Int): TarotOutputDto =
+    if (topicNumber == 5) demoHarmonyTarotResult
+    else demoSingleTarotResults[topicNumber] ?: demoTarotResult
+
+/** Reverse lookup: find the demo dummy that owns [tarotId], or null if unknown. */
+fun demoTarotById(tarotId: String): TarotOutputDto? = when (tarotId) {
+    demoHarmonyTarotResult.tarotId -> demoHarmonyTarotResult
+    else -> demoSingleTarotResults.values.firstOrNull { it.tarotId == tarotId }
 }

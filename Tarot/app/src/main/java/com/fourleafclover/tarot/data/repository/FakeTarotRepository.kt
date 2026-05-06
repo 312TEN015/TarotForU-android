@@ -4,6 +4,8 @@ import com.fourleafclover.tarot.data.MatchTarotInputDto
 import com.fourleafclover.tarot.data.TarotInputDto
 import com.fourleafclover.tarot.data.TarotOutputDto
 import com.fourleafclover.tarot.demo.data.demoHarmonyTarotResult
+import com.fourleafclover.tarot.demo.data.demoTarotById
+import com.fourleafclover.tarot.demo.data.demoTarotForTopic
 import com.fourleafclover.tarot.demo.data.demoTarotResult
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -34,23 +36,15 @@ class FakeTarotRepository : TarotRepository {
         topicNumber: Int
     ): Result<TarotOutputDto> {
         delay(800)
-        return Result.success(demoTarotResult)
+        return Result.success(demoTarotForTopic(topicNumber))
     }
 
     override suspend fun getTarotById(tarotId: String): Result<TarotOutputDto> {
-        val match = if (tarotId == demoHarmonyTarotResult.tarotId) demoHarmonyTarotResult
-        else demoTarotResult
-        return Result.success(match)
+        return Result.success(demoTarotById(tarotId) ?: demoTarotResult)
     }
 
     override suspend fun getTarotList(tarotIds: List<String>): Result<List<TarotOutputDto>> {
-        val list = tarotIds.mapNotNull { id ->
-            when (id) {
-                demoTarotResult.tarotId -> demoTarotResult
-                demoHarmonyTarotResult.tarotId -> demoHarmonyTarotResult
-                else -> null
-            }
-        }
+        val list = tarotIds.mapNotNull { demoTarotById(it) }
         return Result.success(list)
     }
 
