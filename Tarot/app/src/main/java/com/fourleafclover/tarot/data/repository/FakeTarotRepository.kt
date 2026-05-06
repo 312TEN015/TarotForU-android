@@ -63,15 +63,22 @@ class FakeTarotRepository : TarotRepository {
 
     override fun observeRoomEvents(): Flow<RoomEvent> = _events.asSharedFlow()
 
+    // Real impl emits Created/Joined later via the socket listener, after this
+    // call returns. Mirror that here with a fire-and-forget coroutine so the
+    // observeRoomEvents() collector (set up *after* onStart returns in
+    // HarmonyViewModel) is subscribed before we emit.
     override suspend fun createRoom() {
-        delay(1500)
-        _events.emit(RoomEvent.Created(roomId = demoHarmonyTarotResult.tarotId))
+        scope.launch {
+            delay(1500)
+            _events.emit(RoomEvent.Created(roomId = demoHarmonyTarotResult.tarotId))
+        }
     }
 
     override suspend fun joinRoom(roomId: String, nickname: String) {
-        // Simulate the partner ("아지") joining a moment after the user.
-        delay(1500)
-        _events.emit(RoomEvent.Joined(nicknames = listOf(nickname, DEMO_PARTNER_NICKNAME)))
+        scope.launch {
+            delay(1500)
+            _events.emit(RoomEvent.Joined(nicknames = listOf(nickname, DEMO_PARTNER_NICKNAME)))
+        }
     }
 
     override suspend fun signalStart(roomId: String, nickname: String) {
