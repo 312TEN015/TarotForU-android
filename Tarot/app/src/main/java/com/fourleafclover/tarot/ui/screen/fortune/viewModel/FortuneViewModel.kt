@@ -20,6 +20,8 @@ import com.fourleafclover.tarot.data.OverallResultData
 import com.fourleafclover.tarot.data.PickedTopicState
 import com.fourleafclover.tarot.data.TarotOutputDto
 import com.fourleafclover.tarot.data.TarotSubjectData
+import com.fourleafclover.tarot.data.repository.DemoMode
+import com.fourleafclover.tarot.demo.data.applyDemoTopicType
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -46,7 +48,9 @@ var dummyTarotOutputDto = TarotOutputDto(
 
 /** 유저가 선택한 주제 관리 */
 @HiltViewModel
-class FortuneViewModel @Inject constructor() : ViewModel() {
+class FortuneViewModel @Inject constructor(
+    private val demoMode: DemoMode,
+) : ViewModel() {
     private var _pickedTopicState = mutableStateOf(PickedTopicState())
     val pickedTopicState get() = _pickedTopicState
 
@@ -75,6 +79,7 @@ class FortuneViewModel @Inject constructor() : ViewModel() {
     fun setPickedTopic(topicNumber: Int) {
         _pickedTopicState.value.topicNumber = topicNumber
         _pickedTopicState.value.topicSubjectData = getPickedTopic(topicNumber)
+        if (demoMode.isDemo) applyDemoTopicType(topicNumber)
     }
 
     fun getSubjectImoji(localContext: Context, topicNumber: Int = _pickedTopicState.value.topicNumber): String {

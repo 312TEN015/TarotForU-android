@@ -71,3 +71,20 @@ val demoHarmonyTarotResult = TarotOutputDto(
 )
 
 val demoTarotResultArray = arrayListOf(demoTarotResult, demoHarmonyTarotResult)
+
+/**
+ * Stamp the demo dummy result with the topic the user just picked so
+ * MyTarot renders the right category icon/title for the saved demo entry.
+ * Topic 5 (궁합) writes to the harmony dummy; everything else (연애/학업/소망/취업/오늘의 운세)
+ * writes to the single-tarot dummy.
+ *
+ * Only meaningful in demo mode, where the same dummy is reused for every
+ * reading. Caller is responsible for guarding on DemoMode.isDemo.
+ */
+fun applyDemoTopicType(topicNumber: Int) {
+    if (topicNumber == 5) {
+        demoHarmonyTarotResult.tarotType = topicNumber
+    } else {
+        demoTarotResult.tarotType = topicNumber
+    }
+}
