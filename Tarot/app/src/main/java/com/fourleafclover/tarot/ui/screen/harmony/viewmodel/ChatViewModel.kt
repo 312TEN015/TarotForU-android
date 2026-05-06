@@ -75,11 +75,15 @@ class ChatViewModel @Inject constructor(
     private var chatList = mutableStateListOf<Chat>()
     val startButtonVisibility = mutableStateOf(true)
 
-    private lateinit var opening: List<Chat>
-    private lateinit var firstCard: List<Chat>
-    private lateinit var secondCard: List<Chat>
-    private lateinit var thirdCard: List<Chat>
-    private lateinit var complete: List<Chat>
+    // Filled by initOpening()/initFirst()/initSecond()/initThird()/initComplete() as
+    // each scenario unlocks. Default to empty so getSec() can safely index even
+    // between updateScenario() and addNextScenario() (e.g. while waiting on the
+    // partner) without throwing.
+    private var opening: List<Chat> = emptyList()
+    private var firstCard: List<Chat> = emptyList()
+    private var secondCard: List<Chat> = emptyList()
+    private var thirdCard: List<Chat> = emptyList()
+    private var complete: List<Chat> = emptyList()
 
     private var _isExiting = mutableStateOf(false)
     val isExiting get() = _isExiting
