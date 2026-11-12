@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
@@ -170,7 +171,7 @@ fun CardSlider(
                 overflow = TextOverflow.Visible,
                 modifier = Modifier
                     .padding(top = 16.dp)
-                    .height(56.dp)
+                    .heightIn(min = 56.dp)
             )
         }
     }
@@ -340,7 +341,7 @@ fun HarmonyCardSlider(
                 overflow = TextOverflow.Visible,
                 modifier = Modifier
                     .padding(top = 12.dp)
-                    .height(56.dp)
+                    .heightIn(min = 56.dp)
             )
         }
     }
