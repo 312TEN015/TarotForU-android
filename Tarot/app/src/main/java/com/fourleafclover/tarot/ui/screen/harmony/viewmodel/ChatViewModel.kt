@@ -96,6 +96,9 @@ class ChatViewModel @Inject constructor(
     private var loadingVm: LoadingViewModel? = null
     private var eventCollector: Job? = null
 
+    // 결과 준비 알림을 받은 뒤에는 상대의 소켓 종료(exit)를 "중도 퇴장"으로 처리하지 않는다.
+    private var resultReceived = false
+
     fun setStartButtonVisible() { startButtonVisibility.value = false }
     fun setStartButtonInvisible() { startButtonVisibility.value = true }
 
@@ -112,6 +115,7 @@ class ChatViewModel @Inject constructor(
         complete = listOf()
         eventCollector?.cancel()
         eventCollector = null
+        resultReceived = false
         harmonyVm = null
         pickTarotVm = null
         resultVm = null
@@ -138,6 +142,7 @@ class ChatViewModel @Inject constructor(
         pickTarotVm = pickTarot
         resultVm = result
         loadingVm = loading
+        resultReceived = false
 
         eventCollector?.cancel()
         eventCollector = viewModelScope.launch {
@@ -217,6 +222,11 @@ class ChatViewModel @Inject constructor(
     }
 
     private fun handlePartnerExited() {
+        // 결과를 받은 기기는 곧바로 소켓을 끊는데, 서버는 이를 상대에게 exit으로 알린다.
+        // 이때 방을 지우면 isRoomOwner가 초기화돼, 아직 결과를 불러오는 중인 쪽에서
+        // 내 카드와 상대 카드가 뒤바뀐다.
+        if (resultReceived) return
+
         updateCardDeckStatus(CardDeckStatus.Gathered)
         addChatItem(Chat(ChatType.PartnerChatText, "상대방이 초대방에서 나가셔서 궁합 보기가 중단되었어요. 아쉽지만 다음 기회에 다시 봐요😢"))
         addChatItem(Chat(ChatType.GuidText, "궁합 보기가 종료되었습니다⚡"))
@@ -233,11 +243,14 @@ class ChatViewModel @Inject constructor(
             // Failure path
             return
         }
+        resultReceived = true
+        // 조회가 끝나기 전에 방 상태가 바뀔 수 있으므로 지금 값으로 고정한다.
+        val isRoomOwner = harmony.isRoomOwner.value
         viewModelScope.launch {
             repository.getTarotById(tarotId)
                 .onSuccess { tarot ->
                     result.setIsMatchResultPrepared(true)
-                    result.distinguishCardResult(tarot, harmony.isRoomOwner.value)
+                    result.distinguishCardResult(tarot, isRoomOwner)
                     loading.updateLoadingState(false)
                 }
             // Acknowledge receipt back to the room.
