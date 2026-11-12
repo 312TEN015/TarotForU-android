@@ -62,7 +62,7 @@ android {
         // 개발용
         create("dev") {
             dimension = "server"
-            buildConfigField("String", "BASE_URL", "\"https://dev.tarot-for-u.shop\"")
+            buildConfigField("String", "BASE_URL", "\"http://tarot-for-u.duckdns.org:3001\"")
             buildConfigField("String", "SERVER", "\"dev\"")
             versionNameSuffix = "-dev"
         }
