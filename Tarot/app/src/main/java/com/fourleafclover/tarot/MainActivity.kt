@@ -13,21 +13,23 @@ import androidx.compose.runtime.compositionLocalOf
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.core.splashscreen.SplashScreen
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
-import com.fourleafclover.tarot.MyApplication.Companion.firestore
 import com.fourleafclover.tarot.data.repository.DemoMode
 import com.fourleafclover.tarot.demo.ui.theme.TarotTheme
 import com.fourleafclover.tarot.demo.viewmodel.DemoViewModel
+import com.fourleafclover.tarot.network.TarotService
 import com.fourleafclover.tarot.ui.navigation.NavigationHost
 import com.fourleafclover.tarot.ui.navigation.ScreenEnum
-import com.fourleafclover.tarot.utils.LogTags
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlinx.coroutines.withContext
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 import javax.inject.Inject
 import kotlin.coroutines.resume
-import kotlin.coroutines.suspendCoroutine
 
 var LocalIsDemo = compositionLocalOf { false }
 
@@ -38,6 +40,7 @@ class MainActivity : ComponentActivity() {
     private val splashViewModel: SplashViewModel by viewModels()
 
     @Inject lateinit var demoMode: DemoMode
+    @Inject lateinit var tarotService: TarotService
 
     override fun onCreate(savedInstanceState: Bundle?) {
         splashScreen = installSplashScreen()
@@ -85,53 +88,41 @@ class MainActivity : ComponentActivity() {
 
     private fun bootstrap(setContent: (isDemo: Boolean, dialogData: DemoViewModel.DemoDialogData?) -> Unit) =
         CoroutineScope(Dispatchers.IO).launch {
-            val isDemo = checkIsDemo()
-            // IMPORTANT: set demo flag before any ViewModel injection runs.
-            demoMode.isDemo = isDemo
+            val config = fetchDemoConfig()
+            val isDemo = config?.isDemo ?: false
 
-            val dialogData = if (isDemo) checkDemoDialogData() else null
+            // IMPORTANT: set demo flag and results before any ViewModel injection runs.
+            demoMode.isDemo = isDemo
+            config?.demoResults?.single?.let { demoMode.demoSingleResult = it }
+            config?.demoResults?.harmony?.let { demoMode.demoHarmonyResult = it }
+
+            val dialogData = if (isDemo) config?.demoPopup?.let {
+                DemoViewModel.DemoDialogData(
+                    visibility = it.visibility,
+                    title = it.title,
+                    content = it.content
+                )
+            } else null
 
             withContext(Dispatchers.Main) {
                 setContent(isDemo, dialogData)
             }
         }
 
-    private suspend fun checkIsDemo() = suspendCoroutine<Boolean> {
-        firestore.collection("properties").document("is_demo").get()
-            .addOnSuccessListener { document ->
-                if (document != null) {
-                    Log.d(LogTags.firestore, "DocumentSnapshot data: ${document.data}")
-                    it.resume(document.data?.get("isDemo").toString().toBoolean())
-                } else {
-                    Log.d(LogTags.firestore, "No such document")
-                    it.resume(false)
-                }
+    private suspend fun fetchDemoConfig() = suspendCancellableCoroutine { cont ->
+        val call = tarotService.getDemoConfig()
+        cont.invokeOnCancellation { call.cancel() }
+        call.enqueue(object : Callback<com.fourleafclover.tarot.data.DemoConfigDto> {
+            override fun onResponse(
+                call: Call<com.fourleafclover.tarot.data.DemoConfigDto>,
+                response: Response<com.fourleafclover.tarot.data.DemoConfigDto>
+            ) {
+                cont.resume(response.body())
             }
-            .addOnFailureListener { exception ->
-                Log.w(LogTags.firestore, "Error getting documents.", exception)
-                it.resume(false)
+            override fun onFailure(call: Call<com.fourleafclover.tarot.data.DemoConfigDto>, t: Throwable) {
+                Log.w("MainActivity", "demo config fetch failed: ${t.message}")
+                cont.resume(null)
             }
-    }
-
-    private suspend fun checkDemoDialogData() = suspendCoroutine<DemoViewModel.DemoDialogData?> {
-        firestore.collection("properties").document("demo_popup").get()
-            .addOnSuccessListener { document ->
-                if (document != null) {
-                    Log.d(LogTags.firestore, "DocumentSnapshot data: ${document.data}")
-                    val result = DemoViewModel.DemoDialogData(
-                        visibility = document.data?.get("visibility").toString().toBoolean(),
-                        title = document.data?.get("title").toString(),
-                        content = document.data?.get("content").toString()
-                    )
-                    it.resume(result)
-                } else {
-                    Log.d(LogTags.firestore, "No such document")
-                    it.resume(null)
-                }
-            }
-            .addOnFailureListener { exception ->
-                Log.w(LogTags.firestore, "Error getting documents.", exception)
-                it.resume(null)
-            }
+        })
     }
 }

@@ -64,3 +64,20 @@ data class MatchTarotInputDto (
     val roomId: String,
     val cards: ArrayList<Int>       // 카드 리스트 (방 생성자 카드, 초대자 카드 순서)
 )
+
+data class DemoConfigDto(
+    val isDemo: Boolean = false,
+    val demoPopup: DemoPopupDto? = null,
+    val demoResults: DemoResultsDto? = null
+)
+
+data class DemoPopupDto(
+    val visibility: Boolean = false,
+    val title: String = "",
+    val content: String = ""
+)
+
+data class DemoResultsDto(
+    val single: TarotOutputDto? = null,
+    val harmony: TarotOutputDto? = null
+)

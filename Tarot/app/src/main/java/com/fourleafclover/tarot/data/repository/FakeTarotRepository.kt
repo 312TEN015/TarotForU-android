@@ -3,10 +3,6 @@ package com.fourleafclover.tarot.data.repository
 import com.fourleafclover.tarot.data.MatchTarotInputDto
 import com.fourleafclover.tarot.data.TarotInputDto
 import com.fourleafclover.tarot.data.TarotOutputDto
-import com.fourleafclover.tarot.demo.data.demoHarmonyTarotResult
-import com.fourleafclover.tarot.demo.data.demoTarotById
-import com.fourleafclover.tarot.demo.data.demoTarotForTopic
-import com.fourleafclover.tarot.demo.data.demoTarotResult
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -23,29 +19,28 @@ import javax.inject.Singleton
  * Mirrors the timing/feel of the real flow so screens see the same events.
  */
 @Singleton
-class FakeTarotRepository : TarotRepository {
+class FakeTarotRepository(private val demoMode: DemoMode) : TarotRepository {
 
     private val scope = CoroutineScope(SupervisorJob() + Dispatchers.Main)
     private val _events = MutableSharedFlow<RoomEvent>(extraBufferCapacity = 16)
 
     private var partnerScript: Job? = null
-    private val partnerCards = listOf(4, 5, 6) // matches demoHarmonyTarotResult.cards[3..5]
+    private val partnerCards get() = demoMode.demoHarmonyResult.cards.drop(3)
 
     override suspend fun postTarotResult(
         input: TarotInputDto,
         topicNumber: Int
     ): Result<TarotOutputDto> {
         delay(800)
-        return Result.success(demoTarotForTopic(topicNumber))
+        return Result.success(resultForTopic(topicNumber))
     }
 
     override suspend fun getTarotById(tarotId: String): Result<TarotOutputDto> {
-        return Result.success(demoTarotById(tarotId) ?: demoTarotResult)
+        return Result.success(findById(tarotId) ?: demoMode.demoSingleResult)
     }
 
     override suspend fun getTarotList(tarotIds: List<String>): Result<List<TarotOutputDto>> {
-        val list = tarotIds.mapNotNull { demoTarotById(it) }
-        return Result.success(list)
+        return Result.success(tarotIds.mapNotNull { findById(it) })
     }
 
     override fun connect() { /* no-op */ }
@@ -57,14 +52,10 @@ class FakeTarotRepository : TarotRepository {
 
     override fun observeRoomEvents(): Flow<RoomEvent> = _events.asSharedFlow()
 
-    // Real impl emits Created/Joined later via the socket listener, after this
-    // call returns. Mirror that here with a fire-and-forget coroutine so the
-    // observeRoomEvents() collector (set up *after* onStart returns in
-    // HarmonyViewModel) is subscribed before we emit.
     override suspend fun createRoom() {
         scope.launch {
             delay(1500)
-            _events.emit(RoomEvent.Created(roomId = demoHarmonyTarotResult.tarotId))
+            _events.emit(RoomEvent.Created(roomId = demoMode.demoHarmonyResult.tarotId))
         }
     }
 
@@ -76,12 +67,10 @@ class FakeTarotRepository : TarotRepository {
     }
 
     override suspend fun signalStart(roomId: String, nickname: String) {
-        // Partner "starts" shortly after the user does.
         scheduleAfter(700) { _events.emit(RoomEvent.PartnerNext()) }
     }
 
     override suspend fun selectCard(roomId: String, nickname: String, cardNumber: Int) {
-        // Partner picks a scripted card after the user picks.
         val pickIndex = nextPartnerPickIndex
         nextPartnerPickIndex = (pickIndex + 1).coerceAtMost(partnerCards.lastIndex)
         scheduleAfter(900) {
@@ -91,9 +80,8 @@ class FakeTarotRepository : TarotRepository {
 
     override suspend fun requestMatchResult(input: MatchTarotInputDto): Result<TarotOutputDto> {
         delay(1200)
-        // Mimic the real backend: the result drops on the event flow as well.
-        _events.emit(RoomEvent.ResultPrepared(tarotId = demoHarmonyTarotResult.tarotId))
-        return Result.success(demoHarmonyTarotResult)
+        _events.emit(RoomEvent.ResultPrepared(tarotId = demoMode.demoHarmonyResult.tarotId))
+        return Result.success(demoMode.demoHarmonyResult)
     }
 
     override suspend fun confirmResultReceived(roomId: String, tarotId: String) { /* no-op */ }
@@ -108,6 +96,18 @@ class FakeTarotRepository : TarotRepository {
 
     private var nextPartnerPickIndex = 0
 
+    private fun resultForTopic(topicNumber: Int): TarotOutputDto {
+        if (topicNumber == 5) return demoMode.demoHarmonyResult
+        val id = TOPIC_TAROT_IDS[topicNumber] ?: demoMode.demoSingleResult.tarotId
+        return demoMode.demoSingleResult.copy(tarotId = id, tarotType = topicNumber)
+    }
+
+    private fun findById(tarotId: String): TarotOutputDto? {
+        if (tarotId == demoMode.demoHarmonyResult.tarotId) return demoMode.demoHarmonyResult
+        val topicNumber = TOPIC_TAROT_IDS.entries.firstOrNull { it.value == tarotId }?.key ?: return null
+        return demoMode.demoSingleResult.copy(tarotId = tarotId, tarotType = topicNumber)
+    }
+
     private fun scheduleAfter(delayMs: Long, block: suspend () -> Unit) {
         partnerScript = scope.launch {
             delay(delayMs)
@@ -117,5 +117,12 @@ class FakeTarotRepository : TarotRepository {
 
     private companion object {
         const val DEMO_PARTNER_NICKNAME = "아지"
+        val TOPIC_TAROT_IDS = mapOf(
+            0 to "0",
+            1 to "demo-study",
+            2 to "demo-dream",
+            3 to "demo-job",
+            4 to "demo-today",
+        )
     }
 }

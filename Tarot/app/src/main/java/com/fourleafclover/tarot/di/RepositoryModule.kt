@@ -21,6 +21,6 @@ object RepositoryModule {
         demoMode: DemoMode,
         tarotService: TarotService
     ): TarotRepository =
-        if (demoMode.isDemo) FakeTarotRepository()
+        if (demoMode.isDemo) FakeTarotRepository(demoMode)
         else RemoteTarotRepository(tarotService)
 }
