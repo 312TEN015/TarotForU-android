@@ -62,7 +62,9 @@ android {
         // 개발용
         create("dev") {
             dimension = "server"
-            buildConfigField("String", "BASE_URL", "\"http://tarot-for-u.duckdns.org:3001\"")
+            buildConfigField("String", "BASE_URL", "\"https://tarot-for-u.duckdns.org\"")
+            buildConfigField("String", "SHARE_URL", "\"https://tarot-for-u.duckdns.org/share\"")
+            manifestPlaceholders["share_host"] = "tarot-for-u.duckdns.org"
             buildConfigField("String", "SERVER", "\"dev\"")
             versionNameSuffix = "-dev"
         }
@@ -70,7 +72,9 @@ android {
         // 배포용
         create("live") {
             dimension = "server"
-            buildConfigField("String", "BASE_URL", "\"https://prod.tarot-for-u.shop\"")
+            buildConfigField("String", "BASE_URL", "\"https://tarot-for-u.duckdns.org\"")
+            buildConfigField("String", "SHARE_URL", "\"https://tarot-for-u.duckdns.org/share\"")
+            manifestPlaceholders["share_host"] = "tarot-for-u.duckdns.org"
             buildConfigField("String", "SERVER", "\"live\"")
             versionNameSuffix = "-live"
         }

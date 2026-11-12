@@ -10,6 +10,7 @@ import android.util.Log
 import androidx.core.net.toUri
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavHostController
+import com.fourleafclover.tarot.BuildConfig
 import com.fourleafclover.tarot.MyApplication
 import com.fourleafclover.tarot.R
 import com.fourleafclover.tarot.ui.navigation.ScreenEnum
@@ -48,7 +49,7 @@ fun setDynamicLink(
 }
 
 fun initLink(value: String, linkType: ShareLinkType): String {
-    var url = "https://tarot-for-u.shop/share?"
+    var url = "${BuildConfig.SHARE_URL}?"
     url += when (linkType) {
         ShareLinkType.MY -> "tarotId=${value}"
         ShareLinkType.HARMONY -> "roomId=${value}"

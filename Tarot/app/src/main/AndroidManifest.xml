@@ -34,8 +34,8 @@
                 <action android:name="android.intent.action.VIEW" />
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
-                <data android:scheme="https" android:host="tarot-for-u.shop" android:pathPrefix="/share" />
-                <data android:scheme="http" android:host="tarot-for-u.shop" android:pathPrefix="/share" />
+                <data android:scheme="https" android:host="${share_host}" android:pathPrefix="/share" />
+                <data android:scheme="http" android:host="${share_host}" android:pathPrefix="/share" />
             </intent-filter>
         </activity>
     </application>
