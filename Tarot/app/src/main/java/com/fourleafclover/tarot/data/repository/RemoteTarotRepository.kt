@@ -88,10 +88,11 @@ class RemoteTarotRepository(
         socket?.emit("create")
     }
 
-    override suspend fun joinRoom(roomId: String, nickname: String) {
+    override suspend fun joinRoom(roomId: String, nickname: String, gender: Int) {
         socket?.emit("join", JSONObject().apply {
             put("nickname", nickname)
             put("roomId", roomId)
+            put("gender", gender)
         })
     }
 

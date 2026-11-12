@@ -21,6 +21,7 @@ class HarmonyViewModel @Inject constructor(
 
     private var userNickname = mutableStateOf("")
     private var partnerNickname = mutableStateOf("")
+    private var userGender = -1
 
     private var _roomId = mutableStateOf("")
     val roomId get() = _roomId
@@ -40,6 +41,7 @@ class HarmonyViewModel @Inject constructor(
     fun clear() {
         userNickname.value = ""
         partnerNickname.value = ""
+        userGender = -1
         _roomId.value = ""
         _createdRoomId.value = ""
         _invitedRoomId.value = ""
@@ -62,6 +64,7 @@ class HarmonyViewModel @Inject constructor(
     fun getUserNickname() = userNickname.value
     fun setPartnerNickname(nickname: String) { partnerNickname.value = nickname }
     fun getPartnerNickname() = partnerNickname.value
+    fun setUserGender(gender: Int) { userGender = gender }
 
     fun enterExistingRoom() {
         _roomId.value = MyApplication.prefs.getHarmonyRoomId()
@@ -121,7 +124,8 @@ class HarmonyViewModel @Inject constructor(
             .onStart {
                 repository.joinRoom(
                     roomId = _roomId.value,
-                    nickname = userNickname.value
+                    nickname = userNickname.value,
+                    gender = userGender
                 )
             }
             .first()

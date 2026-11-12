@@ -59,7 +59,7 @@ class FakeTarotRepository(private val demoMode: DemoMode) : TarotRepository {
         }
     }
 
-    override suspend fun joinRoom(roomId: String, nickname: String) {
+    override suspend fun joinRoom(roomId: String, nickname: String, gender: Int) {
         scope.launch {
             delay(1500)
             _events.emit(RoomEvent.Joined(nicknames = listOf(nickname, DEMO_PARTNER_NICKNAME)))

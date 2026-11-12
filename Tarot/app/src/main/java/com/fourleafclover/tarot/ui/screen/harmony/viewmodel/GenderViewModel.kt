@@ -18,6 +18,8 @@ class GenderViewModel @Inject constructor(): ViewModel() {
         pickedGender.value = newPick
     }
 
+    fun getPickedGender(): Int = pickedGender.value
+
     fun isSelected(thisGender: Int): Boolean {
         return pickedGender.value == thisGender
     }

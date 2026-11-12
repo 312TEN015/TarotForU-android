@@ -97,7 +97,10 @@ fun RoomGenderScreen(
             }
 
             ButtonNext(
-                onClick = { navigateSaveState(navController, ScreenEnum.RoomNicknameScreen.name) },
+                onClick = {
+                    harmonyViewModel.setUserGender(genderViewModel.getPickedGender())
+                    navigateSaveState(navController, ScreenEnum.RoomNicknameScreen.name)
+                },
                 enabled = { genderViewModel.isCompleted() },
                 content = { ButtonText(genderViewModel.isCompleted()) }
             )

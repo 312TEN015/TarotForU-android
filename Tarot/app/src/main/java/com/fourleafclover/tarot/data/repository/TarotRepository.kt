@@ -39,8 +39,8 @@ interface TarotRepository {
     /** Ask the server to create a new room. Result arrives via [RoomEvent.Created]. */
     suspend fun createRoom()
 
-    /** Join an existing room. Result arrives via [RoomEvent.Joined]. */
-    suspend fun joinRoom(roomId: String, nickname: String)
+    /** Join an existing room. [gender] is 0 (woman) / 1 (man). Result arrives via [RoomEvent.Joined]. */
+    suspend fun joinRoom(roomId: String, nickname: String, gender: Int)
 
     /** Inviter signals "start" to partner. */
     suspend fun signalStart(roomId: String, nickname: String)
