@@ -1,13 +1,10 @@
 package com.fourleafclover.tarot.ui.navigation
 
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.ViewModel
-import androidx.navigation.NavController
 import androidx.navigation.NavHostController
-import androidx.navigation.compose.currentBackStackEntryAsState
 
 object NavGraphRoute {
     const val ROOT = "root_graph"
@@ -58,9 +55,9 @@ inline fun <reified VM : ViewModel> navGraphViewModel(
     navController: NavHostController,
     route: String = NavGraphRoute.ROOT
 ): VM {
-    val navBackStackEntry by navController.currentBackStackEntryAsState()
-
-    val parentEntry = remember(navBackStackEntry) {
+    // 화면이 처음 그려질 때 한 번만 조회한다. 현재 백 스택 항목이 바뀔 때마다 다시 조회하면,
+    // 그래프를 빠져나가는 전환 애니메이션 중에 이미 pop된 그래프를 찾다가 크래시가 난다.
+    val parentEntry = remember(navController, route) {
         navController.getBackStackEntry(route)
     }
 
