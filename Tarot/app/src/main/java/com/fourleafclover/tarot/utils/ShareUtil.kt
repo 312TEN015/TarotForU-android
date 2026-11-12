@@ -8,6 +8,7 @@ import android.content.Intent
 import android.net.Uri
 import android.util.Log
 import androidx.core.net.toUri
+import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavHostController
 import com.fourleafclover.tarot.MyApplication
 import com.fourleafclover.tarot.R
@@ -16,7 +17,6 @@ import com.fourleafclover.tarot.ui.navigation.navigateInclusive
 import com.fourleafclover.tarot.ui.screen.harmony.viewmodel.HarmonyViewModel
 import com.fourleafclover.tarot.ui.screen.harmony.viewmodel.LoadingViewModel
 import com.fourleafclover.tarot.ui.screen.my.viewmodel.ShareViewModel
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
 
@@ -105,8 +105,7 @@ fun receiveShareRequest(
     navController: NavHostController,
     shareViewModel: ShareViewModel,
     loadingViewModel: LoadingViewModel,
-    harmonyViewModel: HarmonyViewModel,
-    coroutineScope: CoroutineScope
+    harmonyViewModel: HarmonyViewModel
 ) {
     val deepLinkUri = activity.intent?.data ?: return
 
@@ -115,7 +114,9 @@ fun receiveShareRequest(
     if (deepLinkUri.getBooleanQueryParameter("tarotId", false)) {
         val sharedTarotId = deepLinkUri.getQueryParameter("tarotId")!!
         loadingViewModel.startLoading(navController, ScreenEnum.LoadingScreen, ScreenEnum.ShareDetailScreen)
-        coroutineScope.launch {
+        // 로딩 화면으로 넘어가면 홈 화면의 컴포지션 스코프는 취소되므로,
+        // 화면 전환과 무관하게 살아 있는 ViewModel 스코프에서 조회한다.
+        shareViewModel.viewModelScope.launch {
             val tarot = shareViewModel.loadSharedTarot(sharedTarotId)
             if (tarot?.tarotType == 5) {
                 loadingViewModel.changeDestination(ScreenEnum.ShareHarmonyDetailScreen)

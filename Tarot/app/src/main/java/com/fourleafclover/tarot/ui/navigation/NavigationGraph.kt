@@ -14,7 +14,6 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.navigation.compose.navigation
 import com.fourleafclover.tarot.MainActivity
 import com.fourleafclover.tarot.demo.ui.theme.backgroundColorScheme
@@ -93,7 +92,6 @@ fun NavigationHost(
                         }
                     }
 
-                val coroutineScope = rememberCoroutineScope()
                 LaunchedEffect(Unit) {
 
                     questionInputViewModel.clear()
@@ -107,7 +105,7 @@ fun NavigationHost(
 
                     // 공유하기 확인
                     if (activity.intent != null) {
-                        receiveShareRequest(activity, navController, shareViewModel, loadingViewModel, harmonyViewModel, coroutineScope)
+                        receiveShareRequest(activity, navController, shareViewModel, loadingViewModel, harmonyViewModel)
                     }
                 }
 
