@@ -11,138 +11,71 @@ import androidx.core.net.toUri
 import androidx.navigation.NavHostController
 import com.fourleafclover.tarot.MyApplication
 import com.fourleafclover.tarot.R
-import com.fourleafclover.tarot.demo.viewmodel.DemoViewModel
 import com.fourleafclover.tarot.ui.navigation.ScreenEnum
 import com.fourleafclover.tarot.ui.navigation.navigateInclusive
 import com.fourleafclover.tarot.ui.screen.harmony.viewmodel.HarmonyViewModel
 import com.fourleafclover.tarot.ui.screen.harmony.viewmodel.LoadingViewModel
 import com.fourleafclover.tarot.ui.screen.my.viewmodel.ShareViewModel
-import com.google.firebase.Firebase
-import com.google.firebase.dynamiclinks.PendingDynamicLinkData
-import com.google.firebase.dynamiclinks.ShortDynamicLink
-import com.google.firebase.dynamiclinks.androidParameters
-import com.google.firebase.dynamiclinks.dynamicLink
-import com.google.firebase.dynamiclinks.dynamicLinks
-import com.google.firebase.dynamiclinks.iosParameters
-import com.google.firebase.dynamiclinks.shortLinkAsync
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
 
 enum class ShareLinkType {
-    MY,     // 타로 결과 공유
-    HARMONY // 방 코드 공유
+    MY,
+    HARMONY
 }
 
 enum class ShareActionType {
-    OPEN_SHEET, // 공유 바텀 시트 열기
-    COPY_LINK   // 링크 복사
+    OPEN_SHEET,
+    COPY_LINK
 }
-
-private const val DYNAMIC_LINK_PREFIX = "https://fourleafclover.page.link"
 
 // send ============================================================================================
 
-// 1) 링크 타입에 따른 분기
 fun setDynamicLink(
     context: Context,
     value: String,
     linkType: ShareLinkType,
     actionType: ShareActionType,
     harmonyViewModel: HarmonyViewModel
-){
-    if (linkType == ShareLinkType.HARMONY) {
-        if (harmonyViewModel.roomId.value.isNotEmpty()){
-            if (harmonyViewModel.shortLink.isNotEmpty())
-                doShare(context, actionType, harmonyViewModel.shortLink.toUri(), linkType)
-            else if (harmonyViewModel.dynamicLink.isNotEmpty())
-                doShare(context, actionType, harmonyViewModel.dynamicLink.toUri(), linkType)
-            else if (harmonyViewModel.dynamicLink.isEmpty() && harmonyViewModel.shortLink.isEmpty())
-                getDynamicLink(context, value, linkType, actionType, harmonyViewModel)
-            return
-        }
-    }
-
-    getDynamicLink(context, value, linkType, actionType, harmonyViewModel)
-}
-
-// 2) 다이나믹 링크 초기화
-fun getDynamicLink(
-    context: Context,
-    value: String,
-    linkType: ShareLinkType,
-    actionType: ShareActionType,
-    harmonyViewModel: HarmonyViewModel
-){
-    val url = initLink(value, linkType)
-
-    val dynamicLink = Firebase.dynamicLinks.dynamicLink {
-        link = Uri.parse(url)
-        domainUriPrefix = DYNAMIC_LINK_PREFIX
-        androidParameters { }
-        iosParameters("com.example.ios") { }
-    }
+) {
+    val url = initLink(value, linkType).toUri()
 
     if (linkType == ShareLinkType.HARMONY)
-        harmonyViewModel.shortLink = dynamicLink.uri.toString()
+        harmonyViewModel.shortLink = url.toString()
 
-   val shortLinkTask = Firebase.dynamicLinks.shortLinkAsync(ShortDynamicLink.Suffix.SHORT) {
-        longLink = dynamicLink.uri
-        link = Uri.parse(url)
-        domainUriPrefix = DYNAMIC_LINK_PREFIX
-        androidParameters { }
-        iosParameters("com.example.ios") { }
-
-   }
-       .addOnSuccessListener { shortLink ->
-            doShare(context, actionType, shortLink.shortLink, linkType)
-
-            if (linkType == ShareLinkType.HARMONY)
-                harmonyViewModel.shortLink = shortLink.shortLink.toString()
-
-       }
-       .addOnFailureListener {
-            doShare(context, actionType, dynamicLink.uri, linkType)
-       }
+    doShare(context, actionType, url, linkType)
 }
 
-// 3) 공유하기 실행
+fun initLink(value: String, linkType: ShareLinkType): String {
+    var url = "https://tarot-for-u.shop/share?"
+    url += when (linkType) {
+        ShareLinkType.MY -> "tarotId=${value}"
+        ShareLinkType.HARMONY -> "roomId=${value}"
+    }
+    return url
+}
+
+// actions -----------------------------------------------------------------------------------------
+
 fun doShare(
     context: Context,
     actionType: ShareActionType,
     link: Uri?,
     linkType: ShareLinkType
-){
-    when(actionType) {
+) {
+    when (actionType) {
         ShareActionType.OPEN_SHEET -> showShareSheet(context, link, linkType)
-
-        ShareActionType.COPY_LINK ->  copyLink(context, link.toString())
+        ShareActionType.COPY_LINK -> copyLink(context, link.toString())
     }
 }
 
-fun initLink(value: String, linkType: ShareLinkType): String {
-    var url = "http://tarot-for-u.shop/share?"
-
-    url += when (linkType) {
-        ShareLinkType.MY -> {
-            "tarotId=${value}"
-        }
-        ShareLinkType.HARMONY -> {
-            "roomId=${value}"
-        }
-    }
-
-    return url
-}
-
-// actions -----------------------------------------------------------------------------------------
-fun showShareSheet(context: Context, link: Uri?, linkType: ShareLinkType){
+fun showShareSheet(context: Context, link: Uri?, linkType: ShareLinkType) {
     val intent = Intent(Intent.ACTION_SEND)
     intent.type = "text/plain"
 
     val shareText = when (linkType) {
         ShareLinkType.HARMONY -> "${context.resources.getString(R.string.share_harmony_content)}\n\n$link"
-
         ShareLinkType.MY -> "${context.resources.getString(R.string.share_content)}\n\n$link"
     }
 
@@ -150,23 +83,22 @@ fun showShareSheet(context: Context, link: Uri?, linkType: ShareLinkType){
     context.startActivity(Intent.createChooser(intent, null))
 }
 
-fun copyLink(context: Context, linkToCopy: String){
+fun copyLink(context: Context, linkToCopy: String) {
     val clipboardManager = context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
-    val clip = ClipData.newPlainText("타로결과 공유하기", "${context.resources.getString(R.string.share_harmony_content)}\n\n$linkToCopy")
+    val clip = ClipData.newPlainText(
+        "타로결과 공유하기",
+        "${context.resources.getString(R.string.share_harmony_content)}\n\n$linkToCopy"
+    )
     clipboardManager.setPrimaryClip(clip)
-
     MyApplication.toastUtil.makeShortToast("초대 링크가 복사되었어요!")
 }
 
 
-
 // receive =========================================================================================
+
 /**
- * Inspects the launch intent for a Firebase Dynamic Link. If present, dispatches:
- *  - a shared tarot reading → loads via [ShareViewModel.loadSharedTarot] then navigates
- *  - a harmony room invite → updates [HarmonyViewModel] and navigates to gender screen
- *
- * The repository implementation (real vs fake) is selected by Hilt.
+ * Handles incoming App Links (Android App Links replacing Firebase Dynamic Links).
+ * Reads the deep link URL directly from the intent without any third-party SDK.
  */
 fun receiveShareRequest(
     activity: Activity,
@@ -175,36 +107,28 @@ fun receiveShareRequest(
     loadingViewModel: LoadingViewModel,
     harmonyViewModel: HarmonyViewModel,
     coroutineScope: CoroutineScope
-){
-    Firebase.dynamicLinks
-        .getDynamicLink(activity.intent)
-        .addOnSuccessListener(activity) { pendingDynamicLinkData: PendingDynamicLinkData? ->
-            if (pendingDynamicLinkData == null) return@addOnSuccessListener
+) {
+    val deepLinkUri = activity.intent?.data ?: return
 
-            val deepLink = pendingDynamicLinkData.link ?: return@addOnSuccessListener
-            val deepLinkUri = Uri.parse(deepLink.toString())
+    Log.d("AppLink", "received: $deepLinkUri")
 
-            if (deepLinkUri.getBooleanQueryParameter("tarotId", false)) {
-                val sharedTarotId = deepLinkUri.getQueryParameter("tarotId")!!
-                loadingViewModel.startLoading(navController, ScreenEnum.LoadingScreen, ScreenEnum.ShareDetailScreen)
-                coroutineScope.launch {
-                    val tarot = shareViewModel.loadSharedTarot(sharedTarotId)
-                    if (tarot?.tarotType == 5) {
-                        loadingViewModel.changeDestination(ScreenEnum.ShareHarmonyDetailScreen)
-                    }
-                    loadingViewModel.endLoading(navController)
-                }
+    if (deepLinkUri.getBooleanQueryParameter("tarotId", false)) {
+        val sharedTarotId = deepLinkUri.getQueryParameter("tarotId")!!
+        loadingViewModel.startLoading(navController, ScreenEnum.LoadingScreen, ScreenEnum.ShareDetailScreen)
+        coroutineScope.launch {
+            val tarot = shareViewModel.loadSharedTarot(sharedTarotId)
+            if (tarot?.tarotType == 5) {
+                loadingViewModel.changeDestination(ScreenEnum.ShareHarmonyDetailScreen)
             }
-
-            if (deepLinkUri.getBooleanQueryParameter("roomId", false)) {
-                harmonyViewModel.setIsRoomOwner(false)
-                harmonyViewModel.enterInvitedRoom(deepLinkUri.getQueryParameter("roomId")!!)
-                navigateInclusive(navController, ScreenEnum.RoomGenderScreen.name)
-            }
-
-            activity.intent = null
+            loadingViewModel.endLoading(navController)
         }
-        .addOnFailureListener(activity) { e ->
-            Log.w("DynamicLink", "getDynamicLink:onFailure", e)
-        }
+    }
+
+    if (deepLinkUri.getBooleanQueryParameter("roomId", false)) {
+        harmonyViewModel.setIsRoomOwner(false)
+        harmonyViewModel.enterInvitedRoom(deepLinkUri.getQueryParameter("roomId")!!)
+        navigateInclusive(navController, ScreenEnum.RoomGenderScreen.name)
+    }
+
+    activity.intent = null
 }
