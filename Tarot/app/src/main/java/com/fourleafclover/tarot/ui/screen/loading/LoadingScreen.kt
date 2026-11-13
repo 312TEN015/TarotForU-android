@@ -15,6 +15,8 @@ import androidx.navigation.compose.rememberNavController
 import com.fourleafclover.tarot.MyApplication
 import com.fourleafclover.tarot.demo.ui.theme.backgroundColorScheme
 import com.fourleafclover.tarot.ui.component.LoadingCircle
+import com.fourleafclover.tarot.ui.component.LoadingTip
+import com.fourleafclover.tarot.ui.component.LoadingTipCircle
 import com.fourleafclover.tarot.ui.component.getBackgroundModifier
 import com.fourleafclover.tarot.ui.navigation.PreventBackPressed
 import com.fourleafclover.tarot.ui.navigation.ScreenEnum
@@ -75,9 +77,28 @@ fun LoadingScreen(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
-        LoadingCircle(
-            loadingTitle = "선택하신 카드의 의미를\n열심히 해석하고 있어요!",
-            loadingSubTitle = "잠시만 기다려주세요"
-        )
+        when (loadingViewModel.destination) {
+            // 리딩을 기다리는 동안에는 안내 문구를 돌아가며 보여준다
+            ScreenEnum.ResultScreen, ScreenEnum.RoomResultScreen -> LoadingTipCircle(tips = READING_TIPS)
+            else -> LoadingCircle(
+                loadingTitle = "선택하신 카드의 의미를\n열심히 해석하고 있어요!",
+                loadingSubTitle = "잠시만 기다려주세요"
+            )
+        }
     }
 }
+
+private val READING_TIPS = listOf(
+    LoadingTip(
+        title = "타로마스터가 카드를\n해석하고 있어요",
+        subTitle = "뽑으신 카드의 의미를 하나하나 읽는 중이에요"
+    ),
+    LoadingTip(
+        title = "20초 정도만\n기다려 주세요",
+        subTitle = "곧 리딩 결과를 보여드릴게요"
+    ),
+    LoadingTip(
+        title = "상담 내용은 타로마스터와\n둘만의 비밀이에요",
+        subTitle = "상담 내용은 저장하지 않고, 리딩 결과만 저장해요"
+    ),
+)
