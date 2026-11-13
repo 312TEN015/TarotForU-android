@@ -268,17 +268,18 @@ fun ChatCardDeck(
         verticalArrangement = Arrangement.Bottom,
     ) {
 
-        CardDeck(pickTarotViewModel)
+        CardDeck(pickTarotViewModel, onCardPicked = {
+            val seq = pickSequence.value
+            pickTarotViewModel.setPickedCard(seq)
+            val cardNumber = pickTarotViewModel.getCardNumber(seq)
+            val drawable = fortuneViewModel.getCardImageId(localContext, cardNumber.toString())
+            chatViewModel.onUserCardSelected(cardNumber, drawable)
+        })
 
         ButtonSelect(
             text = "선택완료",
-            onClick = {
-                val seq = pickSequence.value
-                pickTarotViewModel.setPickedCard(seq)
-                val cardNumber = pickTarotViewModel.getCardNumber(seq)
-                val drawable = fortuneViewModel.getCardImageId(localContext, cardNumber.toString())
-                chatViewModel.onUserCardSelected(cardNumber, drawable)
-            },
+            // 카드가 덱에서 빠져나가는 애니메이션이 끝나면 CardDeck의 onCardPicked가 불린다
+            onClick = { pickTarotViewModel.startPickAnimation() },
             isEnable = pickTarotViewModel.isCompleteButtonEnabled()
         )
     }

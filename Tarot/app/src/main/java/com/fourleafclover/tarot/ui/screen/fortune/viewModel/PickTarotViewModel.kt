@@ -20,6 +20,10 @@ class PickTarotViewModel @Inject constructor(): ViewModel() {
     private var _nowSelectedCardIdx = mutableStateOf(-1)
     val nowSelectedCardIdx get() = _nowSelectedCardIdx
 
+    // 뽑혀서 덱에서 빠져나가는 애니메이션 중인 카드 (-1이면 없음)
+    private var _leavingCardIdx = mutableStateOf(-1)
+    val leavingCardIdx get() = _leavingCardIdx
+
     // 랜덤으로 섞인 카드 덱
     private var _cards = mutableStateListOf<Int>().apply { addAll(getRandomCards()) }
     val cards get() = _cards
@@ -33,6 +37,7 @@ class PickTarotViewModel @Inject constructor(): ViewModel() {
     fun clear() {
         _pickedCardNumberState.value = PickedCardNumberState()
         _nowSelectedCardIdx.value = -1
+        _leavingCardIdx.value = -1
         _cards.clear()
         _cards.addAll(getRandomCards())
         _pickSequence.value = 1
@@ -41,19 +46,32 @@ class PickTarotViewModel @Inject constructor(): ViewModel() {
     fun initCardDeck(){
         _cards = mutableStateListOf<Int>().apply { addAll(getRandomCards()) }
         _nowSelectedCardIdx = mutableStateOf(-1)
+        _leavingCardIdx = mutableStateOf(-1)
         _pickedCardNumberState = mutableStateOf(PickedCardNumberState())
         _pickSequence = mutableStateOf(1)
     }
 
     fun setNowSelectedCardIdx(idx: Int) {
+        // 카드가 빠져나가는 동안에는 다른 카드를 고를 수 없다
+        if (_leavingCardIdx.value != -1) return
         _nowSelectedCardIdx.value = idx
+    }
+
+    /**
+     * 선택한 카드를 덱에서 빼내는 애니메이션을 시작한다.
+     * 애니메이션이 끝나면 CardDeck이 onCardPicked를 불러 주고, 거기서 setPickedCard로 실제로 뽑는다.
+     */
+    fun startPickAnimation() {
+        if (_nowSelectedCardIdx.value == -1 || _leavingCardIdx.value != -1) return
+        _leavingCardIdx.value = _nowSelectedCardIdx.value
     }
 
     fun resetNowSelectedCardIdx() {
         _nowSelectedCardIdx.value = -1
     }
 
-    fun isCompleteButtonEnabled(): Boolean = _nowSelectedCardIdx.value != -1
+    fun isCompleteButtonEnabled(): Boolean =
+        _nowSelectedCardIdx.value != -1 && _leavingCardIdx.value == -1
 
     /** 몇 번째에 어떤 카드를 뽑았는지 저장 */
     fun setPickedCard(sequence: Int){
@@ -64,6 +82,7 @@ class PickTarotViewModel @Inject constructor(): ViewModel() {
             3 -> _pickedCardNumberState.value.thirdCardNumber = pickedCard
         }
         _cards.remove(pickedCard)
+        _leavingCardIdx.value = -1
     }
 
     fun getDirectionText(sequence: Int): String {
