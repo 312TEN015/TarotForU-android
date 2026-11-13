@@ -81,3 +81,23 @@ data class DemoResultsDto(
     val single: TarotOutputDto? = null,
     val harmony: TarotOutputDto? = null
 )
+
+/** GET /config/notice — 앱 사용을 막고 띄우는 공지 설정 */
+data class NoticeConfigDto(
+    val maintenance: MaintenanceNoticeDto? = null,
+    val forceUpdate: ForceUpdateNoticeDto? = null
+)
+
+data class MaintenanceNoticeDto(
+    val enabled: Boolean = false,
+    val title: String? = null,
+    val content: String? = null
+)
+
+data class ForceUpdateNoticeDto(
+    val enabled: Boolean = false,
+    // 앱의 versionCode가 이 값보다 낮으면 업데이트를 요구한다
+    val minVersionCode: Int = 0,
+    val title: String? = null,
+    val content: String? = null
+)

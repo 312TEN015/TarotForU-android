@@ -3,6 +3,7 @@ package com.fourleafclover.tarot.network
 
 import com.fourleafclover.tarot.data.DemoConfigDto
 import com.fourleafclover.tarot.data.MatchTarotInputDto
+import com.fourleafclover.tarot.data.NoticeConfigDto
 import com.fourleafclover.tarot.data.TarotIdsInputDto
 import com.fourleafclover.tarot.data.TarotInputDto
 import com.fourleafclover.tarot.data.TarotOutputDto
@@ -24,4 +25,7 @@ interface TarotService {
 
     @GET("config/demo")
     fun getDemoConfig(): Call<DemoConfigDto>
+
+    @GET("config/notice")
+    fun getNoticeConfig(): Call<NoticeConfigDto>
 }
