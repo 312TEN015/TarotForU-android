@@ -3,7 +3,10 @@ package com.fourleafclover.tarot.ui.screen.my
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -83,10 +86,16 @@ fun MyTarotScreen(
 
     setStatusbarColor(LocalView.current, MaterialTheme.backgroundColorScheme.mainBackgroundColor)
 
+    var showGuideSheet by remember { mutableStateOf(false) }
+
     Box {
 
         if (showSheet.value) {
             BottomSheet(myTarotViewModel)
+        }
+
+        if (showGuideSheet) {
+            GuideBottomSheet(onDismiss = { showGuideSheet = false })
         }
 
         Column(
@@ -100,7 +109,14 @@ fun MyTarotScreen(
             AppBarPlain(title = "MY 타로", backgroundColor = MaterialTheme.backgroundColorScheme.mainBackgroundColor, backButtonVisible = false)
 
             // 갯수 표시
-            Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.End) {
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.End,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                // 저장 안내 열기
+                GuideIcon(onClick = { showGuideSheet = true })
+
                 Text(
                     text = "${myTarotViewModel.myTarotResults.size}", style = getTextStyle(
                         fontSize = 14,
@@ -243,6 +259,82 @@ fun MyTarotItemComponent(
                     },
                 contentDescription = ""
             )
+        }
+    }
+}
+
+/** 갯수 표시 왼쪽의 물음표 아이콘 */
+@Composable
+private fun GuideIcon(onClick: () -> Unit) {
+    val color = MaterialTheme.textColorScheme.onDialogContentColor
+
+    // 아이콘은 작게 보이되 누르는 영역은 넉넉하게 잡는다
+    Box(
+        modifier = Modifier
+            .clickable(
+                interactionSource = remember { MutableInteractionSource() },
+                indication = null,
+                onClick = onClick
+            )
+            .padding(horizontal = 8.dp, vertical = 6.dp),
+        contentAlignment = Alignment.Center
+    ) {
+        Box(
+            modifier = Modifier
+                .size(16.dp)
+                .border(width = 1.dp, color = color, shape = CircleShape),
+            contentAlignment = Alignment.Center
+        ) {
+            Text(
+                text = "?",
+                style = getTextStyle(fontSize = 10, fontWeight = FontWeight.Medium, color = color)
+            )
+        }
+    }
+}
+
+private val MY_TAROT_GUIDES = listOf(
+    "타로 결과는 최대 10개까지 저장할 수 있어요.",
+    "10개를 넘겨 저장하면 가장 오래된 결과부터 삭제돼요.",
+    "앱을 삭제하거나 앱 데이터를 지우면 저장한 타로 결과를 복구하지 못할 수 있어요.",
+)
+
+/** MY 타로 저장 안내 시트 */
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+private fun GuideBottomSheet(onDismiss: () -> Unit) {
+    val textColor = MaterialTheme.backgroundColorScheme.mainBackgroundColor
+
+    ModalBottomSheet(
+        onDismissRequest = onDismiss,
+        sheetState = rememberModalBottomSheetState(),
+        dragHandle = { BottomSheetDefaults.DragHandle() }
+    ) {
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 20.dp)
+                .padding(bottom = 28.dp)
+        ) {
+            Text(
+                text = "MY 타로 안내",
+                style = getTextStyle(fontSize = 18, fontWeight = FontWeight.SemiBold, color = textColor),
+                modifier = Modifier.padding(bottom = 16.dp)
+            )
+
+            MY_TAROT_GUIDES.forEach { guide ->
+                Row(modifier = Modifier.padding(bottom = 10.dp)) {
+                    Text(
+                        text = "•",
+                        style = getTextStyle(fontSize = 14, fontWeight = FontWeight.Normal, color = textColor),
+                        modifier = Modifier.padding(end = 8.dp)
+                    )
+                    Text(
+                        text = guide,
+                        style = getTextStyle(fontSize = 14, fontWeight = FontWeight.Normal, color = textColor)
+                    )
+                }
+            }
         }
     }
 }
