@@ -9,12 +9,12 @@ plugins {
 
 android {
     namespace = "com.fourleafclover.tarot"
-    compileSdk = 35
+    compileSdk = 36
 
     defaultConfig {
         applicationId = "com.fourleafclover.tarot"
         minSdk = 24
-        targetSdk = 35
+        targetSdk = 36
         versionCode = 21
         versionName = "3.1"
 
@@ -155,8 +155,8 @@ dependencies {
 
     // hilt
     // Hilt dependencies
-    implementation("com.google.dagger:hilt-android:2.51.1")
-    ksp("com.google.dagger:hilt-compiler:2.51.1")
+    implementation("com.google.dagger:hilt-android:2.60.1")
+    ksp("com.google.dagger:hilt-compiler:2.60.1")
 
     // Hilt navigation for Compose
     implementation("androidx.hilt:hilt-navigation-compose:1.2.0")
